@@ -1,12 +1,16 @@
 [package]
 name = "dedalo-pdk"
-description = "Plugin development kit for Dedalo"
+description = "Plugin development kit for Dedalo: write a plugin as one Rust function"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
+dedalo-scene.workspace = true
+serde.workspace = true
+serde_json.workspace = true
 
+# The PDK implements the WebAssembly boundary of plugins, so it may use
+# `unsafe` (spec 4); it does not inherit the workspace lints.
 [lints]
-workspace = true

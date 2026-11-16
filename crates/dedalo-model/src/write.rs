@@ -550,6 +550,7 @@ impl Writer<'_> {
             "orientation",
             e.orientation.map(|v| v.as_str().to_string()),
         );
+        self.opt(cm, "scale", e.scale.map(|v| v.as_str().to_string()));
         if !e.visibility.is_empty() || cm.attrs.contains_key("visibility") {
             self.open_sub(cm, "visibility");
             for (toggle, on) in &e.visibility {

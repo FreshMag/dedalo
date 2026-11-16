@@ -10,6 +10,15 @@ license.workspace = true
 dedalo-model.workspace = true
 dedalo-geom.workspace = true
 dedalo-render.workspace = true
+dedalo-scene.workspace = true
+resvg = { version = "0.47", default-features = false, features = ["text"], optional = true }
+krilla = { version = "0.8", default-features = false, optional = true }
+krilla-svg = { version = "0.8", optional = true }
+
+[features]
+default = ["raster"]
+# PNG and PDF. The browser's core module leaves them out (spec 14.2).
+raster = ["dep:resvg", "dep:krilla", "dep:krilla-svg"]
 
 [lints]
 workspace = true

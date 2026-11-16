@@ -33,10 +33,24 @@ pub struct ExportSpec {
     pub format: String,
     pub cell_px: u32,
     pub bounds: Bounds,
+    /// PDF only: page size and orientation.
+    pub page: dedalo_model::Page,
+    pub orientation: Option<dedalo_model::Orientation>,
+    /// PDF only: print one cell per inch, tiled across pages.
+    pub tabletop: bool,
     pub legend: Legend,
     pub theme: Option<String>,
     pub title: Option<bool>,
     pub room_ids: bool,
+    /// Keep text selectable instead of drawing it as outlines.
+    pub live_text: bool,
+    /// The plugins the document requires, in header order.
+    pub plugins: Vec<String>,
+    /// Options for plugins, by plugin ID, from `render { plugin "id" { } }`.
+    pub plugin_options: BTreeMap<String, dedalo_model::Props>,
+    /// A PNG rendering made by the host, for exporters that need one when
+    /// this build cannot rasterise (the browser's core module).
+    pub host_png: Option<Vec<u8>>,
 }
 
 impl ExportSpec {
@@ -53,10 +67,17 @@ impl ExportSpec {
             format: "svg".to_string(),
             cell_px: 64,
             bounds: Bounds::Visible,
+            page: dedalo_model::Page::Fit,
+            orientation: None,
+            tabletop: false,
             legend: Legend::default(),
             theme: None,
             title: None,
             room_ids: false,
+            live_text: false,
+            plugins: Vec::new(),
+            plugin_options: BTreeMap::new(),
+            host_png: None,
         }
     }
 
@@ -86,11 +107,27 @@ impl ExportSpec {
                 render.theme = over.theme.clone().or(render.theme);
                 render.title = over.title.or(render.title);
                 render.room_ids = over.room_ids.or(render.room_ids);
+                render.text = over.text.or(render.text);
             }
         }
         spec.theme = render.theme;
         spec.title = render.title;
         spec.room_ids = render.room_ids.unwrap_or(false);
+        spec.live_text = render.text == Some(dedalo_model::TextMode::Live);
+        spec.plugins = doc
+            .dedalo
+            .iter()
+            .flat_map(|h| h.plugins.iter().map(|p| p.id.clone()))
+            .collect();
+        spec.plugin_options = render.plugins.clone();
+        if let Some(over) = export.and_then(|e| e.render.as_ref()) {
+            for (id, options) in &over.plugins {
+                spec.plugin_options
+                    .entry(id.clone())
+                    .or_default()
+                    .extend(options.clone());
+            }
+        }
         if let Some(e) = export {
             spec.toggles = e.visibility.clone();
             spec.include = e.include.clone();
@@ -99,6 +136,9 @@ impl ExportSpec {
             spec.rotation = e.rotation.unwrap_or(0);
             spec.format = e.format.clone().unwrap_or_else(|| "svg".to_string());
             spec.bounds = e.bounds.unwrap_or(Bounds::Visible);
+            spec.page = e.page.unwrap_or(dedalo_model::Page::Fit);
+            spec.orientation = e.orientation;
+            spec.tabletop = e.scale == Some(dedalo_model::PrintScale::Tabletop);
             spec.cell_px = match (e.cell_px, e.resolution) {
                 (Some(px), _) => px as u32,
                 (None, Some(Resolution::Low)) => 32,
@@ -143,6 +183,7 @@ pub struct View {
     pub show_labels: bool,
     pub show_legend: bool,
     pub show_frame: bool,
+    pub live_text: bool,
     pub room_ids: bool,
     pub legend: Legend,
     pub seed: u64,
@@ -341,6 +382,7 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
             s.bbox = Rect::of(&s.polygon);
             if let Some(c) = &mut s.circle {
                 c.center = turn(c.center, quarters);
+                *c = c.turned(quarters);
             }
         }
         for o in &mut openings {
@@ -392,6 +434,7 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
         show_legend: !clean && spec.legend.mode != Some(dedalo_model::LegendMode::None),
         show_frame: !clean,
         room_ids: spec.room_ids,
+        live_text: spec.live_text,
         legend: spec.legend.clone(),
         seed: model.seed,
         walls: derive_walls(&spaces, &openings),

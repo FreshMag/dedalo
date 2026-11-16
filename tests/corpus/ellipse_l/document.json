@@ -1,0 +1,97 @@
+{
+  "dungeon": {
+    "id": "ellipse_l",
+    "name": "Ellipse and L",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "nave",
+        "name": "Nave",
+        "shape": {
+          "fn": "ellipse",
+          "args": [
+            10,
+            6
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "font",
+            "type": "furniture",
+            "subtype": "altar",
+            "placement": {
+              "anchor": "center"
+            }
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "transept",
+        "name": "Transept",
+        "shape": {
+          "fn": "l_shape",
+          "args": [
+            8,
+            6,
+            [
+              3,
+              2
+            ]
+          ]
+        },
+        "layout": {
+          "adjacent_to": "nave",
+          "direction": "south"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "apse",
+        "name": "Apse",
+        "shape": {
+          "fn": "ellipse",
+          "args": [
+            4,
+            8
+          ]
+        },
+        "rotation": 90,
+        "layout": {
+          "adjacent_to": "nave",
+          "direction": "east",
+          "gap": 1
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "nave_south",
+        "from": "nave",
+        "to": "transept",
+        "type": "archway",
+        "placement": {
+          "width": 2
+        }
+      },
+      {
+        "id": "nave_east",
+        "from": "nave",
+        "to": "apse",
+        "type": "door"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Release 1.0 shapes: an ellipse, an L shape and a rotated ellipse."
+      ]
+    }
+  }
+}

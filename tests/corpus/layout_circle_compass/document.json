@@ -1,0 +1,110 @@
+{
+  "dungeon": {
+    "id": "layout_circle_compass",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "hub",
+        "shape": {
+          "fn": "circle",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "n",
+        "shape": {
+          "fn": "square",
+          "args": [
+            2
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "north"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "s",
+        "shape": {
+          "fn": "square",
+          "args": [
+            2
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "south"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "e",
+        "shape": {
+          "fn": "square",
+          "args": [
+            2
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "east"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "w",
+        "shape": {
+          "fn": "square",
+          "args": [
+            2
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "west"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "dn",
+        "from": "hub",
+        "to": "n",
+        "type": "door"
+      },
+      {
+        "id": "ds",
+        "from": "hub",
+        "to": "s",
+        "type": "door"
+      },
+      {
+        "id": "de",
+        "from": "hub",
+        "to": "e",
+        "type": "door"
+      },
+      {
+        "id": "dw",
+        "from": "hub",
+        "to": "w",
+        "type": "door"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# A circle with doors at its four compass points."
+      ]
+    }
+  }
+}

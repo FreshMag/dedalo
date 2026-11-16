@@ -14,9 +14,12 @@ use dedalo_core::model::{Code, Diagnostic, Preset, Report, Severity};
 use dedalo_core::{Compiled, ExportSpec, Input, Registry};
 use serde_json::json;
 
+mod guide;
+mod mcp;
 mod outline;
+mod plugins;
 
-#[derive(Parser)]
+#[derive(Parser, Clone)]
 #[command(
     name = "dedalo",
     version,
@@ -26,11 +29,17 @@ struct Cli {
     /// Print the machine-readable form on standard output.
     #[arg(long, global = true)]
     json: bool,
+    /// Load a plugin package, or every package in a folder. Repeatable.
+    #[arg(long = "plugin", global = true, value_name = "PATH")]
+    plugin_paths: Vec<PathBuf>,
+    /// Record the plugins in use in `dedalo.lock` instead of checking them.
+    #[arg(long, global = true)]
+    update_lock: bool,
     #[command(subcommand)]
     command: Command,
 }
 
-#[derive(Subcommand)]
+#[derive(Subcommand, Clone)]
 enum Command {
     /// Compile and write a map.
     Render {
@@ -65,9 +74,34 @@ enum Command {
         /// Render whatever resolved even when there are errors.
         #[arg(long)]
         force: bool,
+        /// Render again whenever the file changes, until interrupted.
+        #[arg(long)]
+        watch: bool,
     },
     /// Run parse, lower and resolve; print diagnostics.
-    Validate { file: String },
+    Validate {
+        file: String,
+        /// Apply every fix the diagnostics propose, then report what is left.
+        #[arg(long)]
+        fix: bool,
+    },
+    /// Apply edit operations addressed by element ID.
+    Edit {
+        file: String,
+        /// A JSON file with the operations, or `-` for standard input: either
+        /// `{ "base_hash": ..., "ops": [...] }` or a bare array of operations.
+        #[arg(long)]
+        ops: String,
+        /// Report the result without writing the file.
+        #[arg(long)]
+        dry_run: bool,
+        /// Refuse the edit unless the file still has this content hash.
+        #[arg(long)]
+        base_hash: Option<String>,
+        /// Write the result even if it introduces errors.
+        #[arg(long)]
+        force: bool,
+    },
     /// Format in place.
     Fmt {
         file: String,
@@ -103,11 +137,36 @@ enum Command {
     /// List types, subtypes and property schemas.
     Catalog { query: Option<String> },
     /// Print a JSON Schema: document, ops or diagnostics.
-    Schema { name: String },
+    Schema {
+        name: String,
+        /// `full` (default) or `authoring`: a closed, inlined profile of the
+        /// document schema for model structured output.
+        #[arg(long, default_value = "full")]
+        profile: String,
+    },
     /// Describe a diagnostic code with a worked fix.
     Explain { code: String },
     /// Print the built-in language reference.
     Guide { topic: Option<String> },
+    /// Start the MCP server, on standard input and output by default.
+    Mcp {
+        /// The workspace directory every path argument is confined to.
+        #[arg(long, default_value = ".")]
+        root: PathBuf,
+        /// Serve Streamable HTTP on this loopback address instead, such as 127.0.0.1:7410.
+        #[arg(long)]
+        http: Option<String>,
+    },
+    /// Plugin tools: add, list, remove, new, check.
+    Plugin {
+        #[command(subcommand)]
+        action: PluginAction,
+    },
+    /// Agent skill tools.
+    Skill {
+        #[command(subcommand)]
+        action: SkillAction,
+    },
     /// Write a starter file.
     New {
         /// The example to start from: starter or forgotten_crypt.
@@ -116,6 +175,39 @@ enum Command {
         /// Output path, or `-` for standard output.
         #[arg(short, long)]
         output: Option<String>,
+    },
+}
+
+#[derive(Subcommand, Clone)]
+enum PluginAction {
+    /// Install a plugin package into `.dedalo/plugins/` and record it in `dedalo.lock`.
+    Add { path: PathBuf },
+    /// List the plugins found and what they contribute.
+    List,
+    /// Remove an installed plugin and its lockfile entry.
+    Remove { id: String },
+    /// Write a starter plugin package.
+    New {
+        id: String,
+        /// theme, catalog or wasm.
+        #[arg(long, default_value = "theme")]
+        kind: String,
+        /// The folder to write; default `./<id>`.
+        #[arg(long)]
+        dir: Option<PathBuf>,
+    },
+    /// Run the conformance suite on a plugin package.
+    Check { path: PathBuf },
+}
+
+#[derive(Subcommand, Clone)]
+enum SkillAction {
+    /// Write the agent skill folder: SKILL.md and its reference files.
+    Export {
+        dir: PathBuf,
+        /// Also write `llms.txt`, the reference as one Markdown file.
+        #[arg(long)]
+        llms_txt: Option<PathBuf>,
     },
 }
 
@@ -129,13 +221,21 @@ enum Failure {
 
 type Outcome = Result<(), Failure>;
 
-const QUICKSTART: &str = include_str!("../../../docs/guide/quickstart.md");
 const EXAMPLE_CRYPT: &str = include_str!("../../../tests/corpus/forgotten_crypt/input.dedalo");
 const STARTER: &str = "dungeon \"my_dungeon\" {\n    name = \"My Dungeon\"\n\n    room \"entrance\" {\n        name = \"Entrance\"\n        shape = rectangle(8, 6)\n    }\n}\n";
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
-    match run(&cli) {
+    // A large stack: deep source files and plugin scenes recurse.
+    let outcome = std::thread::Builder::new()
+        .stack_size(64 * 1024 * 1024)
+        .spawn(move || run(&cli))
+        .map(|t| {
+            t.join()
+                .unwrap_or_else(|_| Err(Failure::Io("internal error".to_string())))
+        })
+        .unwrap_or_else(|e| Err(Failure::Io(format!("cannot start: {e}"))));
+    match outcome {
         Ok(()) => ExitCode::SUCCESS,
         Err(Failure::Diagnostics) => ExitCode::from(1),
         Err(Failure::Usage(message)) => {
@@ -202,6 +302,32 @@ fn compile(source: &Source, reg: &Registry) -> Compiled {
         Input::Dsl(&source.text)
     };
     let mut compiled = dedalo_core::compile(input, reg);
+    // The plugins in use must match the lockfile beside the document.
+    let dir = source.path.as_ref().and_then(|p| p.parent()).map(|p| {
+        if p.as_os_str().is_empty() {
+            Path::new(".")
+        } else {
+            p
+        }
+    });
+    if let (Some(dir), Some(doc)) = (dir, &compiled.document) {
+        let required: Vec<String> = doc
+            .dedalo
+            .iter()
+            .flat_map(|h| h.plugins.iter().map(|p| p.id.clone()))
+            .collect();
+        let update = UPDATE_LOCK.load(std::sync::atomic::Ordering::Relaxed);
+        match plugins::check_lock(dir, &required, reg, update) {
+            Ok(problems) => compiled.diagnostics.extend(
+                problems
+                    .into_iter()
+                    .map(|m| Diagnostic::new(Code::PluginFailed, m)),
+            ),
+            Err(e) => compiled
+                .diagnostics
+                .push(Diagnostic::new(Code::PluginFailed, e)),
+        }
+    }
     for d in &mut compiled.diagnostics {
         if let Some(span) = &mut d.span {
             span.file = Some(source.name.clone());
@@ -323,8 +449,55 @@ fn stage_output(
     })
 }
 
+static UPDATE_LOCK: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// The document a command reads, for plugin discovery beside it.
+fn document_dir(command: &Command) -> Option<PathBuf> {
+    let file = match command {
+        Command::Render { file, .. }
+        | Command::Validate { file, .. }
+        | Command::Edit { file, .. }
+        | Command::Fmt { file, .. }
+        | Command::Convert { file, .. }
+        | Command::Inspect { file, .. } => file,
+        Command::Mcp { root, .. } => return Some(root.clone()),
+        _ => return None,
+    };
+    (file != "-").then(|| {
+        Path::new(file)
+            .parent()
+            .map(Path::to_path_buf)
+            .unwrap_or_default()
+    })
+}
+
 fn run(cli: &Cli) -> Outcome {
-    let reg = Registry::builtin();
+    UPDATE_LOCK.store(cli.update_lock, std::sync::atomic::Ordering::Relaxed);
+    let (reg, origins) =
+        plugins::registry(&cli.plugin_paths, document_dir(&cli.command).as_deref());
+    if let Command::Render {
+        file, watch: true, ..
+    } = &cli.command
+    {
+        if file == "-" {
+            return Err(Failure::Usage(
+                "`--watch` needs a file, not standard input".to_string(),
+            ));
+        }
+        let mut once = cli.clone();
+        if let Command::Render { watch, .. } = &mut once.command {
+            *watch = false;
+        }
+        let stamp = || std::fs::metadata(file).and_then(|m| m.modified()).ok();
+        loop {
+            let seen = stamp();
+            let _ = run(&once);
+            eprintln!("watching {file}; press Ctrl+C to stop");
+            while stamp() == seen {
+                std::thread::sleep(std::time::Duration::from_millis(250));
+            }
+        }
+    }
     match &cli.command {
         Command::Render {
             file,
@@ -338,6 +511,7 @@ fn run(cli: &Cli) -> Outcome {
             theme,
             emit,
             force,
+            ..
         } => {
             let source = read(file)?;
             let compiled = compile(&source, &reg);
@@ -449,14 +623,127 @@ fn run(cli: &Cli) -> Outcome {
                 Ok(())
             }
         }
-        Command::Validate { file } => {
-            let source = read(file)?;
+        Command::Validate { file, fix } => {
+            let mut source = read(file)?;
+            if *fix {
+                if source.json {
+                    return Err(Failure::Usage(
+                        "`--fix` edits DSL text; convert the JSON document first".to_string(),
+                    ));
+                }
+                let (text, fixed) = dedalo_core::fix_all(&source.text, &reg);
+                if !fixed.is_empty() {
+                    match &source.path {
+                        Some(path) => std::fs::write(path, &text).map_err(|e| {
+                            Failure::Io(format!("cannot write `{}`: {e}", source.name))
+                        })?,
+                        None => write(None, text.as_bytes())?,
+                    }
+                    if !cli.json {
+                        let codes: Vec<&str> = fixed.iter().map(|c| c.as_str()).collect();
+                        eprintln!("fixed {} problem(s): {}", fixed.len(), codes.join(", "));
+                    }
+                }
+                source.text = text;
+            }
             let compiled = compile(&source, &reg);
             let result = report(&compiled, &source, cli, json!({}));
             if result.is_ok() && !cli.json {
                 eprintln!("{}: ok", source.name);
             }
             result
+        }
+        Command::Edit {
+            file,
+            ops,
+            dry_run,
+            base_hash,
+            force,
+        } => {
+            let source = read(file)?;
+            if source.json {
+                return Err(Failure::Usage(
+                    "`edit` patches DSL text; convert the JSON document first".to_string(),
+                ));
+            }
+            if file == "-" && ops == "-" {
+                return Err(Failure::Usage(
+                    "the file and `--ops` cannot both come from standard input".to_string(),
+                ));
+            }
+            let ops_text = if ops == "-" {
+                read("-")?.text
+            } else {
+                std::fs::read_to_string(ops)
+                    .map_err(|e| Failure::Io(format!("cannot read `{ops}`: {e}")))?
+            };
+            let mut batch: dedalo_core::model::ops::Batch = match serde_json::from_str(&ops_text) {
+                Ok(batch) => batch,
+                Err(_) => match serde_json::from_str::<Vec<dedalo_core::model::ops::Op>>(&ops_text)
+                {
+                    Ok(list) => dedalo_core::model::ops::Batch {
+                        base_hash: None,
+                        ops: list,
+                    },
+                    Err(e) => {
+                        return Err(Failure::Usage(format!(
+                            "`{ops}` is not an edit batch: {e}. `dedalo schema ops` prints the schema"
+                        )));
+                    }
+                },
+            };
+            if base_hash.is_some() {
+                batch.base_hash = base_hash.clone();
+            }
+            let name = source
+                .path
+                .as_ref()
+                .and_then(|p| p.file_name())
+                .map_or("source".to_string(), |n| n.to_string_lossy().to_string());
+            let result = dedalo_core::edit(&source.text, &batch, &reg, *force, &name);
+            let write_it = result.applied && !dry_run && result.source != source.text;
+            if write_it {
+                match &source.path {
+                    Some(path) => std::fs::write(path, &result.source)
+                        .map_err(|e| Failure::Io(format!("cannot write `{}`: {e}", source.name)))?,
+                    None if !cli.json => write(None, result.source.as_bytes())?,
+                    None => {}
+                }
+            }
+            if cli.json {
+                let mut value = serde_json::to_value(&result).unwrap_or_default();
+                if source.path.is_none() {
+                    value["source"] = json!(result.source);
+                }
+                value["written"] = json!(write_it && source.path.is_some());
+                print_json(&value);
+            } else {
+                eprint!("{}", result.diff);
+                print_human(
+                    &result.diagnostics,
+                    &Source {
+                        name: source.name.clone(),
+                        path: None,
+                        text: result.source.clone(),
+                        json: false,
+                    },
+                );
+                let verdict = if !result.applied {
+                    "not applied"
+                } else if *dry_run {
+                    "dry run, not written"
+                } else if write_it {
+                    "applied"
+                } else {
+                    "no change"
+                };
+                eprintln!("{verdict}: {} ({})", result.changed.join(", "), result.hash);
+            }
+            if result.applied {
+                Ok(())
+            } else {
+                Err(Failure::Diagnostics)
+            }
         }
         Command::Fmt { file, check } => {
             let source = read(file)?;
@@ -650,7 +937,19 @@ fn run(cli: &Cli) -> Outcome {
             }
             Ok(())
         }
-        Command::Schema { name } => match dedalo_core::model::schema(name) {
+        Command::Schema { name, profile } if profile == "authoring" => {
+            if name != "document" {
+                return Err(Failure::Usage(
+                    "the authoring profile exists for the `document` schema only".to_string(),
+                ));
+            }
+            print_json(&dedalo_core::model::authoring_schema());
+            Ok(())
+        }
+        Command::Schema { name, profile } if profile != "full" => Err(Failure::Usage(format!(
+            "`{profile}` is not a profile; use full or authoring"
+        ))),
+        Command::Schema { name, .. } => match dedalo_core::model::schema(name) {
             Some(schema) => {
                 print_json(&schema);
                 Ok(())
@@ -690,29 +989,43 @@ fn run(cli: &Cli) -> Outcome {
         }
         Command::Guide { topic } => {
             let topic = topic.as_deref().unwrap_or("quickstart");
-            let text = match topic {
-                "quickstart" => QUICKSTART.to_string(),
-                "examples/forgotten_crypt" => format!("```hcl\n{EXAMPLE_CRYPT}```\n"),
-                "errors" => Code::ALL
-                    .iter()
-                    .map(|c| format!("- `{}`: {}\n", c.as_str(), c.summary()))
-                    .collect(),
-                t if t.starts_with("errors/") => match Code::parse(&t[7..].to_uppercase()) {
-                    Some(c) => format!("# {}\n\n{}\n\n{}\n", c.as_str(), c.summary(), c.explain()),
-                    None => {
-                        return Err(Failure::Usage(format!(
-                            "`{}` is not a diagnostic code",
-                            &t[7..]
-                        )));
-                    }
-                },
-                other => {
-                    return Err(Failure::Usage(format!(
-                        "`{other}` is not a guide topic; the topics are quickstart, errors, errors/<CODE> and examples/forgotten_crypt (syntax, layout and catalog topics arrive with milestone M5; use `dedalo catalog` meanwhile)"
-                    )));
+            if topic == "list" {
+                for (name, description) in guide::topics(&reg.catalog) {
+                    println!("{name:<32} {description}");
                 }
-            };
-            print!("{text}");
+                return Ok(());
+            }
+            print!("{}", guide::topic(topic, &reg).map_err(Failure::Usage)?);
+            Ok(())
+        }
+        Command::Plugin { action } => plugin_command(cli, action, &reg, &origins),
+        Command::Mcp { root, http } => {
+            let server = mcp::Server::new(root, reg).map_err(Failure::Io)?;
+            match http {
+                Some(addr) => server.serve_http(addr).map_err(Failure::Io),
+                None => server
+                    .serve_stdio()
+                    .map_err(|e| Failure::Io(format!("standard input or output failed: {e}"))),
+            }
+        }
+        Command::Skill {
+            action: SkillAction::Export { dir, llms_txt },
+        } => {
+            let written = guide::export_skill(dir, &reg).map_err(|e| {
+                Failure::Io(format!(
+                    "cannot write the skill to `{}`: {e}",
+                    dir.display()
+                ))
+            })?;
+            if let Some(path) = llms_txt {
+                std::fs::write(path, guide::llms_txt(&reg))
+                    .map_err(|e| Failure::Io(format!("cannot write `{}`: {e}", path.display())))?;
+            }
+            if cli.json {
+                print_json(&json!({ "dir": dir.display().to_string(), "files": written }));
+            } else {
+                eprintln!("wrote {} files to {}", written.len(), dir.display());
+            }
             Ok(())
         }
         Command::New { example, output } => {
@@ -739,5 +1052,105 @@ fn run(cli: &Cli) -> Outcome {
             }
             Ok(())
         }
+    }
+}
+
+fn plugin_command(
+    cli: &Cli,
+    action: &PluginAction,
+    reg: &Registry,
+    origins: &std::collections::BTreeMap<String, PathBuf>,
+) -> Outcome {
+    match action {
+        PluginAction::Add { path } => {
+            let plugin = plugins::add(path).map_err(Failure::Usage)?;
+            if cli.json {
+                print_json(
+                    &json!({ "id": plugin.id(), "version": plugin.manifest.plugin.version, "sha256": plugin.sha256 }),
+                );
+            } else {
+                eprintln!(
+                    "installed {} {} into .dedalo/plugins and recorded it in {}",
+                    plugin.id(),
+                    plugin.manifest.plugin.version,
+                    plugins::LOCKFILE
+                );
+            }
+            Ok(())
+        }
+        PluginAction::Remove { id } => {
+            plugins::remove(id).map_err(Failure::Usage)?;
+            eprintln!("removed {id}");
+            Ok(())
+        }
+        PluginAction::List => {
+            let list: Vec<serde_json::Value> = reg
+                .plugins
+                .iter()
+                .map(|p| {
+                    let m = &p.manifest;
+                    let mut provides: Vec<String> = m.theme.keys().map(|t| format!("theme {}.{t}", p.id())).collect();
+                    provides.extend(m.catalog.iter().map(|_| "catalog".to_string()));
+                    provides.extend(m.painter.iter().map(|d| format!("painter for {}{}", d.matches.kind, d.matches.ty.as_ref().map(|t| format!(" {t}")).unwrap_or_default())));
+                    provides.extend(m.scene_pass.iter().map(|s| format!("scene pass {}", s.name)));
+                    provides.extend(m.renderer.iter().map(|r| format!("renderer {}", r.name)));
+                    provides.extend(m.exporter.iter().map(|e| format!("format {}.{}", p.id(), e.format)));
+                    provides.extend(m.validator.iter().map(|v| format!("validator {}", v.name)));
+                    provides.extend(m.shape.iter().map(|s| format!("shape {}.{}", p.id(), s.name)));
+                    json!({ "id": p.id(), "version": m.plugin.version, "sha256": p.sha256, "path": origins.get(p.id()).map(|o| o.display().to_string()), "provides": provides })
+                })
+                .collect();
+            if cli.json {
+                print_json(&json!(list));
+            } else if list.is_empty() {
+                println!(
+                    "No plugins found. Search path: --plugin, .dedalo/plugins/, {}",
+                    plugins::user_dir()
+                        .map(|d| d.display().to_string())
+                        .unwrap_or_default()
+                );
+            } else {
+                for p in &list {
+                    println!(
+                        "{} {}  ({})",
+                        p["id"].as_str().unwrap_or_default(),
+                        p["version"].as_str().unwrap_or_default(),
+                        p["path"].as_str().unwrap_or_default()
+                    );
+                    for item in p["provides"].as_array().into_iter().flatten() {
+                        println!("    {}", item.as_str().unwrap_or_default());
+                    }
+                }
+            }
+            Ok(())
+        }
+        PluginAction::New { id, kind, dir } => {
+            let dir = dir.clone().unwrap_or_else(|| PathBuf::from(id));
+            let files = plugins::scaffold(id, kind, &dir).map_err(Failure::Usage)?;
+            eprintln!("wrote {} files to {}", files.len(), dir.display());
+            Ok(())
+        }
+        PluginAction::Check { path } => match plugins::check(path) {
+            Ok(passed) => {
+                if cli.json {
+                    print_json(&json!({ "status": "ok", "passed": passed }));
+                } else {
+                    for p in passed {
+                        println!("ok   {p}");
+                    }
+                }
+                Ok(())
+            }
+            Err(failures) => {
+                if cli.json {
+                    print_json(&json!({ "status": "error", "failures": failures }));
+                } else {
+                    for f in failures {
+                        println!("FAIL {f}");
+                    }
+                }
+                Err(Failure::Diagnostics)
+            }
+        },
     }
 }

@@ -1,0 +1,48 @@
+{
+  "dungeon": {
+    "id": "layout_corridor_straight",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "a",
+          "direction": "east"
+        }
+      },
+      {
+        "kind": "corridor",
+        "id": "hall",
+        "connects": [
+          "a",
+          "b"
+        ],
+        "width": 2,
+        "length": 4
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# A corridor sets the gap between two rooms placed relative to each other."
+      ]
+    }
+  }
+}

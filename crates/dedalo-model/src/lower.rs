@@ -28,7 +28,26 @@ pub struct Lowered {
 }
 
 pub fn lower(root: &SyntaxNode, source: &str, catalog: &Catalog) -> Lowered {
+    lower_with(root, source, catalog, &[])
+}
+
+/// Lowers with templates supplied by packs, as `(name, template block)`.
+/// Their names are namespaced by the plugin, such as `doors.iron`.
+pub fn lower_with(
+    root: &SyntaxNode,
+    source: &str,
+    catalog: &Catalog,
+    external: &[(String, SyntaxNode)],
+) -> Lowered {
+    let mut templates = BTreeMap::new();
+    for (name, node) in external {
+        if node.kind() == SyntaxKind::Block {
+            templates.insert(name.clone(), (Block(node.clone()), true));
+        }
+    }
     let mut l = Lower {
+        templates,
+        template_target: None,
         cat: catalog,
         lines: LineIndex::new(source),
         diags: Vec::new(),
@@ -147,6 +166,7 @@ const EXPORT_ATTRS: &[&str] = &[
     "bounds",
     "page",
     "orientation",
+    "scale",
 ];
 const RENDER_ATTRS: &[&str] = &["theme", "title", "text", "room_ids"];
 const LEGEND_ATTRS: &[&str] = &["mode", "position", "title"];
@@ -185,7 +205,46 @@ struct Lower<'a> {
     loose: Vec<(String, Element)>,
     /// Source offset of each element, to keep file order inside a space.
     offsets: BTreeMap<String, u32>,
+    /// Templates by name, and whether each comes from a pack.
+    templates: BTreeMap<String, (Block, bool)>,
+    /// While a template is lowered for an element: that element's ID.
+    template_target: Option<String>,
 }
+
+/// Deep-merges `own` over `base`: own values win, maps merge, and the
+/// comments stay the element's own.
+fn merge(base: serde_json::Value, own: serde_json::Value) -> serde_json::Value {
+    use serde_json::Value;
+    match (base, own) {
+        (Value::Object(mut base), Value::Object(own)) => {
+            base.remove("comments");
+            for (k, v) in own {
+                let merged = match base.remove(&k) {
+                    Some(b) if k != "comments" => merge(b, v),
+                    _ => v,
+                };
+                base.insert(k, merged);
+            }
+            Value::Object(base)
+        }
+        // A required string the block left empty is unset, not empty.
+        (base, Value::String(own)) if own.is_empty() => base,
+        (_, own) => own,
+    }
+}
+
+/// Template bodies hold attributes and the sub-blocks of one element: no
+/// elements of their own, which would be duplicated on every use.
+const TEMPLATE_FORBIDDEN: &[&str] = &[
+    "room",
+    "corridor",
+    "connection",
+    "feature",
+    "entity",
+    "note",
+    "export",
+    "template",
+];
 
 fn start(node: &SyntaxNode) -> u32 {
     node.text_range().start().into()
@@ -475,20 +534,33 @@ impl Lower<'_> {
             self.push(&cx, b.header_range(), d);
             return None;
         };
+        if let Some(target) = &self.template_target {
+            return Some(target.clone());
+        }
         if let Some(extra) = labels.get(1) {
-            let message = if extra.text() == "using" {
-                "Templates (`using`) arrive in release 0.2 and are not supported yet; remove the extra labels.".to_string()
-            } else {
-                format!(
-                    "A `{keyword}` block takes a single ID label; remove {}.",
-                    extra.text()
-                )
-            };
-            self.push(
-                &cx,
-                extra.text_range(),
-                Diagnostic::new(Code::InvalidValue, message),
-            );
+            let using = extra.text() == "using"
+                && labels.len() == 3
+                && matches!(
+                    keyword.as_str(),
+                    "room" | "corridor" | "connection" | "feature" | "entity"
+                );
+            if !using {
+                let message = if extra.text() == "using" {
+                    format!(
+                        "`using` takes one template name, for example `{keyword} \"id\" using \"standard\" {{ }}`; rooms, corridors, connections, features and entities can use templates."
+                    )
+                } else {
+                    format!(
+                        "A `{keyword}` block takes a single ID label; remove {}.",
+                        extra.text()
+                    )
+                };
+                self.push(
+                    &cx,
+                    extra.text_range(),
+                    Diagnostic::new(Code::InvalidValue, message),
+                );
+            }
         }
         let id = ast::label_text(token);
         if token.kind() == SyntaxKind::Ident {
@@ -910,6 +982,7 @@ impl Lower<'_> {
             );
             self.push(&cx, TextRange::empty(0.into()), d);
         }
+        self.collect_templates(root);
         let mut doc = Document::default();
         let mut found = false;
         let mut comments = Comments::default();
@@ -933,6 +1006,7 @@ impl Lower<'_> {
                         );
                         self.push(&cx, b.header_range(), d);
                     }
+                    "template" => {}
                     "dungeon" => {
                         if let Some(dungeon) = self.dungeon(&b) {
                             doc.dungeon = dungeon;
@@ -1099,6 +1173,7 @@ impl Lower<'_> {
                     }
                     "note" => self.note(&blk, None),
                     "export" => d.exports.extend(self.export(&blk)),
+                    "template" => {}
                     _ => self.unknown_block(&cx, &blk, "dungeon", DUNGEON_BLOCKS),
                 },
             }
@@ -1130,6 +1205,136 @@ impl Lower<'_> {
         let lines = &self.lines;
         self.map.attach(&mut self.diags, lines);
         Some(d)
+    }
+
+    /// Gathers the `template` blocks of the file and of the dungeon.
+    fn collect_templates(&mut self, root: &SyntaxNode) {
+        let mut blocks: Vec<Block> = Vec::new();
+        for item in ast::items(root) {
+            if let Item::Block(b) = item {
+                match b.keyword_text().as_str() {
+                    "template" => blocks.push(b),
+                    "dungeon" => {
+                        if let Some(body) = b.body() {
+                            blocks.extend(ast::items(&body).filter_map(|i| match i {
+                                Item::Block(t) if t.keyword_text() == "template" => Some(t),
+                                _ => None,
+                            }));
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        let cx = Cx::node("");
+        for b in blocks {
+            let Some(label) = b.labels().first().cloned() else {
+                let d = Diagnostic::new(
+                    Code::InvalidValue,
+                    "A `template` block needs a name, for example `template \"standard_door\" { }`.",
+                );
+                self.push(&cx, b.header_range(), d);
+                continue;
+            };
+            let name = ast::label_text(&label);
+            if label.kind() == SyntaxKind::Ident {
+                self.rewrites
+                    .insert(label.text_range().start().into(), ast::quote(&name));
+            }
+            if self
+                .templates
+                .get(&name)
+                .is_some_and(|(_, external)| !external)
+            {
+                let d = Diagnostic::new(
+                    Code::DuplicateId,
+                    format!("Two templates are named `{name}`; rename one of them."),
+                );
+                self.push(&cx, label.text_range(), d);
+                continue;
+            }
+            for inner in b.body().iter().flat_map(ast::items) {
+                if let Item::Block(nested) = inner
+                    && TEMPLATE_FORBIDDEN.contains(&nested.keyword_text().as_str())
+                {
+                    let d = Diagnostic::new(
+                        Code::UnknownBlock,
+                        format!(
+                            "Template `{name}` holds a `{}` block. Templates hold attributes and `layout`, `placement` and `properties` blocks only, since anything with an ID would repeat on every use.",
+                            nested.keyword_text()
+                        ),
+                    );
+                    self.push(&cx, nested.header_range(), d);
+                }
+            }
+            self.templates.insert(name, (b, false));
+        }
+    }
+
+    /// The template a block uses, with the range of its name.
+    fn using(b: &Block) -> Option<(String, TextRange)> {
+        let labels = b.labels();
+        (labels.len() == 3 && labels[1].text() == "using")
+            .then(|| (ast::label_text(&labels[2]), labels[2].text_range()))
+    }
+
+    /// Applies the template a block uses: the template body is lowered as
+    /// if it were this block, and the block's own values are merged over it.
+    fn apply_template<T>(
+        &mut self,
+        b: &Block,
+        own: T,
+        again: &dyn Fn(&mut Self, &Block) -> Option<T>,
+    ) -> T
+    where
+        T: serde::Serialize + serde::de::DeserializeOwned,
+    {
+        let Some((name, range)) = Self::using(b) else {
+            return own;
+        };
+        let cx = Cx::node("");
+        let Some((template, external)) = self.templates.get(&name).cloned() else {
+            let known: Vec<String> = self.templates.keys().cloned().collect();
+            let d = Diagnostic::new(
+                Code::UnknownReference,
+                format!("There is no template named `{name}`.{}", did_you_mean(&name, known.iter().map(String::as_str))),
+            )
+            .suggest("Declare it with `template \"name\" { ... }` at the top of the file or in the dungeon, or load the pack that provides it.");
+            self.push(&cx, range, d);
+            return own;
+        };
+        let id = b.labels().first().map(ast::label_text).unwrap_or_default();
+        // A pack's template lives in another text: its spans and spellings
+        // do not belong to this file.
+        let saved = external.then(|| (self.rewrites.clone(), self.map.clone(), self.diags.len()));
+        self.template_target = Some(id);
+        let base = again(self, &template);
+        self.template_target = None;
+        if let Some((rewrites, map, count)) = saved {
+            self.rewrites = rewrites;
+            self.map = map;
+            let problems = self.diags.split_off(count);
+            if let Some(first) = problems
+                .iter()
+                .find(|d| d.severity == crate::diag::Severity::Error)
+            {
+                let d = Diagnostic::new(
+                    first.code,
+                    format!(
+                        "The template `{name}` does not fit this block: {}",
+                        first.message
+                    ),
+                );
+                self.push(&cx, range, d);
+            }
+        }
+        let Some(base) = base else { return own };
+        let (Ok(base_json), Ok(own_json)) =
+            (serde_json::to_value(&base), serde_json::to_value(&own))
+        else {
+            return own;
+        };
+        serde_json::from_value(merge(base_json, own_json)).unwrap_or(own)
     }
 
     fn grid(&mut self, cx: &Cx, b: &Block, cm: &mut Comments) -> Grid {
@@ -1350,7 +1555,10 @@ impl Lower<'_> {
             }
         }
         room.comments = cm;
-        Some(room)
+        if self.template_target.is_some() {
+            return Some(room);
+        }
+        Some(self.apply_template(b, room, &|l: &mut Self, t: &Block| l.room(t)))
     }
 
     fn layout(&mut self, cx: &Cx, b: &Block, cm: &mut Comments) -> Layout {
@@ -1444,7 +1652,10 @@ impl Lower<'_> {
             }
         }
         corridor.comments = cm;
-        Some(corridor)
+        if self.template_target.is_some() {
+            return Some(corridor);
+        }
+        Some(self.apply_template(b, corridor, &|l: &mut Self, t: &Block| l.corridor(t)))
     }
 
     fn connection(&mut self, b: &Block) -> Option<Connection> {
@@ -1540,6 +1751,12 @@ impl Lower<'_> {
                 .entry("locked".to_string())
                 .or_insert(Value::Bool(true));
         }
+        c.comments = cm;
+        if self.template_target.is_some() {
+            return Some(c);
+        }
+        let mut c = self.apply_template(b, c, &|l: &mut Self, t: &Block| l.connection(t));
+        let cm = std::mem::take(&mut c.comments);
         if c.from.is_empty() {
             let d = Diagnostic::new(
                 Code::InvalidValue,
@@ -1580,7 +1797,9 @@ impl Lower<'_> {
                 "skeletons"
             },
         )?;
-        self.offsets.insert(id.clone(), start(&b.0));
+        if self.template_target.is_none() {
+            self.offsets.insert(id.clone(), start(&b.0));
+        }
         let cx = Cx::node(&id);
         let mut el = Element::new(class, id.clone());
         let mut space: Option<String> = None;
@@ -1702,6 +1921,14 @@ impl Lower<'_> {
                 },
             }
         }
+        el.comments = std::mem::take(&mut cm);
+        if self.template_target.is_some() {
+            return Some((el, space));
+        }
+        let mut el = self.apply_template(b, el, &|l: &mut Self, t: &Block| {
+            l.element(t, class, parent).map(|(e, _)| e)
+        });
+        cm = std::mem::take(&mut el.comments);
         if el.ty.is_empty() {
             let d = Diagnostic::new(
                 Code::InvalidValue,
@@ -1844,6 +2071,9 @@ impl Lower<'_> {
                     "orientation" => {
                         ex.orientation =
                             self.choice(&cx, &a, Orientation::parse, Orientation::NAMES)
+                    }
+                    "scale" => {
+                        ex.scale = self.choice(&cx, &a, PrintScale::parse, PrintScale::NAMES)
                     }
                     _ => self.unknown_attr(&cx, &a, "export", EXPORT_ATTRS, false),
                 },

@@ -1,0 +1,7585 @@
+# A 100-room grid with 1000 elements, for the performance budgets.
+dungeon "perf_100" {
+    name = "Performance 100"
+
+    room "r000" {
+        name = "Room 0"
+        shape = rectangle(10, 8)
+        layout { position = [0, 0] }
+
+        feature "r000_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r000_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r000_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r000_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r000_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r000_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r000_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r000_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r000_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r000_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r001" {
+        name = "Room 1"
+        shape = rectangle(10, 8)
+        layout { east_of = "r000", align = start }
+
+        feature "r001_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r001_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r001_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r001_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r001_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r001_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r001_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r001_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r001_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r001_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r002" {
+        name = "Room 2"
+        shape = rectangle(10, 8)
+        layout { east_of = "r001", align = start }
+
+        feature "r002_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r002_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r002_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r002_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r002_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r002_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r002_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r002_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r002_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r002_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r003" {
+        name = "Room 3"
+        shape = rectangle(10, 8)
+        layout { east_of = "r002", align = start }
+
+        feature "r003_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r003_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r003_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r003_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r003_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r003_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r003_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r003_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r003_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r003_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r004" {
+        name = "Room 4"
+        shape = rectangle(10, 8)
+        layout { east_of = "r003", align = start }
+
+        feature "r004_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r004_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r004_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r004_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r004_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r004_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r004_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r004_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r004_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r004_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r005" {
+        name = "Room 5"
+        shape = rectangle(10, 8)
+        layout { east_of = "r004", align = start }
+
+        feature "r005_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r005_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r005_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r005_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r005_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r005_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r005_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r005_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r005_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r005_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r006" {
+        name = "Room 6"
+        shape = rectangle(10, 8)
+        layout { east_of = "r005", align = start }
+
+        feature "r006_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r006_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r006_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r006_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r006_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r006_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r006_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r006_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r006_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r006_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r007" {
+        name = "Room 7"
+        shape = rectangle(10, 8)
+        layout { east_of = "r006", align = start }
+
+        feature "r007_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r007_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r007_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r007_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r007_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r007_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r007_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r007_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r007_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r007_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r008" {
+        name = "Room 8"
+        shape = rectangle(10, 8)
+        layout { east_of = "r007", align = start }
+
+        feature "r008_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r008_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r008_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r008_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r008_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r008_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r008_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r008_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r008_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r008_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r009" {
+        name = "Room 9"
+        shape = rectangle(10, 8)
+        layout { east_of = "r008", align = start }
+
+        feature "r009_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r009_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r009_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r009_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r009_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r009_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r009_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r009_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r009_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r009_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r010" {
+        name = "Room 10"
+        shape = rectangle(10, 8)
+        layout { south_of = "r000", align = start }
+
+        feature "r010_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r010_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r010_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r010_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r010_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r010_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r010_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r010_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r010_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r010_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r011" {
+        name = "Room 11"
+        shape = rectangle(10, 8)
+        layout { east_of = "r010", align = start }
+
+        feature "r011_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r011_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r011_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r011_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r011_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r011_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r011_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r011_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r011_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r011_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r012" {
+        name = "Room 12"
+        shape = rectangle(10, 8)
+        layout { east_of = "r011", align = start }
+
+        feature "r012_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r012_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r012_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r012_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r012_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r012_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r012_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r012_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r012_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r012_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r013" {
+        name = "Room 13"
+        shape = rectangle(10, 8)
+        layout { east_of = "r012", align = start }
+
+        feature "r013_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r013_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r013_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r013_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r013_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r013_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r013_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r013_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r013_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r013_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r014" {
+        name = "Room 14"
+        shape = rectangle(10, 8)
+        layout { east_of = "r013", align = start }
+
+        feature "r014_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r014_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r014_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r014_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r014_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r014_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r014_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r014_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r014_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r014_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r015" {
+        name = "Room 15"
+        shape = rectangle(10, 8)
+        layout { east_of = "r014", align = start }
+
+        feature "r015_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r015_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r015_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r015_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r015_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r015_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r015_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r015_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r015_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r015_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r016" {
+        name = "Room 16"
+        shape = rectangle(10, 8)
+        layout { east_of = "r015", align = start }
+
+        feature "r016_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r016_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r016_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r016_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r016_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r016_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r016_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r016_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r016_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r016_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r017" {
+        name = "Room 17"
+        shape = rectangle(10, 8)
+        layout { east_of = "r016", align = start }
+
+        feature "r017_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r017_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r017_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r017_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r017_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r017_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r017_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r017_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r017_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r017_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r018" {
+        name = "Room 18"
+        shape = rectangle(10, 8)
+        layout { east_of = "r017", align = start }
+
+        feature "r018_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r018_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r018_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r018_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r018_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r018_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r018_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r018_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r018_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r018_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r019" {
+        name = "Room 19"
+        shape = rectangle(10, 8)
+        layout { east_of = "r018", align = start }
+
+        feature "r019_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r019_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r019_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r019_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r019_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r019_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r019_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r019_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r019_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r019_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r020" {
+        name = "Room 20"
+        shape = rectangle(10, 8)
+        layout { south_of = "r010", align = start }
+
+        feature "r020_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r020_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r020_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r020_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r020_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r020_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r020_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r020_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r020_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r020_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r021" {
+        name = "Room 21"
+        shape = rectangle(10, 8)
+        layout { east_of = "r020", align = start }
+
+        feature "r021_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r021_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r021_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r021_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r021_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r021_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r021_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r021_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r021_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r021_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r022" {
+        name = "Room 22"
+        shape = rectangle(10, 8)
+        layout { east_of = "r021", align = start }
+
+        feature "r022_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r022_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r022_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r022_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r022_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r022_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r022_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r022_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r022_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r022_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r023" {
+        name = "Room 23"
+        shape = rectangle(10, 8)
+        layout { east_of = "r022", align = start }
+
+        feature "r023_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r023_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r023_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r023_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r023_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r023_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r023_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r023_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r023_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r023_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r024" {
+        name = "Room 24"
+        shape = rectangle(10, 8)
+        layout { east_of = "r023", align = start }
+
+        feature "r024_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r024_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r024_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r024_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r024_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r024_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r024_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r024_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r024_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r024_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r025" {
+        name = "Room 25"
+        shape = rectangle(10, 8)
+        layout { east_of = "r024", align = start }
+
+        feature "r025_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r025_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r025_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r025_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r025_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r025_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r025_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r025_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r025_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r025_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r026" {
+        name = "Room 26"
+        shape = rectangle(10, 8)
+        layout { east_of = "r025", align = start }
+
+        feature "r026_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r026_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r026_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r026_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r026_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r026_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r026_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r026_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r026_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r026_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r027" {
+        name = "Room 27"
+        shape = rectangle(10, 8)
+        layout { east_of = "r026", align = start }
+
+        feature "r027_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r027_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r027_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r027_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r027_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r027_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r027_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r027_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r027_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r027_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r028" {
+        name = "Room 28"
+        shape = rectangle(10, 8)
+        layout { east_of = "r027", align = start }
+
+        feature "r028_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r028_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r028_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r028_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r028_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r028_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r028_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r028_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r028_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r028_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r029" {
+        name = "Room 29"
+        shape = rectangle(10, 8)
+        layout { east_of = "r028", align = start }
+
+        feature "r029_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r029_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r029_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r029_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r029_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r029_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r029_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r029_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r029_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r029_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r030" {
+        name = "Room 30"
+        shape = rectangle(10, 8)
+        layout { south_of = "r020", align = start }
+
+        feature "r030_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r030_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r030_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r030_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r030_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r030_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r030_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r030_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r030_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r030_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r031" {
+        name = "Room 31"
+        shape = rectangle(10, 8)
+        layout { east_of = "r030", align = start }
+
+        feature "r031_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r031_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r031_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r031_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r031_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r031_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r031_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r031_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r031_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r031_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r032" {
+        name = "Room 32"
+        shape = rectangle(10, 8)
+        layout { east_of = "r031", align = start }
+
+        feature "r032_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r032_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r032_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r032_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r032_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r032_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r032_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r032_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r032_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r032_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r033" {
+        name = "Room 33"
+        shape = rectangle(10, 8)
+        layout { east_of = "r032", align = start }
+
+        feature "r033_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r033_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r033_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r033_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r033_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r033_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r033_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r033_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r033_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r033_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r034" {
+        name = "Room 34"
+        shape = rectangle(10, 8)
+        layout { east_of = "r033", align = start }
+
+        feature "r034_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r034_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r034_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r034_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r034_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r034_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r034_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r034_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r034_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r034_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r035" {
+        name = "Room 35"
+        shape = rectangle(10, 8)
+        layout { east_of = "r034", align = start }
+
+        feature "r035_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r035_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r035_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r035_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r035_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r035_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r035_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r035_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r035_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r035_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r036" {
+        name = "Room 36"
+        shape = rectangle(10, 8)
+        layout { east_of = "r035", align = start }
+
+        feature "r036_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r036_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r036_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r036_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r036_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r036_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r036_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r036_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r036_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r036_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r037" {
+        name = "Room 37"
+        shape = rectangle(10, 8)
+        layout { east_of = "r036", align = start }
+
+        feature "r037_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r037_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r037_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r037_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r037_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r037_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r037_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r037_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r037_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r037_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r038" {
+        name = "Room 38"
+        shape = rectangle(10, 8)
+        layout { east_of = "r037", align = start }
+
+        feature "r038_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r038_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r038_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r038_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r038_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r038_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r038_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r038_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r038_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r038_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r039" {
+        name = "Room 39"
+        shape = rectangle(10, 8)
+        layout { east_of = "r038", align = start }
+
+        feature "r039_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r039_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r039_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r039_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r039_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r039_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r039_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r039_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r039_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r039_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r040" {
+        name = "Room 40"
+        shape = rectangle(10, 8)
+        layout { south_of = "r030", align = start }
+
+        feature "r040_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r040_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r040_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r040_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r040_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r040_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r040_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r040_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r040_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r040_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r041" {
+        name = "Room 41"
+        shape = rectangle(10, 8)
+        layout { east_of = "r040", align = start }
+
+        feature "r041_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r041_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r041_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r041_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r041_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r041_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r041_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r041_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r041_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r041_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r042" {
+        name = "Room 42"
+        shape = rectangle(10, 8)
+        layout { east_of = "r041", align = start }
+
+        feature "r042_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r042_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r042_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r042_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r042_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r042_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r042_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r042_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r042_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r042_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r043" {
+        name = "Room 43"
+        shape = rectangle(10, 8)
+        layout { east_of = "r042", align = start }
+
+        feature "r043_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r043_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r043_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r043_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r043_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r043_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r043_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r043_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r043_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r043_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r044" {
+        name = "Room 44"
+        shape = rectangle(10, 8)
+        layout { east_of = "r043", align = start }
+
+        feature "r044_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r044_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r044_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r044_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r044_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r044_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r044_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r044_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r044_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r044_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r045" {
+        name = "Room 45"
+        shape = rectangle(10, 8)
+        layout { east_of = "r044", align = start }
+
+        feature "r045_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r045_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r045_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r045_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r045_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r045_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r045_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r045_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r045_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r045_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r046" {
+        name = "Room 46"
+        shape = rectangle(10, 8)
+        layout { east_of = "r045", align = start }
+
+        feature "r046_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r046_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r046_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r046_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r046_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r046_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r046_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r046_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r046_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r046_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r047" {
+        name = "Room 47"
+        shape = rectangle(10, 8)
+        layout { east_of = "r046", align = start }
+
+        feature "r047_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r047_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r047_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r047_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r047_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r047_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r047_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r047_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r047_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r047_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r048" {
+        name = "Room 48"
+        shape = rectangle(10, 8)
+        layout { east_of = "r047", align = start }
+
+        feature "r048_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r048_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r048_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r048_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r048_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r048_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r048_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r048_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r048_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r048_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r049" {
+        name = "Room 49"
+        shape = rectangle(10, 8)
+        layout { east_of = "r048", align = start }
+
+        feature "r049_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r049_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r049_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r049_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r049_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r049_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r049_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r049_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r049_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r049_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r050" {
+        name = "Room 50"
+        shape = rectangle(10, 8)
+        layout { south_of = "r040", align = start }
+
+        feature "r050_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r050_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r050_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r050_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r050_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r050_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r050_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r050_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r050_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r050_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r051" {
+        name = "Room 51"
+        shape = rectangle(10, 8)
+        layout { east_of = "r050", align = start }
+
+        feature "r051_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r051_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r051_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r051_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r051_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r051_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r051_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r051_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r051_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r051_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r052" {
+        name = "Room 52"
+        shape = rectangle(10, 8)
+        layout { east_of = "r051", align = start }
+
+        feature "r052_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r052_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r052_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r052_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r052_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r052_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r052_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r052_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r052_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r052_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r053" {
+        name = "Room 53"
+        shape = rectangle(10, 8)
+        layout { east_of = "r052", align = start }
+
+        feature "r053_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r053_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r053_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r053_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r053_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r053_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r053_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r053_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r053_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r053_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r054" {
+        name = "Room 54"
+        shape = rectangle(10, 8)
+        layout { east_of = "r053", align = start }
+
+        feature "r054_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r054_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r054_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r054_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r054_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r054_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r054_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r054_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r054_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r054_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r055" {
+        name = "Room 55"
+        shape = rectangle(10, 8)
+        layout { east_of = "r054", align = start }
+
+        feature "r055_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r055_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r055_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r055_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r055_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r055_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r055_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r055_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r055_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r055_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r056" {
+        name = "Room 56"
+        shape = rectangle(10, 8)
+        layout { east_of = "r055", align = start }
+
+        feature "r056_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r056_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r056_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r056_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r056_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r056_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r056_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r056_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r056_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r056_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r057" {
+        name = "Room 57"
+        shape = rectangle(10, 8)
+        layout { east_of = "r056", align = start }
+
+        feature "r057_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r057_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r057_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r057_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r057_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r057_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r057_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r057_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r057_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r057_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r058" {
+        name = "Room 58"
+        shape = rectangle(10, 8)
+        layout { east_of = "r057", align = start }
+
+        feature "r058_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r058_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r058_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r058_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r058_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r058_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r058_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r058_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r058_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r058_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r059" {
+        name = "Room 59"
+        shape = rectangle(10, 8)
+        layout { east_of = "r058", align = start }
+
+        feature "r059_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r059_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r059_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r059_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r059_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r059_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r059_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r059_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r059_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r059_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r060" {
+        name = "Room 60"
+        shape = rectangle(10, 8)
+        layout { south_of = "r050", align = start }
+
+        feature "r060_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r060_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r060_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r060_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r060_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r060_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r060_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r060_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r060_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r060_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r061" {
+        name = "Room 61"
+        shape = rectangle(10, 8)
+        layout { east_of = "r060", align = start }
+
+        feature "r061_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r061_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r061_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r061_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r061_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r061_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r061_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r061_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r061_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r061_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r062" {
+        name = "Room 62"
+        shape = rectangle(10, 8)
+        layout { east_of = "r061", align = start }
+
+        feature "r062_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r062_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r062_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r062_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r062_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r062_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r062_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r062_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r062_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r062_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r063" {
+        name = "Room 63"
+        shape = rectangle(10, 8)
+        layout { east_of = "r062", align = start }
+
+        feature "r063_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r063_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r063_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r063_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r063_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r063_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r063_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r063_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r063_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r063_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r064" {
+        name = "Room 64"
+        shape = rectangle(10, 8)
+        layout { east_of = "r063", align = start }
+
+        feature "r064_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r064_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r064_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r064_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r064_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r064_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r064_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r064_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r064_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r064_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r065" {
+        name = "Room 65"
+        shape = rectangle(10, 8)
+        layout { east_of = "r064", align = start }
+
+        feature "r065_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r065_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r065_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r065_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r065_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r065_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r065_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r065_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r065_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r065_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r066" {
+        name = "Room 66"
+        shape = rectangle(10, 8)
+        layout { east_of = "r065", align = start }
+
+        feature "r066_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r066_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r066_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r066_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r066_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r066_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r066_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r066_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r066_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r066_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r067" {
+        name = "Room 67"
+        shape = rectangle(10, 8)
+        layout { east_of = "r066", align = start }
+
+        feature "r067_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r067_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r067_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r067_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r067_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r067_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r067_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r067_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r067_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r067_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r068" {
+        name = "Room 68"
+        shape = rectangle(10, 8)
+        layout { east_of = "r067", align = start }
+
+        feature "r068_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r068_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r068_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r068_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r068_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r068_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r068_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r068_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r068_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r068_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r069" {
+        name = "Room 69"
+        shape = rectangle(10, 8)
+        layout { east_of = "r068", align = start }
+
+        feature "r069_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r069_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r069_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r069_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r069_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r069_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r069_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r069_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r069_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r069_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r070" {
+        name = "Room 70"
+        shape = rectangle(10, 8)
+        layout { south_of = "r060", align = start }
+
+        feature "r070_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r070_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r070_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r070_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r070_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r070_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r070_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r070_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r070_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r070_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r071" {
+        name = "Room 71"
+        shape = rectangle(10, 8)
+        layout { east_of = "r070", align = start }
+
+        feature "r071_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r071_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r071_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r071_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r071_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r071_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r071_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r071_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r071_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r071_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r072" {
+        name = "Room 72"
+        shape = rectangle(10, 8)
+        layout { east_of = "r071", align = start }
+
+        feature "r072_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r072_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r072_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r072_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r072_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r072_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r072_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r072_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r072_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r072_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r073" {
+        name = "Room 73"
+        shape = rectangle(10, 8)
+        layout { east_of = "r072", align = start }
+
+        feature "r073_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r073_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r073_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r073_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r073_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r073_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r073_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r073_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r073_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r073_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r074" {
+        name = "Room 74"
+        shape = rectangle(10, 8)
+        layout { east_of = "r073", align = start }
+
+        feature "r074_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r074_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r074_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r074_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r074_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r074_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r074_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r074_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r074_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r074_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r075" {
+        name = "Room 75"
+        shape = rectangle(10, 8)
+        layout { east_of = "r074", align = start }
+
+        feature "r075_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r075_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r075_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r075_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r075_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r075_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r075_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r075_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r075_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r075_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r076" {
+        name = "Room 76"
+        shape = rectangle(10, 8)
+        layout { east_of = "r075", align = start }
+
+        feature "r076_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r076_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r076_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r076_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r076_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r076_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r076_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r076_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r076_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r076_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r077" {
+        name = "Room 77"
+        shape = rectangle(10, 8)
+        layout { east_of = "r076", align = start }
+
+        feature "r077_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r077_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r077_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r077_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r077_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r077_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r077_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r077_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r077_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r077_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r078" {
+        name = "Room 78"
+        shape = rectangle(10, 8)
+        layout { east_of = "r077", align = start }
+
+        feature "r078_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r078_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r078_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r078_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r078_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r078_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r078_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r078_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r078_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r078_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r079" {
+        name = "Room 79"
+        shape = rectangle(10, 8)
+        layout { east_of = "r078", align = start }
+
+        feature "r079_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r079_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r079_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r079_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r079_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r079_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r079_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r079_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r079_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r079_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r080" {
+        name = "Room 80"
+        shape = rectangle(10, 8)
+        layout { south_of = "r070", align = start }
+
+        feature "r080_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r080_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r080_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r080_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r080_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r080_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r080_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r080_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r080_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r080_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r081" {
+        name = "Room 81"
+        shape = rectangle(10, 8)
+        layout { east_of = "r080", align = start }
+
+        feature "r081_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r081_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r081_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r081_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r081_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r081_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r081_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r081_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r081_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r081_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r082" {
+        name = "Room 82"
+        shape = rectangle(10, 8)
+        layout { east_of = "r081", align = start }
+
+        feature "r082_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r082_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r082_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r082_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r082_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r082_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r082_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r082_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r082_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r082_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r083" {
+        name = "Room 83"
+        shape = rectangle(10, 8)
+        layout { east_of = "r082", align = start }
+
+        feature "r083_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r083_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r083_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r083_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r083_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r083_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r083_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r083_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r083_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r083_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r084" {
+        name = "Room 84"
+        shape = rectangle(10, 8)
+        layout { east_of = "r083", align = start }
+
+        feature "r084_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r084_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r084_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r084_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r084_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r084_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r084_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r084_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r084_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r084_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r085" {
+        name = "Room 85"
+        shape = rectangle(10, 8)
+        layout { east_of = "r084", align = start }
+
+        feature "r085_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r085_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r085_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r085_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r085_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r085_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r085_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r085_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r085_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r085_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r086" {
+        name = "Room 86"
+        shape = rectangle(10, 8)
+        layout { east_of = "r085", align = start }
+
+        feature "r086_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r086_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r086_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r086_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r086_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r086_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r086_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r086_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r086_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r086_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r087" {
+        name = "Room 87"
+        shape = rectangle(10, 8)
+        layout { east_of = "r086", align = start }
+
+        feature "r087_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r087_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r087_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r087_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r087_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r087_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r087_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r087_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r087_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r087_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r088" {
+        name = "Room 88"
+        shape = rectangle(10, 8)
+        layout { east_of = "r087", align = start }
+
+        feature "r088_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r088_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r088_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r088_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r088_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r088_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r088_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r088_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r088_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r088_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r089" {
+        name = "Room 89"
+        shape = rectangle(10, 8)
+        layout { east_of = "r088", align = start }
+
+        feature "r089_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r089_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r089_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r089_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r089_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r089_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r089_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r089_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r089_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r089_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r090" {
+        name = "Room 90"
+        shape = rectangle(10, 8)
+        layout { south_of = "r080", align = start }
+
+        feature "r090_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r090_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r090_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r090_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r090_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r090_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r090_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r090_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r090_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r090_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r091" {
+        name = "Room 91"
+        shape = rectangle(10, 8)
+        layout { east_of = "r090", align = start }
+
+        feature "r091_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r091_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r091_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r091_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r091_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r091_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r091_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r091_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r091_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r091_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r092" {
+        name = "Room 92"
+        shape = rectangle(10, 8)
+        layout { east_of = "r091", align = start }
+
+        feature "r092_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r092_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r092_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r092_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r092_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r092_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r092_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r092_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r092_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r092_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r093" {
+        name = "Room 93"
+        shape = rectangle(10, 8)
+        layout { east_of = "r092", align = start }
+
+        feature "r093_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r093_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r093_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r093_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r093_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r093_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r093_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r093_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r093_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r093_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r094" {
+        name = "Room 94"
+        shape = rectangle(10, 8)
+        layout { east_of = "r093", align = start }
+
+        feature "r094_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r094_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r094_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r094_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r094_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r094_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r094_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r094_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r094_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r094_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r095" {
+        name = "Room 95"
+        shape = rectangle(10, 8)
+        layout { east_of = "r094", align = start }
+
+        feature "r095_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r095_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r095_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r095_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r095_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r095_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r095_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r095_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r095_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r095_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r096" {
+        name = "Room 96"
+        shape = rectangle(10, 8)
+        layout { east_of = "r095", align = start }
+
+        feature "r096_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r096_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r096_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r096_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r096_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r096_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r096_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r096_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r096_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r096_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r097" {
+        name = "Room 97"
+        shape = rectangle(10, 8)
+        layout { east_of = "r096", align = start }
+
+        feature "r097_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r097_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r097_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r097_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r097_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r097_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r097_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r097_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r097_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r097_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r098" {
+        name = "Room 98"
+        shape = rectangle(10, 8)
+        layout { east_of = "r097", align = start }
+
+        feature "r098_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r098_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r098_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r098_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r098_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r098_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r098_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r098_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r098_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r098_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    room "r099" {
+        name = "Room 99"
+        shape = rectangle(10, 8)
+        layout { east_of = "r098", align = start }
+
+        feature "r099_e0" {
+            type = architecture
+            subtype = column
+            position = [1, 1]
+        }
+
+        feature "r099_e1" {
+            type = furniture
+            subtype = table
+            position = [3, 1]
+        }
+
+        feature "r099_e2" {
+            type = furniture
+            subtype = crate
+            position = [5, 1]
+        }
+
+        feature "r099_e3" {
+            type = lighting
+            subtype = torch
+            position = [7, 1]
+        }
+
+        feature "r099_e4" {
+            type = trap
+            subtype = pit
+            position = [1, 3]
+        }
+
+        feature "r099_e5" {
+            type = mechanism
+            subtype = lever
+            position = [3, 3]
+        }
+
+        feature "r099_e6" {
+            type = terrain
+            subtype = rubble
+            position = [5, 3]
+        }
+
+        entity "r099_e7" {
+            type = creature
+            position = [7, 3]
+        }
+
+        entity "r099_e8" {
+            type = item
+            subtype = treasure
+            position = [1, 5]
+        }
+
+        feature "r099_e9" {
+            type = container
+            subtype = chest
+            position = [3, 5]
+        }
+    }
+
+    connection "d001w" {
+        from = "r000"
+        to = "r001"
+        type = door
+    }
+
+    connection "d002w" {
+        from = "r001"
+        to = "r002"
+        type = door
+    }
+
+    connection "d003w" {
+        from = "r002"
+        to = "r003"
+        type = door
+    }
+
+    connection "d004w" {
+        from = "r003"
+        to = "r004"
+        type = door
+    }
+
+    connection "d005w" {
+        from = "r004"
+        to = "r005"
+        type = door
+    }
+
+    connection "d006w" {
+        from = "r005"
+        to = "r006"
+        type = door
+    }
+
+    connection "d007w" {
+        from = "r006"
+        to = "r007"
+        type = door
+    }
+
+    connection "d008w" {
+        from = "r007"
+        to = "r008"
+        type = door
+    }
+
+    connection "d009w" {
+        from = "r008"
+        to = "r009"
+        type = door
+    }
+
+    connection "d010n" {
+        from = "r000"
+        to = "r010"
+        type = archway
+    }
+
+    connection "d011w" {
+        from = "r010"
+        to = "r011"
+        type = door
+    }
+
+    connection "d011n" {
+        from = "r001"
+        to = "r011"
+        type = archway
+    }
+
+    connection "d012w" {
+        from = "r011"
+        to = "r012"
+        type = door
+    }
+
+    connection "d012n" {
+        from = "r002"
+        to = "r012"
+        type = archway
+    }
+
+    connection "d013w" {
+        from = "r012"
+        to = "r013"
+        type = door
+    }
+
+    connection "d013n" {
+        from = "r003"
+        to = "r013"
+        type = archway
+    }
+
+    connection "d014w" {
+        from = "r013"
+        to = "r014"
+        type = door
+    }
+
+    connection "d014n" {
+        from = "r004"
+        to = "r014"
+        type = archway
+    }
+
+    connection "d015w" {
+        from = "r014"
+        to = "r015"
+        type = door
+    }
+
+    connection "d015n" {
+        from = "r005"
+        to = "r015"
+        type = archway
+    }
+
+    connection "d016w" {
+        from = "r015"
+        to = "r016"
+        type = door
+    }
+
+    connection "d016n" {
+        from = "r006"
+        to = "r016"
+        type = archway
+    }
+
+    connection "d017w" {
+        from = "r016"
+        to = "r017"
+        type = door
+    }
+
+    connection "d017n" {
+        from = "r007"
+        to = "r017"
+        type = archway
+    }
+
+    connection "d018w" {
+        from = "r017"
+        to = "r018"
+        type = door
+    }
+
+    connection "d018n" {
+        from = "r008"
+        to = "r018"
+        type = archway
+    }
+
+    connection "d019w" {
+        from = "r018"
+        to = "r019"
+        type = door
+    }
+
+    connection "d019n" {
+        from = "r009"
+        to = "r019"
+        type = archway
+    }
+
+    connection "d020n" {
+        from = "r010"
+        to = "r020"
+        type = archway
+    }
+
+    connection "d021w" {
+        from = "r020"
+        to = "r021"
+        type = door
+    }
+
+    connection "d021n" {
+        from = "r011"
+        to = "r021"
+        type = archway
+    }
+
+    connection "d022w" {
+        from = "r021"
+        to = "r022"
+        type = door
+    }
+
+    connection "d022n" {
+        from = "r012"
+        to = "r022"
+        type = archway
+    }
+
+    connection "d023w" {
+        from = "r022"
+        to = "r023"
+        type = door
+    }
+
+    connection "d023n" {
+        from = "r013"
+        to = "r023"
+        type = archway
+    }
+
+    connection "d024w" {
+        from = "r023"
+        to = "r024"
+        type = door
+    }
+
+    connection "d024n" {
+        from = "r014"
+        to = "r024"
+        type = archway
+    }
+
+    connection "d025w" {
+        from = "r024"
+        to = "r025"
+        type = door
+    }
+
+    connection "d025n" {
+        from = "r015"
+        to = "r025"
+        type = archway
+    }
+
+    connection "d026w" {
+        from = "r025"
+        to = "r026"
+        type = door
+    }
+
+    connection "d026n" {
+        from = "r016"
+        to = "r026"
+        type = archway
+    }
+
+    connection "d027w" {
+        from = "r026"
+        to = "r027"
+        type = door
+    }
+
+    connection "d027n" {
+        from = "r017"
+        to = "r027"
+        type = archway
+    }
+
+    connection "d028w" {
+        from = "r027"
+        to = "r028"
+        type = door
+    }
+
+    connection "d028n" {
+        from = "r018"
+        to = "r028"
+        type = archway
+    }
+
+    connection "d029w" {
+        from = "r028"
+        to = "r029"
+        type = door
+    }
+
+    connection "d029n" {
+        from = "r019"
+        to = "r029"
+        type = archway
+    }
+
+    connection "d030n" {
+        from = "r020"
+        to = "r030"
+        type = archway
+    }
+
+    connection "d031w" {
+        from = "r030"
+        to = "r031"
+        type = door
+    }
+
+    connection "d031n" {
+        from = "r021"
+        to = "r031"
+        type = archway
+    }
+
+    connection "d032w" {
+        from = "r031"
+        to = "r032"
+        type = door
+    }
+
+    connection "d032n" {
+        from = "r022"
+        to = "r032"
+        type = archway
+    }
+
+    connection "d033w" {
+        from = "r032"
+        to = "r033"
+        type = door
+    }
+
+    connection "d033n" {
+        from = "r023"
+        to = "r033"
+        type = archway
+    }
+
+    connection "d034w" {
+        from = "r033"
+        to = "r034"
+        type = door
+    }
+
+    connection "d034n" {
+        from = "r024"
+        to = "r034"
+        type = archway
+    }
+
+    connection "d035w" {
+        from = "r034"
+        to = "r035"
+        type = door
+    }
+
+    connection "d035n" {
+        from = "r025"
+        to = "r035"
+        type = archway
+    }
+
+    connection "d036w" {
+        from = "r035"
+        to = "r036"
+        type = door
+    }
+
+    connection "d036n" {
+        from = "r026"
+        to = "r036"
+        type = archway
+    }
+
+    connection "d037w" {
+        from = "r036"
+        to = "r037"
+        type = door
+    }
+
+    connection "d037n" {
+        from = "r027"
+        to = "r037"
+        type = archway
+    }
+
+    connection "d038w" {
+        from = "r037"
+        to = "r038"
+        type = door
+    }
+
+    connection "d038n" {
+        from = "r028"
+        to = "r038"
+        type = archway
+    }
+
+    connection "d039w" {
+        from = "r038"
+        to = "r039"
+        type = door
+    }
+
+    connection "d039n" {
+        from = "r029"
+        to = "r039"
+        type = archway
+    }
+
+    connection "d040n" {
+        from = "r030"
+        to = "r040"
+        type = archway
+    }
+
+    connection "d041w" {
+        from = "r040"
+        to = "r041"
+        type = door
+    }
+
+    connection "d041n" {
+        from = "r031"
+        to = "r041"
+        type = archway
+    }
+
+    connection "d042w" {
+        from = "r041"
+        to = "r042"
+        type = door
+    }
+
+    connection "d042n" {
+        from = "r032"
+        to = "r042"
+        type = archway
+    }
+
+    connection "d043w" {
+        from = "r042"
+        to = "r043"
+        type = door
+    }
+
+    connection "d043n" {
+        from = "r033"
+        to = "r043"
+        type = archway
+    }
+
+    connection "d044w" {
+        from = "r043"
+        to = "r044"
+        type = door
+    }
+
+    connection "d044n" {
+        from = "r034"
+        to = "r044"
+        type = archway
+    }
+
+    connection "d045w" {
+        from = "r044"
+        to = "r045"
+        type = door
+    }
+
+    connection "d045n" {
+        from = "r035"
+        to = "r045"
+        type = archway
+    }
+
+    connection "d046w" {
+        from = "r045"
+        to = "r046"
+        type = door
+    }
+
+    connection "d046n" {
+        from = "r036"
+        to = "r046"
+        type = archway
+    }
+
+    connection "d047w" {
+        from = "r046"
+        to = "r047"
+        type = door
+    }
+
+    connection "d047n" {
+        from = "r037"
+        to = "r047"
+        type = archway
+    }
+
+    connection "d048w" {
+        from = "r047"
+        to = "r048"
+        type = door
+    }
+
+    connection "d048n" {
+        from = "r038"
+        to = "r048"
+        type = archway
+    }
+
+    connection "d049w" {
+        from = "r048"
+        to = "r049"
+        type = door
+    }
+
+    connection "d049n" {
+        from = "r039"
+        to = "r049"
+        type = archway
+    }
+
+    connection "d050n" {
+        from = "r040"
+        to = "r050"
+        type = archway
+    }
+
+    connection "d051w" {
+        from = "r050"
+        to = "r051"
+        type = door
+    }
+
+    connection "d051n" {
+        from = "r041"
+        to = "r051"
+        type = archway
+    }
+
+    connection "d052w" {
+        from = "r051"
+        to = "r052"
+        type = door
+    }
+
+    connection "d052n" {
+        from = "r042"
+        to = "r052"
+        type = archway
+    }
+
+    connection "d053w" {
+        from = "r052"
+        to = "r053"
+        type = door
+    }
+
+    connection "d053n" {
+        from = "r043"
+        to = "r053"
+        type = archway
+    }
+
+    connection "d054w" {
+        from = "r053"
+        to = "r054"
+        type = door
+    }
+
+    connection "d054n" {
+        from = "r044"
+        to = "r054"
+        type = archway
+    }
+
+    connection "d055w" {
+        from = "r054"
+        to = "r055"
+        type = door
+    }
+
+    connection "d055n" {
+        from = "r045"
+        to = "r055"
+        type = archway
+    }
+
+    connection "d056w" {
+        from = "r055"
+        to = "r056"
+        type = door
+    }
+
+    connection "d056n" {
+        from = "r046"
+        to = "r056"
+        type = archway
+    }
+
+    connection "d057w" {
+        from = "r056"
+        to = "r057"
+        type = door
+    }
+
+    connection "d057n" {
+        from = "r047"
+        to = "r057"
+        type = archway
+    }
+
+    connection "d058w" {
+        from = "r057"
+        to = "r058"
+        type = door
+    }
+
+    connection "d058n" {
+        from = "r048"
+        to = "r058"
+        type = archway
+    }
+
+    connection "d059w" {
+        from = "r058"
+        to = "r059"
+        type = door
+    }
+
+    connection "d059n" {
+        from = "r049"
+        to = "r059"
+        type = archway
+    }
+
+    connection "d060n" {
+        from = "r050"
+        to = "r060"
+        type = archway
+    }
+
+    connection "d061w" {
+        from = "r060"
+        to = "r061"
+        type = door
+    }
+
+    connection "d061n" {
+        from = "r051"
+        to = "r061"
+        type = archway
+    }
+
+    connection "d062w" {
+        from = "r061"
+        to = "r062"
+        type = door
+    }
+
+    connection "d062n" {
+        from = "r052"
+        to = "r062"
+        type = archway
+    }
+
+    connection "d063w" {
+        from = "r062"
+        to = "r063"
+        type = door
+    }
+
+    connection "d063n" {
+        from = "r053"
+        to = "r063"
+        type = archway
+    }
+
+    connection "d064w" {
+        from = "r063"
+        to = "r064"
+        type = door
+    }
+
+    connection "d064n" {
+        from = "r054"
+        to = "r064"
+        type = archway
+    }
+
+    connection "d065w" {
+        from = "r064"
+        to = "r065"
+        type = door
+    }
+
+    connection "d065n" {
+        from = "r055"
+        to = "r065"
+        type = archway
+    }
+
+    connection "d066w" {
+        from = "r065"
+        to = "r066"
+        type = door
+    }
+
+    connection "d066n" {
+        from = "r056"
+        to = "r066"
+        type = archway
+    }
+
+    connection "d067w" {
+        from = "r066"
+        to = "r067"
+        type = door
+    }
+
+    connection "d067n" {
+        from = "r057"
+        to = "r067"
+        type = archway
+    }
+
+    connection "d068w" {
+        from = "r067"
+        to = "r068"
+        type = door
+    }
+
+    connection "d068n" {
+        from = "r058"
+        to = "r068"
+        type = archway
+    }
+
+    connection "d069w" {
+        from = "r068"
+        to = "r069"
+        type = door
+    }
+
+    connection "d069n" {
+        from = "r059"
+        to = "r069"
+        type = archway
+    }
+
+    connection "d070n" {
+        from = "r060"
+        to = "r070"
+        type = archway
+    }
+
+    connection "d071w" {
+        from = "r070"
+        to = "r071"
+        type = door
+    }
+
+    connection "d071n" {
+        from = "r061"
+        to = "r071"
+        type = archway
+    }
+
+    connection "d072w" {
+        from = "r071"
+        to = "r072"
+        type = door
+    }
+
+    connection "d072n" {
+        from = "r062"
+        to = "r072"
+        type = archway
+    }
+
+    connection "d073w" {
+        from = "r072"
+        to = "r073"
+        type = door
+    }
+
+    connection "d073n" {
+        from = "r063"
+        to = "r073"
+        type = archway
+    }
+
+    connection "d074w" {
+        from = "r073"
+        to = "r074"
+        type = door
+    }
+
+    connection "d074n" {
+        from = "r064"
+        to = "r074"
+        type = archway
+    }
+
+    connection "d075w" {
+        from = "r074"
+        to = "r075"
+        type = door
+    }
+
+    connection "d075n" {
+        from = "r065"
+        to = "r075"
+        type = archway
+    }
+
+    connection "d076w" {
+        from = "r075"
+        to = "r076"
+        type = door
+    }
+
+    connection "d076n" {
+        from = "r066"
+        to = "r076"
+        type = archway
+    }
+
+    connection "d077w" {
+        from = "r076"
+        to = "r077"
+        type = door
+    }
+
+    connection "d077n" {
+        from = "r067"
+        to = "r077"
+        type = archway
+    }
+
+    connection "d078w" {
+        from = "r077"
+        to = "r078"
+        type = door
+    }
+
+    connection "d078n" {
+        from = "r068"
+        to = "r078"
+        type = archway
+    }
+
+    connection "d079w" {
+        from = "r078"
+        to = "r079"
+        type = door
+    }
+
+    connection "d079n" {
+        from = "r069"
+        to = "r079"
+        type = archway
+    }
+
+    connection "d080n" {
+        from = "r070"
+        to = "r080"
+        type = archway
+    }
+
+    connection "d081w" {
+        from = "r080"
+        to = "r081"
+        type = door
+    }
+
+    connection "d081n" {
+        from = "r071"
+        to = "r081"
+        type = archway
+    }
+
+    connection "d082w" {
+        from = "r081"
+        to = "r082"
+        type = door
+    }
+
+    connection "d082n" {
+        from = "r072"
+        to = "r082"
+        type = archway
+    }
+
+    connection "d083w" {
+        from = "r082"
+        to = "r083"
+        type = door
+    }
+
+    connection "d083n" {
+        from = "r073"
+        to = "r083"
+        type = archway
+    }
+
+    connection "d084w" {
+        from = "r083"
+        to = "r084"
+        type = door
+    }
+
+    connection "d084n" {
+        from = "r074"
+        to = "r084"
+        type = archway
+    }
+
+    connection "d085w" {
+        from = "r084"
+        to = "r085"
+        type = door
+    }
+
+    connection "d085n" {
+        from = "r075"
+        to = "r085"
+        type = archway
+    }
+
+    connection "d086w" {
+        from = "r085"
+        to = "r086"
+        type = door
+    }
+
+    connection "d086n" {
+        from = "r076"
+        to = "r086"
+        type = archway
+    }
+
+    connection "d087w" {
+        from = "r086"
+        to = "r087"
+        type = door
+    }
+
+    connection "d087n" {
+        from = "r077"
+        to = "r087"
+        type = archway
+    }
+
+    connection "d088w" {
+        from = "r087"
+        to = "r088"
+        type = door
+    }
+
+    connection "d088n" {
+        from = "r078"
+        to = "r088"
+        type = archway
+    }
+
+    connection "d089w" {
+        from = "r088"
+        to = "r089"
+        type = door
+    }
+
+    connection "d089n" {
+        from = "r079"
+        to = "r089"
+        type = archway
+    }
+
+    connection "d090n" {
+        from = "r080"
+        to = "r090"
+        type = archway
+    }
+
+    connection "d091w" {
+        from = "r090"
+        to = "r091"
+        type = door
+    }
+
+    connection "d091n" {
+        from = "r081"
+        to = "r091"
+        type = archway
+    }
+
+    connection "d092w" {
+        from = "r091"
+        to = "r092"
+        type = door
+    }
+
+    connection "d092n" {
+        from = "r082"
+        to = "r092"
+        type = archway
+    }
+
+    connection "d093w" {
+        from = "r092"
+        to = "r093"
+        type = door
+    }
+
+    connection "d093n" {
+        from = "r083"
+        to = "r093"
+        type = archway
+    }
+
+    connection "d094w" {
+        from = "r093"
+        to = "r094"
+        type = door
+    }
+
+    connection "d094n" {
+        from = "r084"
+        to = "r094"
+        type = archway
+    }
+
+    connection "d095w" {
+        from = "r094"
+        to = "r095"
+        type = door
+    }
+
+    connection "d095n" {
+        from = "r085"
+        to = "r095"
+        type = archway
+    }
+
+    connection "d096w" {
+        from = "r095"
+        to = "r096"
+        type = door
+    }
+
+    connection "d096n" {
+        from = "r086"
+        to = "r096"
+        type = archway
+    }
+
+    connection "d097w" {
+        from = "r096"
+        to = "r097"
+        type = door
+    }
+
+    connection "d097n" {
+        from = "r087"
+        to = "r097"
+        type = archway
+    }
+
+    connection "d098w" {
+        from = "r097"
+        to = "r098"
+        type = door
+    }
+
+    connection "d098n" {
+        from = "r088"
+        to = "r098"
+        type = archway
+    }
+
+    connection "d099w" {
+        from = "r098"
+        to = "r099"
+        type = door
+    }
+
+    connection "d099n" {
+        from = "r089"
+        to = "r099"
+        type = archway
+    }
+
+}

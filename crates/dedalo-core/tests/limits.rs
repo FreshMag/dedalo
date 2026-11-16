@@ -84,3 +84,48 @@ fn a_sparse_map_gets_a_note_instead_of_a_huge_text_map() {
             < 20_000
     );
 }
+
+#[test]
+fn templates_come_from_the_file_and_from_packs() {
+    let manifest = "[plugin]\nid = \"doors\"\nversion = \"1.0.0\"\napi = 1\n\n[[template]]\nfile = \"templates.dedalo\"\n";
+    let templates = "template \"iron\" {\n    type = door\n\n    properties {\n        locked = true\n    }\n}\n";
+    let files = std::collections::BTreeMap::from([
+        (
+            "dedalo-plugin.toml".to_string(),
+            manifest.as_bytes().to_vec(),
+        ),
+        (
+            "templates.dedalo".to_string(),
+            templates.as_bytes().to_vec(),
+        ),
+    ]);
+    let mut reg = Registry::builtin();
+    reg.add_plugin(dedalo_plugin::load_files(files, None).unwrap())
+        .unwrap();
+    let source = "dedalo {\n    plugin \"doors\" {}\n}\n\ndungeon \"d\" {\n    room \"a\" { shape = square(4) }\n\n    room \"b\" {\n        shape = square(4)\n        layout { east_of = \"a\" }\n    }\n\n    connection \"gate\" using \"doors.iron\" {\n        from = \"a\"\n        to = \"b\"\n    }\n}\n";
+    let compiled = dedalo_core::compile(Input::Dsl(source), &reg);
+    assert!(
+        compiled.diagnostics.is_empty(),
+        "{:#?}",
+        compiled.diagnostics
+    );
+    let gate = &compiled.document.unwrap().dungeon.connections[0];
+    assert_eq!(gate.ty, "door");
+    assert_eq!(
+        gate.properties["locked"],
+        dedalo_core::model::Value::Bool(true)
+    );
+
+    let unknown =
+        codes("dungeon \"d\" {\n    room \"a\" using \"barracks\" { shape = square(4) }\n}\n");
+    assert_eq!(unknown[0].0, "UNKNOWN_REFERENCE");
+    assert!(
+        unknown[0].1.contains("no template named `barracks`"),
+        "{}",
+        unknown[0].1
+    );
+    let nested = codes(
+        "template \"t\" {\n    feature \"x\" { type = trap }\n}\n\ndungeon \"d\" {\n    room \"a\" { shape = square(4) }\n}\n",
+    );
+    assert_eq!(nested[0].0, "UNKNOWN_BLOCK");
+}

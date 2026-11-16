@@ -1,0 +1,19 @@
+[package]
+name = "dedalo-wasm-export"
+description = "Browser module for Dedalo's PNG and PDF output, loaded on the first raster or PDF export"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+dedalo-export.workspace = true
+dedalo-model.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+# This crate owns a WebAssembly boundary, so it may use `unsafe` (spec 4).
+[lints]

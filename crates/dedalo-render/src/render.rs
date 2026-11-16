@@ -16,24 +16,27 @@ use crate::view::View;
 /// Space around the map, in thousandths of a cell.
 const PAD: i64 = 600;
 
-/// A rough text width in cells. Exact metrics need the bundled fonts of
-/// milestone M3; until then layout only needs to be stable and roomy.
+/// The width of a text in cells, from the bundled fonts.
 fn text_width(text: &str, size: f64) -> f64 {
-    text.chars().count() as f64 * size * 0.56
+    dedalo_scene::font::measure(text, size, false)
 }
 
-fn wrap(text: &str, width: usize) -> Vec<String> {
+/// Breaks text into lines no wider than `width` cells.
+fn wrap(text: &str, width: f64, size: f64) -> Vec<String> {
     let mut lines = Vec::new();
     for paragraph in text.lines() {
         let mut current = String::new();
         for word in paragraph.split_whitespace() {
-            if !current.is_empty() && current.chars().count() + 1 + word.chars().count() > width {
-                lines.push(std::mem::take(&mut current));
+            let candidate = if current.is_empty() {
+                word.to_string()
+            } else {
+                format!("{current} {word}")
+            };
+            if !current.is_empty() && text_width(&candidate, size) > width {
+                lines.push(std::mem::replace(&mut current, word.to_string()));
+            } else {
+                current = candidate;
             }
-            if !current.is_empty() {
-                current.push(' ');
-            }
-            current.push_str(word);
         }
         if !current.is_empty() {
             lines.push(current);
@@ -300,19 +303,27 @@ pub fn render_scene(view: &View, theme: &Theme, painters: &Painters) -> Scene {
             rows.push(Row::Gap);
         }
         rows.push(Row::Header("Notes".to_string()));
-        let columns = ((f(panel_w) - 0.2) / (note_size * 0.56)) as usize;
+        let columns = f(panel_w) - 0.2;
         for note in &view.notes {
             rows.extend(
-                wrap(&format!("{}. {}", note.number, note.text), columns.max(8))
-                    .into_iter()
-                    .map(Row::Text),
+                wrap(
+                    &format!("{}. {}", note.number, note.text),
+                    columns,
+                    note_size,
+                )
+                .into_iter()
+                .map(Row::Text),
             );
         }
         for (holder, items) in &view.contents {
             rows.extend(
-                wrap(&format!("{holder}: {}", items.join(", ")), columns.max(8))
-                    .into_iter()
-                    .map(Row::Text),
+                wrap(
+                    &format!("{holder}: {}", items.join(", ")),
+                    columns,
+                    note_size,
+                )
+                .into_iter()
+                .map(Row::Text),
             );
         }
     }
@@ -365,6 +376,7 @@ pub fn render_scene(view: &View, theme: &Theme, painters: &Painters) -> Scene {
         [f(canvas.x0), f(canvas.y0), f(canvas.w()), f(canvas.h())],
         view.cell_px,
     );
+    scene.live_text = view.live_text;
     scene.push(
         "background",
         Node::fill(

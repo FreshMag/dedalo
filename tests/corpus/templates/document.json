@@ -1,0 +1,87 @@
+{
+  "dungeon": {
+    "id": "templates",
+    "name": "Templates",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "west",
+        "name": "West Barracks",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        },
+        "properties": {
+          "floor": "flagstone"
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "torch_west",
+            "type": "lighting",
+            "subtype": "torch",
+            "placement": {
+              "wall": "north",
+              "offset": 1
+            },
+            "properties": {
+              "radius": 3
+            }
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "east",
+        "name": "East Barracks",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            5
+          ]
+        },
+        "layout": {
+          "adjacent_to": "west",
+          "direction": "east",
+          "align": "start"
+        },
+        "properties": {
+          "floor": "flagstone"
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "torch_east",
+            "type": "lighting",
+            "subtype": "torch",
+            "placement": {
+              "wall": "south"
+            },
+            "properties": {
+              "radius": 3
+            }
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "id": "between",
+        "from": "west",
+        "to": "east",
+        "type": "door",
+        "placement": {
+          "width": 2
+        },
+        "properties": {
+          "locked": false,
+          "material": "iron"
+        }
+      }
+    ]
+  }
+}

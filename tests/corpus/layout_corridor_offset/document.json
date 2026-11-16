@@ -1,0 +1,48 @@
+{
+  "dungeon": {
+    "id": "layout_corridor_offset",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            4,
+            8
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            4,
+            8
+          ]
+        },
+        "layout": {
+          "adjacent_to": "a",
+          "direction": "east",
+          "gap": 3
+        }
+      },
+      {
+        "kind": "corridor",
+        "id": "hall",
+        "connects": [
+          "a",
+          "b"
+        ],
+        "offset": 1
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# A straight corridor moved along the facing walls with `offset`."
+      ]
+    }
+  }
+}

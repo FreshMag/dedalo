@@ -1,0 +1,47 @@
+{
+  "dungeon": {
+    "id": "layout_west_center",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "base",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "other",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            4,
+            3
+          ]
+        },
+        "layout": {
+          "adjacent_to": "base",
+          "direction": "west",
+          "align": "center"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "link",
+        "from": "base",
+        "to": "other",
+        "type": "door"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# A 4 by 3 room west of an 8 by 6 room, aligned center."
+      ]
+    }
+  }
+}

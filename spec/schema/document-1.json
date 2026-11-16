@@ -616,6 +616,17 @@
             "null"
           ]
         },
+        "scale": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PrintScale"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "PDF only: `fit` (default) or `tabletop`, one cell per inch."
+        },
         "visibility": {
           "additionalProperties": {
             "type": "boolean"
@@ -932,6 +943,14 @@
         "dm",
         "player",
         "clean"
+      ],
+      "type": "string"
+    },
+    "PrintScale": {
+      "description": "PDF only: fit the page, or print one cell per inch across pages.",
+      "enum": [
+        "fit",
+        "tabletop"
       ],
       "type": "string"
     },

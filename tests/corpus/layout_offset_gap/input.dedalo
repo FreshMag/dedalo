@@ -1,0 +1,17 @@
+# Offset along the side and a gap bridged by a stub door.
+dungeon "layout_offset_gap" {
+    room "base" {
+        shape = rectangle(8, 6)
+    }
+
+    room "other" {
+        shape = square(4)
+        layout { east_of = "base", offset = 1, gap = 2 }
+    }
+
+    connection "stub" {
+        from = "base"
+        to = "other"
+        type = door
+    }
+}

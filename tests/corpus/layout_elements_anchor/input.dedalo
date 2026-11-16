@@ -1,0 +1,60 @@
+# Elements placed by every anchor.
+dungeon "layout_elements_anchor" {
+    room "a" {
+        shape = rectangle(9, 7)
+
+        feature "center" {
+            type = architecture
+            subtype = column
+            placement { anchor = center }
+        }
+
+        feature "north" {
+            type = architecture
+            subtype = column
+            placement { anchor = north }
+        }
+
+        feature "north_east" {
+            type = architecture
+            subtype = column
+            placement { anchor = north_east }
+        }
+
+        feature "east" {
+            type = architecture
+            subtype = column
+            placement { anchor = east }
+        }
+
+        feature "south_east" {
+            type = architecture
+            subtype = column
+            placement { anchor = south_east }
+        }
+
+        feature "south" {
+            type = architecture
+            subtype = column
+            placement { anchor = south }
+        }
+
+        feature "south_west" {
+            type = architecture
+            subtype = column
+            placement { anchor = south_west }
+        }
+
+        feature "west" {
+            type = architecture
+            subtype = column
+            placement { anchor = west }
+        }
+
+        feature "north_west" {
+            type = architecture
+            subtype = column
+            placement { anchor = north_west }
+        }
+    }
+}

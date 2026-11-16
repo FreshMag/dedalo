@@ -1,0 +1,60 @@
+{
+  "dungeon": {
+    "id": "layout_automatic_free_side",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "east",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "a",
+          "direction": "east"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "auto",
+        "shape": {
+          "fn": "square",
+          "args": [
+            2
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "a_east",
+        "from": "a",
+        "to": "east",
+        "type": "door"
+      },
+      {
+        "id": "a_auto",
+        "from": "a",
+        "to": "auto",
+        "type": "door"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# No layout and no wall: the first free side among east, south, west, north."
+      ]
+    }
+  }
+}

@@ -120,25 +120,8 @@ pub fn derive_walls(spaces: &[RSpace], openings: &[Opening]) -> Vec<Wall> {
 
     for space in spaces {
         let Some(circle) = space.circle else { continue };
-        let on_circle = |p: Pt| {
-            let (dx, dy) = (
-                (p.x - circle.center.x) as i128,
-                (p.y - circle.center.y) as i128,
-            );
-            let r = circle.radius as i128;
-            (dx * dx + dy * dy - r * r).abs() <= 8 * r
-        };
-        let clockwise_from_north = |p: Pt| {
-            let angle = libm::atan2(
-                (p.x - circle.center.x) as f64,
-                -(p.y - circle.center.y) as f64,
-            );
-            if angle < 0.0 {
-                angle + 2.0 * std::f64::consts::PI
-            } else {
-                angle
-            }
-        };
+        let on_circle = |p: Pt| circle.on_outline(p);
+        let clockwise_from_north = |p: Pt| circle.angle(p);
         let mut gaps: Vec<([Pt; 2], &str)> = Vec::new();
         for o in openings
             .iter()

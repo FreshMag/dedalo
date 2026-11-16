@@ -1,0 +1,25 @@
+[plugin]
+id = "hand_drawn"
+name = "Hand-drawn style"
+version = "1.2.0"
+api = 1
+dedalo = ">=0.2"
+license = "MIT OR Apache-2.0"
+description = "Wobbly ink lines, sketched doors and a parchment theme."
+
+[wasm]
+module = "hand_drawn.wasm"
+
+[[scene_pass]]
+name = "wobble"
+
+[[painter]]
+match = { kind = "opening", type = "door" }
+layer = "openings"
+name = "door"
+
+[theme.sepia]
+file = "themes/sepia.toml"
+
+[options]
+wobble = { type = "number", default = 0.6, min = 0.0, max = 2.0 }

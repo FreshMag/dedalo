@@ -1,0 +1,53 @@
+{
+  "dungeon": {
+    "id": "layout_absolute_negative",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            -6,
+            -4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            -2,
+            -4
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "ab",
+        "from": "a",
+        "to": "b",
+        "type": "door"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Absolute positions, including negative coordinates."
+      ]
+    }
+  }
+}

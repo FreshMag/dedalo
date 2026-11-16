@@ -8,13 +8,24 @@ use std::fmt::Write;
 
 use crate::{Cmd, Node, Paint, Scene, Stroke, TextAnchor};
 
-/// Text is live `<text>` for now; conversion to outlines needs the bundled
-/// fonts of milestone M3.
-const FONT_FAMILY: &str = "DejaVu Sans, Verdana, sans-serif";
+/// Live text names the bundled font first, so a viewer that has it, and
+/// resvg, which is given it, draw it exactly.
+const FONT_FAMILY: &str = "Noto Sans, sans-serif";
 
 /// A number with at most three decimals and no trailing zeros.
 fn n(value: f64) -> String {
     let text = format!("{value:.3}");
+    let text = text.trim_end_matches('0').trim_end_matches('.');
+    if text == "-0" || text.is_empty() {
+        "0".to_string()
+    } else {
+        text.to_string()
+    }
+}
+
+/// A scale factor with six decimals, enough for glyph transforms.
+fn n6(value: f64) -> String {
+    let text = format!("{value:.6}");
     let text = text.trim_end_matches('0').trim_end_matches('.');
     if text == "-0" || text.is_empty() {
         "0".to_string()
@@ -46,6 +57,7 @@ fn path_data(d: &[Cmd]) -> String {
             Cmd::Line(x, y) => write!(out, "L{} {}", n(x), n(y)),
             Cmd::Arc {
                 r,
+                ry,
                 large,
                 clockwise,
                 x,
@@ -55,7 +67,7 @@ fn path_data(d: &[Cmd]) -> String {
                     out,
                     "A{} {} 0 {} {} {} {}",
                     n(r),
-                    n(r),
+                    n(ry.unwrap_or(r)),
                     large as u8,
                     clockwise as u8,
                     n(x),
@@ -80,12 +92,31 @@ fn path_data(d: &[Cmd]) -> String {
 }
 
 struct Writer {
+    live_text: bool,
+    /// Glyph definitions already written, by font and glyph.
+    glyphs: std::collections::BTreeMap<(bool, u16), String>,
     defs: String,
     body: String,
     next_id: u32,
 }
 
 impl Writer {
+    /// The ID of a glyph's definition, writing it on first use.
+    fn glyph(&mut self, bold: bool, glyph: u16) -> String {
+        if let Some(id) = self.glyphs.get(&(bold, glyph)) {
+            return id.clone();
+        }
+        let id = format!("{}{glyph}", if bold { "b" } else { "r" });
+        write!(
+            self.defs,
+            "<path id=\"{id}\" d=\"{}\"/>",
+            crate::font::glyph_path(bold, glyph)
+        )
+        .expect("writing to a string");
+        self.glyphs.insert((bold, glyph), id.clone());
+        id
+    }
+
     fn id(&mut self, prefix: &str) -> String {
         self.next_id += 1;
         format!("{prefix}{}", self.next_id)
@@ -211,6 +242,43 @@ impl Writer {
                 halo,
                 source,
             } => {
+                if !self.live_text {
+                    let run = crate::font::layout(text, *x, *y, *size, *anchor, *bold);
+                    if run.glyphs.is_empty() {
+                        return;
+                    }
+                    let mut uses = String::new();
+                    for (glyph, offset) in &run.glyphs {
+                        let id = self.glyph(*bold, *glyph);
+                        write!(uses, "<use href=\"#{id}\" x=\"{offset}\"/>")
+                            .expect("writing to a string");
+                    }
+                    // Glyphs are in font units with y up: scale and flip.
+                    let transform = format!(
+                        "matrix({} 0 0 {} {} {})",
+                        n6(run.scale),
+                        n6(-run.scale),
+                        n(run.x),
+                        n(run.baseline)
+                    );
+                    if let Some((color, width)) = halo {
+                        writeln!(
+                            self.body,
+                            "<g transform=\"{transform}\" fill=\"none\" stroke=\"{}\" stroke-width=\"{}\" stroke-linejoin=\"round\">{uses}</g>",
+                            escape(color),
+                            n(*width / run.scale)
+                        )
+                        .expect("writing to a string");
+                    }
+                    writeln!(
+                        self.body,
+                        "<g{} transform=\"{transform}\" fill=\"{}\">{uses}</g>",
+                        Self::source(source),
+                        escape(fill)
+                    )
+                    .expect("writing to a string");
+                    return;
+                }
                 let anchor = match anchor {
                     TextAnchor::Start => "start",
                     TextAnchor::Middle => "middle",
@@ -220,7 +288,7 @@ impl Writer {
                 let common = format!(
                     "x=\"{}\" y=\"{}\" font-family=\"{FONT_FAMILY}\" font-size=\"{}\"{} text-anchor=\"{anchor}\"",
                     n(*x),
-                    n(*y + 0.35 * size),
+                    n(crate::font::baseline(*y, *size, *bold)),
                     n(*size),
                     if *bold { " font-weight=\"bold\"" } else { "" }
                 );
@@ -250,6 +318,8 @@ impl Writer {
 /// Serialises a scene as an SVG document.
 pub fn to_svg(scene: &Scene) -> String {
     let mut w = Writer {
+        live_text: scene.live_text,
+        glyphs: std::collections::BTreeMap::new(),
         defs: String::new(),
         body: String::new(),
         next_id: 0,
@@ -315,6 +385,9 @@ mod tests {
                 "#111111",
             ),
         );
+        // By default text is drawn as outlines.
+        assert!(!to_svg(&scene).contains("<text"));
+        scene.live_text = true;
         let svg = to_svg(&scene);
         assert!(svg.starts_with("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 8 6\" width=\"512\" height=\"384\">\n"));
         assert!(svg.contains(

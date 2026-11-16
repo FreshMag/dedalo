@@ -1,13 +1,23 @@
-//! ID-addressed edit operations (spec 13.3). Milestone M5.
+//! ID-addressed edit operations (spec 13.3).
 //!
-//! The operation data types already exist in `dedalo_model::ops`, because
-//! diagnostics carry them as fixes and they are part of the published `ops`
-//! schema. This crate will hold the engine that applies a batch to the
-//! syntax tree: text, comments and formatting outside the touched nodes are
-//! preserved byte for byte, and a batch is atomic.
-//!
-//! Not implemented yet. `dedalo_syntax::edit` provides the text-edit
-//! primitive the engine will build on.
+//! An agent or the editor changes one element without regenerating the
+//! file: operations patch the syntax tree, so hand-written layout and
+//! comments stay where they were.
+
+mod diff;
+mod engine;
+mod value;
+
+use sha2::{Digest, Sha256};
 
 pub use dedalo_model::ops::{Batch, Op};
-pub use dedalo_syntax::edit::{TextEdit, apply};
+pub use diff::unified;
+pub use engine::{Applied, ELEMENT_KEYWORDS, apply_ops};
+pub use value::to_dsl;
+
+/// The content hash of a source, as `base_hash` carries it.
+pub fn content_hash(source: &str) -> String {
+    let digest = Sha256::digest(source.as_bytes());
+    let hex: String = digest.iter().map(|b| format!("{b:02x}")).collect();
+    format!("sha256:{hex}")
+}

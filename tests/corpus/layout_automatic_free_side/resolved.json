@@ -1,0 +1,525 @@
+{
+  "id": "layout_automatic_free_side",
+  "seed": 13216684408768249256,
+  "bounds": [
+    0,
+    0,
+    8,
+    6
+  ],
+  "spaces": [
+    {
+      "id": "a",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        4,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "east",
+      "kind": "room",
+      "polygon": [
+        [
+          4,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "bbox": [
+        4,
+        0,
+        8,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "auto",
+      "kind": "room",
+      "polygon": [
+        [
+          1,
+          4
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          1,
+          6
+        ]
+      ],
+      "bbox": [
+        1,
+        4,
+        3,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "spaces": [
+        "east"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "spaces": [
+        "a",
+        "east"
+      ],
+      "material": "stone",
+      "openings": [
+        "a_east"
+      ],
+      "solid": [
+        [
+          [
+            4,
+            0
+          ],
+          [
+            4,
+            1
+          ]
+        ],
+        [
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "spaces": [
+        "auto"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            3,
+            4
+          ],
+          [
+            3,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          6
+        ]
+      ],
+      "spaces": [
+        "auto"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "east"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          1,
+          4
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "spaces": [
+        "a",
+        "auto"
+      ],
+      "material": "stone",
+      "openings": [
+        "a_auto"
+      ],
+      "solid": [
+        [
+          [
+            2,
+            4
+          ],
+          [
+            3,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          4
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "spaces": [
+        "east"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            4
+          ],
+          [
+            8,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          1,
+          6
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "spaces": [
+        "auto"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            1,
+            6
+          ],
+          [
+            3,
+            6
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "a_east",
+      "from": "a",
+      "to": "east",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "a_auto",
+      "from": "a",
+      "to": "auto",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [],
+  "notes": [],
+  "reach": {
+    "entrance": "a",
+    "links": [
+      [
+        "a",
+        "east",
+        "a_east"
+      ],
+      [
+        "a",
+        "auto",
+        "a_auto"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "dungeon": {
+    "id": "layout_polygon_door",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "hall",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                8,
+                0
+              ],
+              [
+                8,
+                3
+              ],
+              [
+                5,
+                3
+              ],
+              [
+                5,
+                6
+              ],
+              [
+                0,
+                6
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "north",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            3
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hall",
+          "direction": "north"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "notch",
+        "shape": {
+          "fn": "square",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "position": [
+            5,
+            3
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "to_north",
+        "from": "hall",
+        "to": "north",
+        "type": "door"
+      },
+      {
+        "id": "to_notch",
+        "from": "hall",
+        "to": "notch",
+        "type": "door",
+        "placement": {
+          "edge": 3
+        }
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Doors on the straight edges of a concave polygon, chosen by `edge`."
+      ]
+    }
+  }
+}

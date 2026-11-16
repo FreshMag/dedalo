@@ -1,0 +1,35 @@
+# A three-cell door at an explicit offset, and an archway beside it.
+dungeon "layout_wide_door_offset" {
+    room "a" {
+        shape = rectangle(10, 4)
+    }
+
+    room "b" {
+        shape = rectangle(10, 4)
+        layout { south_of = "a" }
+    }
+
+    connection "wide" {
+        from = "a"
+        to = "b"
+        type = door
+
+        placement {
+            wall = south
+            offset = 1
+            width = 3
+        }
+    }
+
+    connection "arch" {
+        from = "a"
+        to = "b"
+        type = archway
+
+        placement {
+            wall = south
+            offset = 6
+            width = 2
+        }
+    }
+}

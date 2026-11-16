@@ -1,0 +1,443 @@
+{
+  "id": "templates",
+  "name": "Templates",
+  "seed": 456419129535708200,
+  "bounds": [
+    0,
+    0,
+    12,
+    5
+  ],
+  "spaces": [
+    {
+      "id": "west",
+      "kind": "room",
+      "name": "West Barracks",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        6,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "flagstone"
+    },
+    {
+      "id": "east",
+      "kind": "room",
+      "name": "East Barracks",
+      "polygon": [
+        [
+          6,
+          0
+        ],
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          5
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "bbox": [
+        6,
+        0,
+        12,
+        5
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "flagstone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          5
+        ]
+      ],
+      "spaces": [
+        "east"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            12,
+            0
+          ],
+          [
+            12,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "west",
+        "east"
+      ],
+      "material": "stone",
+      "openings": [
+        "between"
+      ],
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            6,
+            1
+          ]
+        ],
+        [
+          [
+            6,
+            3
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "spaces": [
+        "east"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            6,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "spaces": [
+        "west"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "west"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            6,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          12,
+          0
+        ]
+      ],
+      "spaces": [
+        "east"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            12,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "west"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          5
+        ],
+        [
+          12,
+          5
+        ]
+      ],
+      "spaces": [
+        "east"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            5
+          ],
+          [
+            12,
+            5
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "between",
+      "from": "west",
+      "to": "east",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ]
+      ],
+      "width": 2
+    }
+  ],
+  "elements": [
+    {
+      "id": "torch_west",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "torch",
+      "category": "lighting",
+      "label": "Torch",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "west",
+      "footprint": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "bbox": [
+        1,
+        0,
+        2,
+        1
+      ],
+      "rotation": 0,
+      "wall": "north",
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 3,
+      "properties": {
+        "radius": 3
+      }
+    },
+    {
+      "id": "torch_east",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "torch",
+      "category": "lighting",
+      "label": "Torch",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "east",
+      "footprint": [
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "bbox": [
+        8,
+        4,
+        9,
+        5
+      ],
+      "rotation": 0,
+      "wall": "south",
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 3,
+      "properties": {
+        "radius": 3
+      }
+    }
+  ],
+  "notes": [],
+  "reach": {
+    "entrance": "west",
+    "links": [
+      [
+        "west",
+        "east",
+        "between"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Dedalo editor self-test</title>
+  </head>
+  <body>
+    <!-- Serve the repository root and open /web/selftest.html: the editor is
+         loaded in a frame and driven like a user would, and the verdict is
+         posted to `web/serve.py --result`. -->
+    <pre id="result">running</pre>
+    <iframe id="app" src="index.html" title="editor" width="1400" height="900"></iframe>
+    <script type="module" src="selftest.js"></script>
+  </body>
+</html>

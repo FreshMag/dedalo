@@ -1,0 +1,11 @@
+[plugin]
+id = "blueprint"
+name = "Blueprint"
+version = "1.0.0"
+api = 1
+dedalo = ">=0.2"
+license = "MIT OR Apache-2.0"
+description = "A blueprint look: white lines on blue. A theme pack, with no code."
+
+[theme.default]
+file = "themes/blueprint.toml"

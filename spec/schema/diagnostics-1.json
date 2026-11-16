@@ -28,6 +28,7 @@
         "PLUGIN_CONFLICT",
         "PLUGIN_FAILED",
         "PLUGIN_TIMEOUT",
+        "PLUGIN_RULE",
         "EXPORT_TOO_LARGE"
       ],
       "type": "string"

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.6 -0.6 12.2 9.2" width="781" height="589">
+<defs><clipPath id="c1"><path d="M0 0L4 0L4 8L0 8Z"/></clipPath><clipPath id="c2"><path d="M7 0L11 0L11 8L7 8Z"/></clipPath><clipPath id="c3"><path d="M7 1L7 2L4 2L4 1Z"/></clipPath></defs>
+<g id="layer-background">
+<path d="M-0.6 -0.6L11.6 -0.6L11.6 8.6L-0.6 8.6Z" fill="#ffffff"/>
+</g>
+<g id="layer-floor">
+<path d="M0 0L4 0L4 8L0 8Z" fill="#ffffff"/>
+<path d="M7 0L11 0L11 8L7 8Z" fill="#ffffff"/>
+<path d="M7 1L7 2L4 2L4 1Z" fill="#ffffff"/>
+</g>
+<g id="layer-grid">
+<g clip-path="url(#c1)"><path d="M1 0L1 8M2 0L2 8M3 0L3 8M0 1L4 1M0 2L4 2M0 3L4 3M0 4L4 4M0 5L4 5M0 6L4 6M0 7L4 7" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+<g clip-path="url(#c2)"><path d="M8 0L8 8M9 0L9 8M10 0L10 8M7 1L11 1M7 2L11 2M7 3L11 3M7 4L11 4M7 5L11 5M7 6L11 6M7 7L11 7" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+<g clip-path="url(#c3)"><path d="M5 1L5 2M6 1L6 2" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+</g>
+<g id="layer-walls">
+<path d="M11 0L11 8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 0L7 1" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 2L7 8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 0L4 1" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 2L4 8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L0 8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L4 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 0L11 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 1L7 1" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 2L7 2" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 8L4 8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 8L11 8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,0 +1,551 @@
+{
+  "id": "layout_corridor_straight",
+  "seed": 5784935581875578853,
+  "bounds": [
+    0,
+    0,
+    16,
+    4
+  ],
+  "spaces": [
+    {
+      "id": "a",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        6,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "b",
+      "kind": "room",
+      "polygon": [
+        [
+          10,
+          0
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          4
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "bbox": [
+        10,
+        0,
+        16,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "hall",
+      "kind": "corridor",
+      "polygon": [
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "bbox": [
+        6,
+        1,
+        10,
+        3
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone",
+      "connects": [
+        "a",
+        "b"
+      ]
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          4
+        ]
+      ],
+      "spaces": [
+        "b"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            16,
+            0
+          ],
+          [
+            16,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          1
+        ]
+      ],
+      "spaces": [
+        "b"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            0
+          ],
+          [
+            10,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          3
+        ]
+      ],
+      "spaces": [
+        "b",
+        "hall"
+      ],
+      "material": "stone",
+      "openings": [
+        "hall/b"
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "spaces": [
+        "b"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            3
+          ],
+          [
+            10,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            6,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ]
+      ],
+      "spaces": [
+        "a",
+        "hall"
+      ],
+      "material": "stone",
+      "openings": [
+        "hall/a"
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            3
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            6,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          0
+        ],
+        [
+          16,
+          0
+        ]
+      ],
+      "spaces": [
+        "b"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          1
+        ],
+        [
+          10,
+          1
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            1
+          ],
+          [
+            10,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          3
+        ],
+        [
+          10,
+          3
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            3
+          ],
+          [
+            10,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          4
+        ],
+        [
+          16,
+          4
+        ]
+      ],
+      "spaces": [
+        "b"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            4
+          ],
+          [
+            16,
+            4
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "hall/a",
+      "from": "hall",
+      "to": "a",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ]
+      ],
+      "width": 2
+    },
+    {
+      "id": "hall/b",
+      "from": "hall",
+      "to": "b",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          3
+        ]
+      ],
+      "width": 2
+    }
+  ],
+  "elements": [],
+  "notes": [],
+  "reach": {
+    "entrance": "a",
+    "links": [
+      [
+        "hall",
+        "a",
+        "hall/a"
+      ],
+      [
+        "hall",
+        "b",
+        "hall/b"
+      ]
+    ]
+  }
+}

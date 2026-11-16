@@ -1,0 +1,18 @@
+[package]
+name = "dedalo-plugin-uvtt"
+description = "Reference plugin: Universal VTT export for Dedalo maps"
+version = "0.3.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+dedalo-pdk.workspace = true
+
+# Plugins implement a WebAssembly boundary through the PDK; they do not
+# inherit the workspace lints.
+[lints]

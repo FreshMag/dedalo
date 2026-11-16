@@ -1,0 +1,73 @@
+# Templates carry shared defaults; the element's own values win (spec 5.9).
+template "barracks" {
+    shape = rectangle(6, 4)
+
+    properties {
+        floor = flagstone
+    }
+}
+
+dungeon "templates" {
+    name = "Templates"
+
+    template "iron_door" {
+        type = door
+
+        placement {
+            width = 2
+        }
+
+        properties {
+            locked = true
+            material = iron
+        }
+    }
+
+    template "wall_torch" {
+        type = lighting
+        subtype = torch
+
+        placement {
+            wall = north
+        }
+
+        properties {
+            radius = 3
+        }
+    }
+
+    room "west" using "barracks" {
+        name = "West Barracks"
+
+        feature "torch_west" using "wall_torch" {
+            placement {
+                offset = 1
+            }
+        }
+    }
+
+    room "east" using "barracks" {
+        name = "East Barracks"
+        shape = rectangle(6, 5)
+
+        layout {
+            east_of = "west"
+            align = start
+        }
+
+        feature "torch_east" using "wall_torch" {
+            placement {
+                wall = south
+            }
+        }
+    }
+
+    connection "between" using "iron_door" {
+        from = "west"
+        to = "east"
+
+        properties {
+            locked = false
+        }
+    }
+}

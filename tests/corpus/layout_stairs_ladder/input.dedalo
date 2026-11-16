@@ -1,0 +1,24 @@
+# Vertical connections as marked exits.
+dungeon "layout_stairs_ladder" {
+    room "a" {
+        shape = rectangle(6, 4)
+    }
+
+    connection "down" {
+        from = "a"
+        type = stairs
+        position = [1, 1]
+    }
+
+    connection "up" {
+        from = "a"
+        type = ladder
+        position = [4, 2]
+    }
+
+    connection "hatch" {
+        from = "a"
+        type = trapdoor
+        position = [2, 3]
+    }
+}

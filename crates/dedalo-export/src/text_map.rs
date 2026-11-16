@@ -70,10 +70,7 @@ pub fn text_map(view: &View) -> String {
             (y0 + row as i64) * 1000 + 500,
         );
         let in_space = view.spaces.iter().position(|s| match s.circle {
-            Some(c) => {
-                let (dx, dy) = ((p.x - c.center.x) as i128, (p.y - c.center.y) as i128);
-                dx * dx + dy * dy <= c.radius as i128 * c.radius as i128
-            }
+            Some(c) => c.contains(p),
             None => locate(p, &s.polygon) != Loc::Outside,
         });
         in_space.or_else(|| {

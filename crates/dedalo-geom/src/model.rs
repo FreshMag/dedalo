@@ -38,8 +38,62 @@ pub struct Resolved {
 #[derive(Clone, Copy, Debug, PartialEq, Serialize)]
 pub struct Circle {
     pub center: Pt,
+    /// The horizontal radius; the only one of a circle.
     #[serde(serialize_with = "cells")]
     pub radius: C,
+    /// The vertical radius of an ellipse; absent for a circle.
+    #[serde(skip_serializing_if = "Option::is_none", serialize_with = "opt_cells")]
+    pub radius_y: Option<C>,
+}
+
+impl Circle {
+    pub fn rx(&self) -> C {
+        self.radius
+    }
+
+    pub fn ry(&self) -> C {
+        self.radius_y.unwrap_or(self.radius)
+    }
+
+    /// Whether a point lies inside or on the outline. Exact.
+    pub fn contains(&self, p: Pt) -> bool {
+        let (dx, dy) = ((p.x - self.center.x) as i128, (p.y - self.center.y) as i128);
+        let (rx, ry) = (self.rx() as i128, self.ry() as i128);
+        dx * dx * ry * ry + dy * dy * rx * rx <= rx * rx * ry * ry
+    }
+
+    /// Whether a point lies on the outline, within rounding.
+    pub fn on_outline(&self, p: Pt) -> bool {
+        let (dx, dy) = (
+            (p.x - self.center.x) as f64 / self.rx() as f64,
+            (p.y - self.center.y) as f64 / self.ry() as f64,
+        );
+        (dx * dx + dy * dy - 1.0).abs() <= 0.005
+    }
+
+    /// The angle of a point on the outline, clockwise from north, in the
+    /// circle the ellipse is stretched from.
+    pub fn angle(&self, p: Pt) -> f64 {
+        let a = libm::atan2(
+            (p.x - self.center.x) as f64 / self.rx() as f64,
+            -(p.y - self.center.y) as f64 / self.ry() as f64,
+        );
+        if a < 0.0 {
+            a + 2.0 * std::f64::consts::PI
+        } else {
+            a
+        }
+    }
+
+    /// The circle after quarter turns: the radii swap on odd turns.
+    pub fn turned(mut self, quarters: i64) -> Circle {
+        if quarters.rem_euclid(2) == 1 && self.radius_y.is_some() {
+            let (rx, ry) = (self.rx(), self.ry());
+            self.radius = ry;
+            self.radius_y = Some(rx);
+        }
+        self
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize)]

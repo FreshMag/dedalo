@@ -1,0 +1,29 @@
+# An L-shaped room turned 180 degrees, with a wall-mounted torch.
+dungeon "layout_rotation_180" {
+    room "turned" {
+        shape = l_shape(6, 4, 2)
+        rotation = 180
+
+        feature "torch" {
+            type = lighting
+            subtype = torch
+            placement { wall = north }
+        }
+
+        feature "chest" {
+            type = container
+            position = [0, 0]
+        }
+    }
+
+    room "next" {
+        shape = square(3)
+        layout { south_of = "turned", align = start }
+    }
+
+    connection "link" {
+        from = "turned"
+        to = "next"
+        type = door
+    }
+}
