@@ -1,0 +1,26 @@
+{
+  "dedalo": {
+    "version": 1,
+    "plugins": [
+      {
+        "id": "hand_drawn",
+        "version": "^1.2"
+      }
+    ]
+  },
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        }
+      }
+    ]
+  }
+}

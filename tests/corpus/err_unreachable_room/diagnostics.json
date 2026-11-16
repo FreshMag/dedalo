@@ -1,0 +1,26 @@
+{
+  "status": "warning",
+  "summary": {
+    "errors": 0,
+    "warnings": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "UNREACHABLE_ROOM",
+      "element": "sealed",
+      "message": "Room `sealed` cannot be reached from the entrance `a`: no connection or corridor leads to it.",
+      "span": {
+        "start": [
+          6,
+          10
+        ],
+        "end": [
+          6,
+          18
+        ]
+      },
+      "suggestion": "Join it to the dungeon, for example `connection \"sealed_door\" { from = \"...\", to = \"sealed\", type = door }`."
+    }
+  ]
+}

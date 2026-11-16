@@ -1,0 +1,285 @@
+{
+  "id": "d",
+  "seed": 12638183902020757363,
+  "bounds": [
+    0,
+    0,
+    8,
+    4
+  ],
+  "spaces": [
+    {
+      "id": "a",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        4,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "sealed",
+      "kind": "room",
+      "polygon": [
+        [
+          4,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "bbox": [
+        4,
+        0,
+        8,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "spaces": [
+        "sealed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "spaces": [
+        "a",
+        "sealed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            0
+          ],
+          [
+            4,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "sealed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            4,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          4
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "spaces": [
+        "sealed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            4
+          ],
+          [
+            8,
+            4
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [],
+  "elements": [],
+  "notes": [],
+  "reach": {
+    "entrance": "a",
+    "links": [],
+    "unreachable": [
+      "sealed"
+    ]
+  }
+}

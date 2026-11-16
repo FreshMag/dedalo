@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.6 -0.6 9.2 7.2" width="589" height="461">
+<defs><clipPath id="c1"><path d="M0 0L8 0L8 6L0 6Z"/></clipPath></defs>
+<g id="layer-background">
+<path d="M-0.6 -0.6L8.6 -0.6L8.6 6.6L-0.6 6.6Z" fill="#ffffff"/>
+</g>
+<g id="layer-floor">
+<path d="M0 0L8 0L8 6L0 6Z" fill="#ffffff"/>
+</g>
+<g id="layer-grid">
+<g clip-path="url(#c1)"><path d="M1 0L1 6M2 0L2 6M3 0L3 6M4 0L4 6M5 0L5 6M6 0L6 6M7 0L7 6M0 1L8 1M0 2L8 2M0 3L8 3M0 4L8 4M0 5L8 5" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+</g>
+<g id="layer-walls">
+<path d="M8 0L8 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L0 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L8 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 6L8 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,0 +1,68 @@
+name: Pages
+
+# Publishes the static site to the `gh-pages` branch (spec 14.3): the `main`
+# branch deploys to /next/, tagged releases deploy to the site root. Schemas
+# are served under /schema/ at versioned URLs.
+#
+# Not yet exercised: the repository has no remote. In the repository
+# settings, Pages must be set to serve the `gh-pages` branch.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install the pinned toolchain
+        run: rustup show
+      - name: Build the site
+        run: |
+          cargo build -p dedalo-wasm --target wasm32-unknown-unknown --profile wasm --locked
+          mkdir -p site/schema
+          cp web/index.html web/style.css web/main.js web/dedalo.js site/
+          cp target/wasm32-unknown-unknown/wasm/dedalo_wasm.wasm site/dedalo.wasm
+          cp spec/schema/*.json site/schema/
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin gh-pages > /dev/null; then
+            git fetch origin gh-pages
+            git worktree add published origin/gh-pages
+            git -C published checkout -B gh-pages
+          else
+            git worktree add --detach published
+            git -C published checkout --orphan gh-pages
+            git -C published rm -rf --quiet .
+          fi
+          touch published/.nojekyll
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            # A release replaces the root and keeps /next/.
+            find published -mindepth 1 -maxdepth 1 ! -name .git ! -name next ! -name .nojekyll -exec rm -rf {} +
+            cp -r site/. published/
+          else
+            rm -rf published/next
+            mkdir -p published/next
+            cp -r site/. published/next/
+          fi
+          git -C published add -A
+          if git -C published diff --cached --quiet; then
+            echo "nothing to publish"
+          else
+            git -C published commit --quiet -m "Deploy ${GITHUB_SHA}"
+            git -C published push origin gh-pages
+          fi

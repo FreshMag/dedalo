@@ -1,0 +1,184 @@
+# The built-in element catalog for release 0.1 (spec 8.2).
+#
+# This file uses the same format a third-party pack uses (spec 8.1) and is
+# read by the same loader. `glyph` is the character the text map draws.
+
+# Properties accepted on every element and space.
+[common.properties]
+description = { type = "string" }
+
+# Structural kinds are not catalog types, but their `properties` blocks are
+# typed here so that the catalog stays the single source of property schemas.
+[structure.room.properties]
+wall           = { type = "symbol", doc = "Wall material; defaults to settings.default_wall" }
+floor          = { type = "symbol", doc = "Floor material; defaults to settings.default_floor" }
+ceiling_height = { type = "number", min = 0 }
+
+[structure.corridor.properties]
+wall           = { type = "symbol" }
+floor          = { type = "symbol" }
+ceiling_height = { type = "number", min = 0 }
+
+[structure.connection.properties]
+locked    = { type = "boolean" }
+key       = { type = "reference", doc = "The item that opens it" }
+lock_dc   = { type = "integer", min = 0, max = 40 }
+break_dc  = { type = "integer", min = 0, max = 40 }
+material  = { type = "symbol" }
+direction = { type = "symbol", values = ["up", "down"], doc = "For stairs, ladders and trapdoors" }
+
+[type.architecture]
+class = "feature"
+category = "features"
+label = "Column"
+subtypes = ["column", "pillar"]
+blocking = true
+layer = "features"
+glyph = "O"
+
+[type.architecture.properties]
+material = { type = "symbol" }
+
+[type.furniture]
+class = "feature"
+category = "features"
+label = "Furniture"
+subtypes = ["table", "chair", "wardrobe", "altar", "statue", "sarcophagus", "crate"]
+blocking = true
+layer = "features"
+glyph = "f"
+
+[type.furniture.footprints]
+table = [2, 1]
+sarcophagus = [1, 2]
+
+[type.furniture.properties]
+material = { type = "symbol" }
+movable  = { type = "boolean" }
+
+[type.mechanism]
+class = "feature"
+category = "mechanisms"
+label = "Mechanism"
+subtypes = ["lever", "button", "generic"]
+layer = "features"
+glyph = "!"
+
+[type.mechanism.properties]
+effect    = { type = "string" }
+linked_to = { type = "list", of = "reference" }
+
+[type.trap]
+class = "feature"
+category = "traps"
+label = "Trap"
+subtypes = ["pressure_plate", "dart_launcher", "pit", "generic"]
+default_visibility = "dm"
+layer = "markers"
+glyph = "T"
+
+[type.trap.properties]
+trigger      = { type = "string" }
+area         = { type = "shape" }
+detection_dc = { type = "integer", min = 0, max = 40 }
+disarm_dc    = { type = "integer", min = 0, max = 40 }
+effect       = { type = "string" }
+damage       = { type = "string", doc = "Dice expression, for example 2d10" }
+damage_type  = { type = "symbol" }
+linked_to    = { type = "list", of = "reference" }
+
+[type.lighting]
+class = "feature"
+category = "lighting"
+label = "Light"
+subtypes = ["torch", "brazier", "candle", "glowing_crystal"]
+layer = "features"
+glyph = "*"
+
+[type.lighting.properties]
+radius    = { type = "number", min = 0, doc = "Radius of the light in cells" }
+intensity = { type = "symbol", values = ["bright", "dim"] }
+color     = { type = "string" }
+active    = { type = "boolean" }
+
+[type.terrain]
+class = "feature"
+category = "terrain"
+label = "Terrain"
+subtypes = ["water", "lava", "rubble", "rocks"]
+layer = "terrain"
+glyph = "~"
+
+[type.terrain.properties]
+difficult   = { type = "boolean" }
+depth       = { type = "number", min = 0 }
+damage      = { type = "string" }
+damage_type = { type = "symbol" }
+
+[type.container]
+class = "feature"
+category = "treasure"
+label = "Chest"
+subtypes = ["chest"]
+blocking = true
+default_visibility = "dm"
+layer = "features"
+glyph = "$"
+
+[type.container.properties]
+locked  = { type = "boolean" }
+key     = { type = "reference" }
+lock_dc = { type = "integer", min = 0, max = 40 }
+trapped = { type = "boolean" }
+
+[type.creature]
+class = "entity"
+category = "creatures"
+label = "Creature"
+default_visibility = "dm"
+layer = "entities"
+glyph = "M"
+
+[type.creature.properties]
+count       = { type = "integer", min = 1, doc = "A group of creatures is one entity with a count" }
+hp          = { type = "integer", min = 0 }
+faction     = { type = "symbol" }
+disposition = { type = "symbol", values = ["hostile", "neutral", "friendly"] }
+
+[type.npc]
+class = "entity"
+category = "creatures"
+label = "NPC"
+default_visibility = "dm"
+layer = "entities"
+glyph = "N"
+
+[type.npc.properties]
+role        = { type = "string" }
+faction     = { type = "symbol" }
+disposition = { type = "symbol", values = ["hostile", "neutral", "friendly"] }
+
+[type.item]
+class = "entity"
+category = "treasure"
+label = "Item"
+subtypes = ["treasure", "key", "weapon", "armor", "scroll", "generic"]
+default_visibility = "dm"
+layer = "entities"
+glyph = "i"
+
+[type.item.properties]
+value    = { type = "string" }
+quantity = { type = "integer", min = 1 }
+magical  = { type = "boolean" }
+
+[type.custom]
+class = "either"
+category = "features"
+label = "Custom"
+layer = "markers"
+glyph = "?"
+
+[type.custom.properties]
+symbol = { type = "string", doc = "One to three characters drawn in the marker" }
+label  = { type = "string", doc = "Legend label" }

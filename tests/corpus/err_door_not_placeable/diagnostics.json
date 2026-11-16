@@ -1,0 +1,39 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "DOOR_NOT_PLACEABLE",
+      "element": "entrance_door",
+      "message": "Door `entrance_door` at offset 7 on the north wall of `entrance` lies outside the wall shared with `guard_room`. Valid offsets are 1 to 6.",
+      "span": {
+        "start": [
+          18,
+          22
+        ],
+        "end": [
+          18,
+          23
+        ]
+      },
+      "related": [
+        {
+          "element": "guard_room",
+          "message": "shares x 1 to 7 of that wall"
+        }
+      ],
+      "suggestion": "Set placement.offset between 1 and 6, or remove it to centre the door.",
+      "fix": {
+        "op": "update",
+        "id": "entrance_door",
+        "set": {
+          "placement.offset": 3
+        }
+      }
+    }
+  ]
+}

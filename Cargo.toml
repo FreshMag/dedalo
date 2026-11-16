@@ -1,0 +1,49 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+rowan = "0.16"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+schemars = "1"
+toml = "1"
+libm = "0.2"
+clap = { version = "4", features = ["derive"] }
+
+dedalo-syntax = { path = "crates/dedalo-syntax" }
+dedalo-catalog = { path = "crates/dedalo-catalog" }
+dedalo-model = { path = "crates/dedalo-model" }
+dedalo-geom = { path = "crates/dedalo-geom" }
+dedalo-scene = { path = "crates/dedalo-scene" }
+dedalo-render = { path = "crates/dedalo-render" }
+dedalo-export = { path = "crates/dedalo-export" }
+dedalo-plugin = { path = "crates/dedalo-plugin" }
+dedalo-core = { path = "crates/dedalo-core" }
+
+# Core crates forbid unsafe code (spec section 4). dedalo-wasm is the one
+# crate that does not opt in, because it owns the WebAssembly boundary.
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+# A diagnostic is a rich record by design (spec 10.1) and travels only on
+# error paths, where its size does not matter.
+result_large_err = "allow"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.wasm]
+inherits = "release"
+opt-level = "s"
+panic = "abort"

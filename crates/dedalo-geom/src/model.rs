@@ -1,0 +1,204 @@
+//! The resolved model: the document with absolute geometry (spec 6.5).
+//!
+//! This is what the view stage receives, and what `dedalo inspect --stage
+//! resolved` prints. Coordinates serialise in cells.
+
+use dedalo_model::{Class, Direction, Facing, Num, Props, SpaceKind, Visibility};
+use serde::{Serialize, Serializer};
+
+use crate::prim::{C, Pt, Rect};
+
+fn cells<S: Serializer>(value: &C, s: S) -> Result<S::Ok, S::Error> {
+    Num(*value).serialize(s)
+}
+
+fn opt_cells<S: Serializer>(value: &Option<C>, s: S) -> Result<S::Ok, S::Error> {
+    value.map(Num).serialize(s)
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct Resolved {
+    pub id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grid_unit: Option<String>,
+    /// The effective seed of the random stream (spec 7.10).
+    pub seed: u64,
+    /// Bounding box of everything that resolved.
+    pub bounds: Rect,
+    pub spaces: Vec<RSpace>,
+    pub walls: Vec<Wall>,
+    pub openings: Vec<Opening>,
+    pub elements: Vec<RElement>,
+    pub notes: Vec<RNote>,
+    pub reach: Reach,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Serialize)]
+pub struct Circle {
+    pub center: Pt,
+    #[serde(serialize_with = "cells")]
+    pub radius: C,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct RSpace {
+    pub id: String,
+    pub kind: SpaceKind,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Absolute outline, clockwise. For a circle, the polygonal approximation.
+    pub polygon: Vec<Pt>,
+    /// The exact outline when the space is a circle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circle: Option<Circle>,
+    pub bbox: Rect,
+    /// Always `default` before multi-level support.
+    pub level: String,
+    pub visibility: Visibility,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reveal_when: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub tags: Vec<String>,
+    pub wall: String,
+    pub floor: String,
+    /// Corridors: the two spaces it joins.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub connects: Vec<String>,
+}
+
+/// A boundary between a space and another space or the outside.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct Wall {
+    /// The full segment of a straight wall, before openings are cut.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line: Option<[Pt; 2]>,
+    /// The circle of a curved wall.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circle: Option<Circle>,
+    /// The one or two spaces it bounds.
+    pub spaces: Vec<String>,
+    pub material: String,
+    /// The openings cut into it.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub openings: Vec<String>,
+    /// Straight walls: the pieces that remain after cutting the openings.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub solid: Vec<[Pt; 2]>,
+    /// Curved walls: the gaps, each clockwise from its first point.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub gaps: Vec<[Pt; 2]>,
+}
+
+/// A connection resolved to a place on a wall, or to a cell for stairs.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct Opening {
+    /// The source connection ID; `corridor/space` for a corridor's own end.
+    pub id: String,
+    pub from: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<String>,
+    #[serde(rename = "type")]
+    pub ty: String,
+    pub secret: bool,
+    pub locked: bool,
+    pub visibility: Visibility,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reveal_when: Option<String>,
+    /// True for the open end of a corridor, which no connection declares.
+    pub implicit: bool,
+    /// The opening on the wall of `from`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub segment: Option<[Pt; 2]>,
+    /// With a stub passage: the opening on the wall of `to`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub far: Option<[Pt; 2]>,
+    #[serde(serialize_with = "cells")]
+    pub width: C,
+    /// The stub passage that bridges a short gap (spec 7.5).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stub: Option<Vec<Pt>>,
+    /// Stairs, ladders and trapdoors: the cell they occupy.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cell: Option<Rect>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct RElement {
+    pub id: String,
+    pub class: Class,
+    #[serde(rename = "type")]
+    pub ty: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subtype: Option<String>,
+    /// Legend group and visibility toggle, from the catalog.
+    pub category: String,
+    /// Legend label, from the catalog.
+    pub label: String,
+    /// The type's own name in lower case, such as `light` or `trap`.
+    pub type_label: String,
+    /// Text-map character, from the catalog.
+    pub glyph: String,
+    pub layer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The owning space. Absent only for an item inside a container whose
+    /// own space is unknown.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space: Option<String>,
+    /// Absolute footprint. Empty for an item held in a container.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub footprint: Vec<Pt>,
+    pub bbox: Rect,
+    pub rotation: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub facing: Option<Facing>,
+    /// The wall the element is mounted on, in map directions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wall: Option<Direction>,
+    pub visibility: Visibility,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reveal_when: Option<String>,
+    pub blocking: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub contained_in: Option<String>,
+    /// Light sources: radius in cells.
+    #[serde(skip_serializing_if = "Option::is_none", serialize_with = "opt_cells")]
+    pub light_radius: Option<C>,
+    #[serde(skip_serializing_if = "Props::is_empty")]
+    pub properties: Props,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub tags: Vec<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct RNote {
+    pub id: String,
+    /// Running number, from 1, in declaration order.
+    pub number: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub target: Option<String>,
+    /// Where the numbered marker goes, when the note has a place.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub anchor: Option<Pt>,
+    pub text: String,
+    pub visibility: Visibility,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reveal_when: Option<String>,
+}
+
+/// The reachability graph of spaces (spec 7.9).
+#[derive(Clone, Debug, Default, PartialEq, Serialize)]
+pub struct Reach {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entrance: Option<String>,
+    /// Pairs of spaces joined by an opening, with the opening's ID.
+    pub links: Vec<[String; 3]>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub unreachable: Vec<String>,
+}

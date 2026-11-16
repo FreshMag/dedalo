@@ -1,0 +1,9 @@
+dungeon "d" {
+    room "a" {
+        shape = square(4)
+    }
+
+    room "island" {
+        shape = square(4)
+    }
+}

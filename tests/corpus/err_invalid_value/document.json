@@ -1,0 +1,18 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "Great Hall",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 2,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "UNKNOWN_TYPE",
+      "element": "plate",
+      "message": "`plate` has type `trapp`, which is not in the catalog. Did you mean `trap`? The types are architecture, container, creature, custom, furniture, item, lighting, mechanism, npc, terrain, trap. Use `type = custom` for anything else.",
+      "span": {
+        "start": [
+          6,
+          20
+        ],
+        "end": [
+          6,
+          25
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "UNKNOWN_TYPE",
+      "element": "light",
+      "message": "`light` has subtype `lantern`, which type `lighting` does not define. The subtypes of `lighting` are torch, brazier, candle, glowing_crystal.",
+      "span": {
+        "start": [
+          12,
+          23
+        ],
+        "end": [
+          12,
+          30
+        ]
+      }
+    }
+  ]
+}

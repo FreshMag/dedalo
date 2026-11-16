@@ -1,0 +1,47 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            10,
+            0
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "far_door",
+        "from": "a",
+        "to": "b",
+        "type": "door"
+      }
+    ]
+  }
+}

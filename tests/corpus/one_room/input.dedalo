@@ -1,0 +1,5 @@
+dungeon "one_room" {
+    room "cell" {
+        shape = rectangle(8, 6)
+    }
+}

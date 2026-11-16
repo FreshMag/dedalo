@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6.6 -9.8 30.9 17.1" width="1978" height="1094">
+<defs><clipPath id="c1"><path d="M0 0L8 0L8 6L0 6Z"/></clipPath><radialGradient id="g2" gradientUnits="userSpaceOnUse" cx="2.5" cy="5.8" r="4"><stop offset="0" stop-color="#ffd27a" stop-opacity="0.6"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient><clipPath id="c3"><path d="M1 -6L7 -6L7 0L1 0Z"/></clipPath><radialGradient id="g4" gradientUnits="userSpaceOnUse" cx="4" cy="-3" r="4"><stop offset="0" stop-color="#ffd27a" stop-opacity="0.6"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient><clipPath id="c5"><path d="M0 0L8 0L8 6L0 6Z"/></clipPath><clipPath id="c6"><path d="M1 -6L7 -6L7 0L1 0Z"/></clipPath><clipPath id="c7"><path d="M7 -8L15 -8L15 0L7 0Z"/></clipPath><clipPath id="c8"><path d="M-6 1L-2 1L-2 5L-6 5Z"/></clipPath><clipPath id="c9"><path d="M0 2L0 3L-2 3L-2 2Z"/></clipPath></defs>
+<g id="layer-background">
+<path d="M-6.6 -9.8L24.3 -9.8L24.3 7.3L-6.6 7.3Z" fill="#ffffff"/>
+</g>
+<g id="layer-floor">
+<path data-id="entrance" data-role="floor" d="M0 0L8 0L8 6L0 6Z" fill="#ffffff"/>
+<path data-id="guard_room" data-role="floor" d="M1 -6L7 -6L7 0L1 0Z" fill="#ffffff"/>
+<path data-id="treasure_room" data-role="floor" d="M7 -8L15 -8L15 0L7 0Z" fill="#ffffff"/>
+<path data-id="armory" data-role="floor" d="M-6 1L-2 1L-2 5L-6 5Z" fill="#ffffff"/>
+<path data-id="west_passage" data-role="floor" d="M0 2L0 3L-2 3L-2 2Z" fill="#ffffff"/>
+</g>
+<g id="layer-lighting">
+<g clip-path="url(#c1)"><path d="M-1.5 5.8A4 4 0 0 1 6.5 5.8A4 4 0 0 1 -1.5 5.8Z" fill="url(#g2)"/>
+</g>
+<g clip-path="url(#c3)"><path d="M0 -3A4 4 0 0 1 8 -3A4 4 0 0 1 0 -3Z" fill="url(#g4)"/>
+</g>
+</g>
+<g id="layer-grid">
+<g clip-path="url(#c5)"><path d="M1 0L1 6M2 0L2 6M3 0L3 6M4 0L4 6M5 0L5 6M6 0L6 6M7 0L7 6M0 1L8 1M0 2L8 2M0 3L8 3M0 4L8 4M0 5L8 5" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+<g clip-path="url(#c6)"><path d="M2 -6L2 0M3 -6L3 0M4 -6L4 0M5 -6L5 0M6 -6L6 0M1 -5L7 -5M1 -4L7 -4M1 -3L7 -3M1 -2L7 -2M1 -1L7 -1" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+<g clip-path="url(#c7)"><path d="M8 -8L8 0M9 -8L9 0M10 -8L10 0M11 -8L11 0M12 -8L12 0M13 -8L13 0M14 -8L14 0M7 -7L15 -7M7 -6L15 -6M7 -5L15 -5M7 -4L15 -4M7 -3L15 -3M7 -2L15 -2M7 -1L15 -1" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+<g clip-path="url(#c8)"><path d="M-5 1L-5 5M-4 1L-4 5M-3 1L-3 5M-6 2L-2 2M-6 3L-2 3M-6 4L-2 4" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+<g clip-path="url(#c9)"><path d="M-1 2L-1 3" fill="none" stroke="#c8c8c8" stroke-width="0.02"/>
+</g>
+</g>
+<g id="layer-walls">
+<path d="M15 -8L15 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 0L8 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 -8L7 -6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 -6L7 -4M7 -3L7 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 -6L1 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L0 2" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 3L0 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-2 1L-2 2" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-2 3L-2 5" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-6 1L-6 5" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 -8L15 -8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 -6L7 -6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L1 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 0L3 0M4 0L7 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 0L8 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 0L15 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-6 1L-2 1" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-2 2L0 2" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-2 3L0 3" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-6 5L-2 5" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 6L8 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g id="layer-openings">
+<g data-id="entrance_door" data-role="door"><path d="M3 -0.16L4 -0.16L4 0.16L3 0.16Z" fill="#ffffff" stroke="#111111" stroke-width="0.06"/>
+</g>
+<g data-id="secret_door" data-role="door"><path d="M7 -4L7 -3" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="7" y="-3.325" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="none" stroke="#ffffff" stroke-width="0.14" stroke-linejoin="round">S</text>
+<text x="7" y="-3.325" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">S</text>
+</g>
+<g><path d="M16.2 -6.81L16.8 -6.81L16.8 -6.49L16.2 -6.49Z" fill="#ffffff" stroke="#111111" stroke-width="0.06"/>
+</g>
+<g><path d="M16.2 -5.55L16.8 -5.55" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="16.5" y="-5.375" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="none" stroke="#ffffff" stroke-width="0.14" stroke-linejoin="round">S</text>
+<text x="16.5" y="-5.375" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">S</text>
+</g>
+</g>
+<g id="layer-features">
+<g data-id="wall_torch" data-role="lighting"><path d="M2.7 5.8L2.8 5.8" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M2.5 6L2.5 6.1" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M2.3 5.8L2.2 5.8" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M2.5 5.6L2.5 5.5" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M2.36 5.8A0.14 0.14 0 0 1 2.64 5.8A0.14 0.14 0 0 1 2.36 5.8Z" fill="#ffd27a" stroke="#111111" stroke-width="0.05"/>
+</g>
+<g data-id="brazier" data-role="lighting"><path d="M3.72 -3A0.28 0.28 0 0 1 4.28 -3A0.28 0.28 0 0 1 3.72 -3Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<path d="M3.86 -3A0.14 0.14 0 0 1 4.14 -3A0.14 0.14 0 0 1 3.86 -3Z" fill="#ffd27a" stroke="#111111" stroke-width="0.05"/>
+</g>
+<g data-id="guard_table" data-role="furniture"><path d="M4.14 -1.86L5.86 -1.86L5.86 -1.14L4.14 -1.14Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+</g>
+<g data-id="column_nw" data-role="architecture"><path d="M9.18 -5.5A0.32 0.32 0 0 1 9.82 -5.5A0.32 0.32 0 0 1 9.18 -5.5Z" fill="#111111"/>
+</g>
+<g data-id="column_se" data-role="architecture"><path d="M12.18 -2.5A0.32 0.32 0 0 1 12.82 -2.5A0.32 0.32 0 0 1 12.18 -2.5Z" fill="#111111"/>
+</g>
+<g data-id="chest" data-role="container"><path d="M13.14 -6.76L13.86 -6.76L13.86 -6.24L13.14 -6.24Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<path d="M13.14 -6.56L13.86 -6.56" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M13.45 -6.46A0.05 0.05 0 0 1 13.55 -6.46A0.05 0.05 0 0 1 13.45 -6.46Z" fill="#111111"/>
+</g>
+</g>
+<g id="layer-entities">
+<g data-id="skeletons" data-role="creature"><path d="M2.12 -4.5A0.38 0.38 0 0 1 2.88 -4.5A0.38 0.38 0 0 1 2.12 -4.5Z" fill="#ffffff" stroke="#111111" stroke-width="0.06"/>
+<text x="2.5" y="-4.325" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">S</text>
+<path d="M2.63 -4.8A0.17 0.17 0 0 1 2.97 -4.8A0.17 0.17 0 0 1 2.63 -4.8Z" fill="#111111"/>
+<text x="2.8" y="-4.716" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.24" font-weight="bold" text-anchor="middle" fill="#ffffff">3</text>
+</g>
+<g data-id="old_sword" data-role="item"><path d="M-4.88 2.5A0.38 0.38 0 0 1 -4.12 2.5A0.38 0.38 0 0 1 -4.88 2.5Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<text x="-4.5" y="2.675" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">w</text>
+</g>
+</g>
+<g id="layer-markers">
+<g data-id="pressure_trap" data-role="trap"><path d="M4.5 3.063L4.937 3.5L4.5 3.937L4.063 3.5Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<text x="4.5" y="3.675" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">T</text>
+</g>
+<g data-id="entrance_note" data-role="note"><path d="M0.26 0.5A0.24 0.24 0 0 1 0.74 0.5A0.24 0.24 0 0 1 0.26 0.5Z" fill="#fff3b0" stroke="#111111" stroke-width="0.05"/>
+<text x="0.5" y="0.605" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.3" font-weight="bold" text-anchor="middle" fill="#111111">1</text>
+</g>
+</g>
+<g id="layer-labels">
+<text x="4" y="2.647" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="none" stroke="#ffffff" stroke-width="0.12" stroke-linejoin="round">Ingresso</text>
+<text data-id="entrance" data-role="label" x="4" y="2.647" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="#111111">Ingresso</text>
+<text x="4" y="-5.353" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="none" stroke="#ffffff" stroke-width="0.12" stroke-linejoin="round">Sala delle Guardie</text>
+<text data-id="guard_room" data-role="label" x="4" y="-5.353" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="#111111">Sala delle Guardie</text>
+<text x="11" y="-3.853" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="none" stroke="#ffffff" stroke-width="0.12" stroke-linejoin="round">Sala del Tesoro</text>
+<text data-id="treasure_room" data-role="label" x="11" y="-3.853" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="#111111">Sala del Tesoro</text>
+<text x="-4" y="3.647" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="none" stroke="#ffffff" stroke-width="0.12" stroke-linejoin="round">Armeria</text>
+<text data-id="armory" data-role="label" x="-4" y="3.647" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.42" text-anchor="middle" fill="#111111">Armeria</text>
+</g>
+<g id="layer-frame">
+<text x="16" y="-7.446" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.44" font-weight="bold" text-anchor="start" fill="#111111">Legend</text>
+<path d="M16 -6.65L16.2 -6.65M16.8 -6.65L17 -6.65" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="17.4" y="-6.51" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Door</text>
+<path d="M16 -5.55L16.2 -5.55M16.8 -5.55L17 -5.55" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="17.4" y="-5.41" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Secret door</text>
+<g><path d="M16.14 -4.81L16.86 -4.81L16.86 -4.09L16.14 -4.09Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+</g>
+<text x="17.4" y="-4.31" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Table</text>
+<g><path d="M16.18 -3.35A0.32 0.32 0 0 1 16.82 -3.35A0.32 0.32 0 0 1 16.18 -3.35Z" fill="#111111"/>
+</g>
+<text x="17.4" y="-3.21" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Column</text>
+<g><path d="M16.5 -2.687L16.937 -2.25L16.5 -1.813L16.063 -2.25Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<text x="16.5" y="-2.075" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">T</text>
+</g>
+<text x="17.4" y="-2.11" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Pressure plate</text>
+<g><path d="M16.7 -1.15L16.8 -1.15" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M16.5 -0.95L16.5 -0.85" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M16.3 -1.15L16.2 -1.15" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M16.5 -1.35L16.5 -1.45" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M16.36 -1.15A0.14 0.14 0 0 1 16.64 -1.15A0.14 0.14 0 0 1 16.36 -1.15Z" fill="#ffd27a" stroke="#111111" stroke-width="0.05"/>
+</g>
+<text x="17.4" y="-1.01" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Torch</text>
+<g><path d="M16.22 -0.05A0.28 0.28 0 0 1 16.78 -0.05A0.28 0.28 0 0 1 16.22 -0.05Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<path d="M16.36 -0.05A0.14 0.14 0 0 1 16.64 -0.05A0.14 0.14 0 0 1 16.36 -0.05Z" fill="#ffd27a" stroke="#111111" stroke-width="0.05"/>
+</g>
+<text x="17.4" y="0.09" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Brazier</text>
+<g><path d="M16.12 1.05A0.38 0.38 0 0 1 16.88 1.05A0.38 0.38 0 0 1 16.12 1.05Z" fill="#ffffff" stroke="#111111" stroke-width="0.06"/>
+<text x="16.5" y="1.225" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">M</text>
+</g>
+<text x="17.4" y="1.19" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Creature</text>
+<g><path d="M16.14 1.89L16.86 1.89L16.86 2.41L16.14 2.41Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<path d="M16.14 2.09L16.86 2.09" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M16.45 2.19A0.05 0.05 0 0 1 16.55 2.19A0.05 0.05 0 0 1 16.45 2.19Z" fill="#111111"/>
+</g>
+<text x="17.4" y="2.29" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Chest</text>
+<g><path d="M16.12 3.25A0.38 0.38 0 0 1 16.88 3.25A0.38 0.38 0 0 1 16.12 3.25Z" fill="#ffffff" stroke="#111111" stroke-width="0.05"/>
+<text x="16.5" y="3.425" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.5" font-weight="bold" text-anchor="middle" fill="#111111">w</text>
+</g>
+<text x="17.4" y="3.39" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.4" text-anchor="start" fill="#111111">Weapon</text>
+<text x="16" y="4.654" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.44" font-weight="bold" text-anchor="start" fill="#111111">Notes</text>
+<text x="16" y="5.259" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.34" text-anchor="start" fill="#111111">1. Esaminare attentamente il pavimento.</text>
+<text x="16" y="5.739" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.34" text-anchor="start" fill="#111111">Chest: Corona del Re Sepolto</text>
+<text x="-6" y="-8.805" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.7" font-weight="bold" text-anchor="start" fill="#111111">La Cripta Dimenticata</text>
+<text x="-6" y="7.026" font-family="DejaVu Sans, Verdana, sans-serif" font-size="0.36" text-anchor="start" fill="#666666">1 square = 5ft</text>
+</g>
+</svg>

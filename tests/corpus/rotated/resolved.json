@@ -1,0 +1,454 @@
+{
+  "id": "rotated",
+  "name": "Rotated",
+  "seed": 17744750580048051050,
+  "bounds": [
+    0,
+    0,
+    6,
+    8
+  ],
+  "spaces": [
+    {
+      "id": "start",
+      "kind": "room",
+      "name": "Start",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        6,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "annex",
+      "kind": "room",
+      "name": "Annex",
+      "polygon": [
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "bbox": [
+        2,
+        4,
+        4,
+        8
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "start"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "spaces": [
+        "annex"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            4
+          ],
+          [
+            4,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          8
+        ]
+      ],
+      "spaces": [
+        "annex"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "spaces": [
+        "start"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "start"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            6,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "spaces": [
+        "start"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            2,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "spaces": [
+        "start",
+        "annex"
+      ],
+      "material": "stone",
+      "openings": [
+        "annex_door"
+      ],
+      "solid": [
+        [
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "start"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            4
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          8
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "spaces": [
+        "annex"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            8
+          ],
+          [
+            4,
+            8
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "annex_door",
+      "from": "start",
+      "to": "annex",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [
+    {
+      "id": "sconce",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "candle",
+      "category": "lighting",
+      "label": "Candle",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "annex",
+      "footprint": [
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          5
+        ]
+      ],
+      "bbox": [
+        3,
+        5,
+        4,
+        6
+      ],
+      "rotation": 0,
+      "wall": "east",
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 4
+    },
+    {
+      "id": "pit",
+      "class": "feature",
+      "type": "trap",
+      "subtype": "pit",
+      "category": "traps",
+      "label": "Pit",
+      "type_label": "trap",
+      "glyph": "T",
+      "layer": "markers",
+      "space": "annex",
+      "footprint": [
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "bbox": [
+        3,
+        4,
+        4,
+        5
+      ],
+      "rotation": 0,
+      "visibility": "conditional",
+      "reveal_when": "pit_found",
+      "blocking": false
+    }
+  ],
+  "notes": [],
+  "reach": {
+    "entrance": "start",
+    "links": [
+      [
+        "start",
+        "annex",
+        "annex_door"
+      ]
+    ]
+  }
+}

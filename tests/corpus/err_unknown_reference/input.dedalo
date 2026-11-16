@@ -1,0 +1,16 @@
+dungeon "d" {
+    room "entrance" {
+        shape = rectangle(8, 6)
+    }
+
+    room "guard_room" {
+        shape = square(6)
+        layout { north_of = "entrance" }
+    }
+
+    connection "door" {
+        from = "entrance"
+        to = "gaurd_room"
+        type = door
+    }
+}

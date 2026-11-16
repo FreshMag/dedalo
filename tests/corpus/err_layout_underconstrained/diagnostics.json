@@ -1,0 +1,26 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "LAYOUT_UNDERCONSTRAINED",
+      "element": "island",
+      "message": "Room `island` has no position, and no connection or corridor links it to a room that is already placed.",
+      "span": {
+        "start": [
+          6,
+          10
+        ],
+        "end": [
+          6,
+          18
+        ]
+      },
+      "suggestion": "Add `layout { position = [x, y] }` or `layout { adjacent_to = \"other_room\", direction = east }`, or connect the room to a placed room."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[package]
+name = "dedalo-core"
+description = "The facade every Dedalo host calls"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+dedalo-syntax.workspace = true
+dedalo-catalog.workspace = true
+dedalo-model.workspace = true
+dedalo-geom.workspace = true
+dedalo-scene.workspace = true
+dedalo-render.workspace = true
+dedalo-export.workspace = true
+dedalo-plugin.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

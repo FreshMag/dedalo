@@ -1,0 +1,67 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "entrance",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "guard_room",
+        "shape": {
+          "fn": "square",
+          "args": [
+            6
+          ]
+        },
+        "layout": {
+          "adjacent_to": "entrance",
+          "direction": "north"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "treasure_room",
+        "shape": {
+          "fn": "square",
+          "args": [
+            8
+          ]
+        },
+        "layout": {
+          "adjacent_to": "guard_room",
+          "direction": "east"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "door",
+        "from": "entrance",
+        "to": "guard_room",
+        "type": "door"
+      },
+      {
+        "id": "secret",
+        "from": "guard_room",
+        "to": "treasure_room",
+        "type": "door",
+        "secret": true
+      }
+    ]
+  }
+}

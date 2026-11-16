@@ -1,0 +1,9 @@
+dungeon "d" {
+    room "a" {
+        shape = rectangle(8, 6)
+
+        placment {
+            position = [0, 0]
+        }
+    }
+}

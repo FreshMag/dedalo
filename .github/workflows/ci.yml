@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # The golden corpus is compared byte for byte, so running the same tests on
+  # three systems is what proves the output is identical across them.
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned toolchain
+        run: rustup show
+      - name: Format
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo fmt --all --check
+      - name: Lint
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Test
+        run: cargo test --workspace --locked
+
+  # The WebAssembly build must reproduce the bytes the native build recorded.
+  wasm:
+    name: wasm32 golden check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned toolchain
+        run: rustup show
+      - name: Build the module
+        run: |
+          cargo build -p dedalo-wasm --target wasm32-unknown-unknown --profile wasm --locked
+          cp target/wasm32-unknown-unknown/wasm/dedalo_wasm.wasm web/dedalo.wasm
+      - name: Size budget (1.5 MB compressed, spec 14.3)
+        run: |
+          size=$(gzip -9 -c web/dedalo.wasm | wc -c)
+          echo "core module: $size bytes compressed"
+          test "$size" -le 1572864
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compare with the golden corpus
+        run: node web/golden.mjs web/dedalo.wasm tests/corpus

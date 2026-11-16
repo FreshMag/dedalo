@@ -1,0 +1,139 @@
+{
+  "err_corridor_disconnected": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_door_not_placeable": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_duplicate_id": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_element_overlap": [
+    "diagnostics.json",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ],
+  "err_invalid_shape": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_invalid_value": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_layout_cycle": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_layout_underconstrained": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_out_of_bounds": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_overlap": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_plugin_not_found": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_syntax_error": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_type_mismatch": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_unknown_attribute": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_unknown_block": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_unknown_property": [
+    "diagnostics.json",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ],
+  "err_unknown_reference": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_unknown_type": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "err_unreachable_room": [
+    "diagnostics.json",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ],
+  "err_unresolvable_connection": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "forgotten_crypt": [
+    "diagnostics.json",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ],
+  "four_shapes": [
+    "clean.svg",
+    "clean.txt",
+    "diagnostics.json",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.svg",
+    "player.txt",
+    "resolved.json",
+    "turned.svg",
+    "turned.txt"
+  ],
+  "one_room": [
+    "diagnostics.json",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ],
+  "rotated": [
+    "diagnostics.json",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "found.svg",
+    "found.txt",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ]
+}

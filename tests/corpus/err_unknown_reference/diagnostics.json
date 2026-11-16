@@ -1,0 +1,43 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "UNREACHABLE_ROOM",
+      "element": "guard_room",
+      "message": "Room `guard_room` cannot be reached from the entrance `entrance`: no connection or corridor leads to it.",
+      "span": {
+        "start": [
+          6,
+          10
+        ],
+        "end": [
+          6,
+          22
+        ]
+      },
+      "suggestion": "Join it to the dungeon, for example `connection \"guard_room_door\" { from = \"...\", to = \"guard_room\", type = door }`."
+    },
+    {
+      "severity": "error",
+      "code": "UNKNOWN_REFERENCE",
+      "element": "door",
+      "message": "`door` refers to `gaurd_room` in `to`, but no element has that ID.",
+      "span": {
+        "start": [
+          13,
+          14
+        ],
+        "end": [
+          13,
+          26
+        ]
+      },
+      "suggestion": "Did you mean `guard_room`?"
+    }
+  ]
+}

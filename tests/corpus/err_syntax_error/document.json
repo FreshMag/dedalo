@@ -1,0 +1,42 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            4,
+            4,
+            6
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "name": "never closed",
+        "shape": {
+          "fn": "square",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "adjacent_to": "a",
+          "direction": "east"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "ab",
+        "from": "a",
+        "to": "b",
+        "type": "door"
+      }
+    ]
+  }
+}

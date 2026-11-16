@@ -1,0 +1,69 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            10,
+            10
+          ]
+        }
+      },
+      {
+        "kind": "corridor",
+        "id": "diagonal",
+        "connects": [
+          "a",
+          "b"
+        ]
+      },
+      {
+        "kind": "corridor",
+        "id": "short",
+        "connects": [
+          "a",
+          "b"
+        ],
+        "path": [
+          [
+            4,
+            1.5
+          ],
+          [
+            7,
+            1.5
+          ],
+          [
+            7,
+            6
+          ]
+        ]
+      }
+    ]
+  }
+}

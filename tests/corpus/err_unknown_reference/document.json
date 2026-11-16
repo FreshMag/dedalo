@@ -1,0 +1,40 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "entrance",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "guard_room",
+        "shape": {
+          "fn": "square",
+          "args": [
+            6
+          ]
+        },
+        "layout": {
+          "adjacent_to": "entrance",
+          "direction": "north"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "door",
+        "from": "entrance",
+        "to": "gaurd_room",
+        "type": "door"
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+[package]
+name = "dedalo-syntax"
+description = "Lexer, error-tolerant parser, lossless syntax tree and formatter for the Dedalo DSL"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+rowan.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,1947 @@
+{
+  "id": "four_shapes",
+  "name": "Four Shapes",
+  "grid_unit": "5ft",
+  "seed": 12988357840792374312,
+  "bounds": [
+    0,
+    -9,
+    17,
+    12
+  ],
+  "spaces": [
+    {
+      "id": "hall",
+      "kind": "room",
+      "name": "Hall",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        10,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "tags": [
+        "entrance"
+      ],
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "rotunda",
+      "kind": "room",
+      "name": "Rotunda",
+      "polygon": [
+        [
+          14,
+          0
+        ],
+        [
+          14.469,
+          0.037
+        ],
+        [
+          14.927,
+          0.147
+        ],
+        [
+          15.362,
+          0.327
+        ],
+        [
+          15.763,
+          0.573
+        ],
+        [
+          16.121,
+          0.879
+        ],
+        [
+          16.427,
+          1.237
+        ],
+        [
+          16.673,
+          1.638
+        ],
+        [
+          16.853,
+          2.073
+        ],
+        [
+          16.963,
+          2.531
+        ],
+        [
+          17,
+          3
+        ],
+        [
+          16.963,
+          3.469
+        ],
+        [
+          16.853,
+          3.927
+        ],
+        [
+          16.673,
+          4.362
+        ],
+        [
+          16.427,
+          4.763
+        ],
+        [
+          16.121,
+          5.121
+        ],
+        [
+          15.763,
+          5.427
+        ],
+        [
+          15.362,
+          5.673
+        ],
+        [
+          14.927,
+          5.853
+        ],
+        [
+          14.469,
+          5.963
+        ],
+        [
+          14,
+          6
+        ],
+        [
+          13.531,
+          5.963
+        ],
+        [
+          13.073,
+          5.853
+        ],
+        [
+          12.638,
+          5.673
+        ],
+        [
+          12.237,
+          5.427
+        ],
+        [
+          11.879,
+          5.121
+        ],
+        [
+          11.573,
+          4.763
+        ],
+        [
+          11.327,
+          4.362
+        ],
+        [
+          11.147,
+          3.927
+        ],
+        [
+          11.037,
+          3.469
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          11.037,
+          2.531
+        ],
+        [
+          11.147,
+          2.073
+        ],
+        [
+          11.327,
+          1.638
+        ],
+        [
+          11.573,
+          1.237
+        ],
+        [
+          11.879,
+          0.879
+        ],
+        [
+          12.237,
+          0.573
+        ],
+        [
+          12.638,
+          0.327
+        ],
+        [
+          13.073,
+          0.147
+        ],
+        [
+          13.531,
+          0.037
+        ]
+      ],
+      "circle": {
+        "center": [
+          14,
+          3
+        ],
+        "radius": 3
+      },
+      "bbox": [
+        11,
+        0,
+        17,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "vault",
+      "kind": "room",
+      "name": "Vault",
+      "polygon": [
+        [
+          0,
+          6
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          0,
+          10
+        ]
+      ],
+      "bbox": [
+        0,
+        6,
+        4,
+        10
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "gallery",
+      "kind": "room",
+      "name": "Gallery",
+      "polygon": [
+        [
+          4,
+          -9
+        ],
+        [
+          10,
+          -9
+        ],
+        [
+          10,
+          -6
+        ],
+        [
+          7,
+          -6
+        ],
+        [
+          7,
+          -3
+        ],
+        [
+          4,
+          -3
+        ]
+      ],
+      "bbox": [
+        4,
+        -9,
+        10,
+        -3
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "cell",
+      "kind": "room",
+      "name": "Cell",
+      "polygon": [
+        [
+          8,
+          9
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "bbox": [
+        8,
+        9,
+        11,
+        12
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "north_hall",
+      "kind": "corridor",
+      "polygon": [
+        [
+          4,
+          -3
+        ],
+        [
+          6,
+          -3
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "bbox": [
+        4,
+        -3,
+        6,
+        0
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone",
+      "connects": [
+        "hall",
+        "gallery"
+      ]
+    },
+    {
+      "id": "bend",
+      "kind": "corridor",
+      "polygon": [
+        [
+          4,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "bbox": [
+        4,
+        7,
+        8,
+        11
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone",
+      "connects": [
+        "vault",
+        "cell"
+      ]
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          11.042,
+          2.5
+        ],
+        [
+          11.042,
+          3.5
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "openings": [
+        "rotunda_door"
+      ]
+    },
+    {
+      "line": [
+        [
+          11,
+          9
+        ],
+        [
+          11,
+          12
+        ]
+      ],
+      "spaces": [
+        "cell"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            11,
+            9
+          ],
+          [
+            11,
+            12
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          -9
+        ],
+        [
+          10,
+          -6
+        ]
+      ],
+      "spaces": [
+        "gallery"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            -9
+          ],
+          [
+            10,
+            -6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          2.5
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            0
+          ],
+          [
+            10,
+            2.5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          2.5
+        ],
+        [
+          10,
+          3.5
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "openings": [
+        "rotunda_door"
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          3.5
+        ],
+        [
+          10,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            3.5
+          ],
+          [
+            10,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          9
+        ],
+        [
+          8,
+          10
+        ]
+      ],
+      "spaces": [
+        "cell"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            9
+          ],
+          [
+            8,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          10
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "spaces": [
+        "cell",
+        "bend"
+      ],
+      "material": "stone",
+      "openings": [
+        "cell_door"
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          11
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "spaces": [
+        "cell"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            11
+          ],
+          [
+            8,
+            12
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          -6
+        ],
+        [
+          7,
+          -3
+        ]
+      ],
+      "spaces": [
+        "gallery"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            7,
+            -6
+          ],
+          [
+            7,
+            -3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "spaces": [
+        "bend"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            7,
+            7
+          ],
+          [
+            7,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          -3
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "north_hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            -3
+          ],
+          [
+            6,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          11
+        ]
+      ],
+      "spaces": [
+        "bend"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            11
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          -9
+        ],
+        [
+          4,
+          -3
+        ]
+      ],
+      "spaces": [
+        "gallery"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            -9
+          ],
+          [
+            4,
+            -3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          -3
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "spaces": [
+        "north_hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            -3
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            7
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "spaces": [
+        "vault",
+        "bend"
+      ],
+      "material": "stone",
+      "openings": [
+        "bend/vault"
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          8
+        ],
+        [
+          4,
+          10
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            8
+          ],
+          [
+            4,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          10
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          -9
+        ],
+        [
+          10,
+          -9
+        ]
+      ],
+      "spaces": [
+        "gallery"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            -9
+          ],
+          [
+            10,
+            -9
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          -6
+        ],
+        [
+          10,
+          -6
+        ]
+      ],
+      "spaces": [
+        "gallery"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            7,
+            -6
+          ],
+          [
+            10,
+            -6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          -3
+        ],
+        [
+          6,
+          -3
+        ]
+      ],
+      "spaces": [
+        "gallery",
+        "north_hall"
+      ],
+      "material": "stone",
+      "openings": [
+        "north_hall/gallery"
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          -3
+        ],
+        [
+          7,
+          -3
+        ]
+      ],
+      "spaces": [
+        "gallery"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            -3
+          ],
+          [
+            7,
+            -3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "hall",
+        "north_hall"
+      ],
+      "material": "stone",
+      "openings": [
+        "north_hall/hall"
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          10,
+          0
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          2.5
+        ],
+        [
+          11.042,
+          2.5
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "solid": [
+        [
+          [
+            10,
+            2.5
+          ],
+          [
+            11.042,
+            2.5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          3.5
+        ],
+        [
+          11.042,
+          3.5
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "solid": [
+        [
+          [
+            10,
+            3.5
+          ],
+          [
+            11.042,
+            3.5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall",
+        "vault"
+      ],
+      "material": "stone",
+      "openings": [
+        "vault_door"
+      ],
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            1,
+            6
+          ]
+        ],
+        [
+          [
+            2,
+            6
+          ],
+          [
+            4,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          6
+        ],
+        [
+          10,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            6
+          ],
+          [
+            10,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "spaces": [
+        "bend"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            7
+          ],
+          [
+            7,
+            7
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          8
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "spaces": [
+        "bend"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            8
+          ],
+          [
+            6,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          9
+        ],
+        [
+          11,
+          9
+        ]
+      ],
+      "spaces": [
+        "cell"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            9
+          ],
+          [
+            11,
+            9
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          10
+        ],
+        [
+          4,
+          10
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            10
+          ],
+          [
+            4,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          10
+        ],
+        [
+          8,
+          10
+        ]
+      ],
+      "spaces": [
+        "bend"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            7,
+            10
+          ],
+          [
+            8,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          11
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "spaces": [
+        "bend"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            11
+          ],
+          [
+            8,
+            11
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          12
+        ],
+        [
+          11,
+          12
+        ]
+      ],
+      "spaces": [
+        "cell"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            12
+          ],
+          [
+            11,
+            12
+          ]
+        ]
+      ]
+    },
+    {
+      "circle": {
+        "center": [
+          14,
+          3
+        ],
+        "radius": 3
+      },
+      "spaces": [
+        "rotunda"
+      ],
+      "material": "stone",
+      "openings": [
+        "rotunda_door"
+      ],
+      "gaps": [
+        [
+          [
+            11.042,
+            3.5
+          ],
+          [
+            11.042,
+            2.5
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "rotunda_door",
+      "from": "hall",
+      "to": "rotunda",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          10,
+          2.5
+        ],
+        [
+          10,
+          3.5
+        ]
+      ],
+      "far": [
+        [
+          11.042,
+          2.5
+        ],
+        [
+          11.042,
+          3.5
+        ]
+      ],
+      "width": 1,
+      "stub": [
+        [
+          11.042,
+          2.5
+        ],
+        [
+          11.042,
+          3.5
+        ],
+        [
+          10,
+          3.5
+        ],
+        [
+          10,
+          2.5
+        ]
+      ]
+    },
+    {
+      "id": "vault_door",
+      "from": "hall",
+      "to": "vault",
+      "type": "door",
+      "secret": true,
+      "locked": false,
+      "visibility": "dm",
+      "implicit": false,
+      "segment": [
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          6
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "cell_door",
+      "from": "bend",
+      "to": "cell",
+      "type": "door",
+      "secret": false,
+      "locked": true,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          8,
+          10
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "way_down",
+      "from": "cell",
+      "type": "stairs",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        9,
+        10,
+        10,
+        11
+      ]
+    },
+    {
+      "id": "north_hall/hall",
+      "from": "north_hall",
+      "to": "hall",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          4,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "width": 2
+    },
+    {
+      "id": "north_hall/gallery",
+      "from": "north_hall",
+      "to": "gallery",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          4,
+          -3
+        ],
+        [
+          6,
+          -3
+        ]
+      ],
+      "width": 2
+    },
+    {
+      "id": "bend/vault",
+      "from": "bend",
+      "to": "vault",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [
+    {
+      "id": "steward",
+      "class": "entity",
+      "type": "npc",
+      "category": "creatures",
+      "label": "NPC",
+      "type_label": "npc",
+      "glyph": "N",
+      "layer": "entities",
+      "name": "Steward",
+      "space": "hall",
+      "footprint": [
+        [
+          8,
+          1
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          8,
+          2
+        ]
+      ],
+      "bbox": [
+        8,
+        1,
+        9,
+        2
+      ],
+      "rotation": 0,
+      "facing": "south_west",
+      "visibility": "public",
+      "blocking": false
+    },
+    {
+      "id": "rubble",
+      "class": "feature",
+      "type": "terrain",
+      "subtype": "rubble",
+      "category": "terrain",
+      "label": "Rubble",
+      "type_label": "terrain",
+      "glyph": "~",
+      "layer": "terrain",
+      "space": "hall",
+      "footprint": [
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        4,
+        2,
+        6
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": false
+    },
+    {
+      "id": "idol",
+      "class": "feature",
+      "type": "furniture",
+      "subtype": "statue",
+      "category": "features",
+      "label": "Statue",
+      "type_label": "furniture",
+      "glyph": "f",
+      "layer": "features",
+      "space": "rotunda",
+      "footprint": [
+        [
+          13.5,
+          2.5
+        ],
+        [
+          14.5,
+          2.5
+        ],
+        [
+          14.5,
+          3.5
+        ],
+        [
+          13.5,
+          3.5
+        ]
+      ],
+      "bbox": [
+        13.5,
+        2.5,
+        14.5,
+        3.5
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "lever",
+      "class": "feature",
+      "type": "mechanism",
+      "subtype": "lever",
+      "category": "mechanisms",
+      "label": "Lever",
+      "type_label": "mechanism",
+      "glyph": "!",
+      "layer": "features",
+      "space": "vault",
+      "footprint": [
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          8
+        ],
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          7
+        ]
+      ],
+      "bbox": [
+        0,
+        7,
+        1,
+        8
+      ],
+      "rotation": 0,
+      "wall": "west",
+      "visibility": "public",
+      "blocking": false,
+      "properties": {
+        "linked_to": [
+          "cell_door"
+        ]
+      }
+    },
+    {
+      "id": "pool",
+      "class": "feature",
+      "type": "terrain",
+      "subtype": "water",
+      "category": "terrain",
+      "label": "Water",
+      "type_label": "terrain",
+      "glyph": "~",
+      "layer": "terrain",
+      "space": "gallery",
+      "footprint": [
+        [
+          8,
+          -9
+        ],
+        [
+          10,
+          -9
+        ],
+        [
+          10,
+          -7
+        ],
+        [
+          8,
+          -7
+        ]
+      ],
+      "bbox": [
+        8,
+        -9,
+        10,
+        -7
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": false
+    },
+    {
+      "id": "sigil",
+      "class": "feature",
+      "type": "custom",
+      "category": "features",
+      "label": "Arcane sigil",
+      "type_label": "custom",
+      "glyph": "?",
+      "layer": "markers",
+      "space": "gallery",
+      "footprint": [
+        [
+          5,
+          -5
+        ],
+        [
+          6,
+          -5
+        ],
+        [
+          6,
+          -4
+        ],
+        [
+          5,
+          -4
+        ]
+      ],
+      "bbox": [
+        5,
+        -5,
+        6,
+        -4
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": false,
+      "properties": {
+        "label": "Arcane sigil",
+        "symbol": "Si"
+      }
+    }
+  ],
+  "notes": [
+    {
+      "id": "idol_note",
+      "number": 1,
+      "target": "idol",
+      "anchor": [
+        14.5,
+        2.5
+      ],
+      "text": "The idol turns to face whoever enters the rotunda.",
+      "visibility": "dm"
+    }
+  ],
+  "reach": {
+    "entrance": "hall",
+    "links": [
+      [
+        "hall",
+        "rotunda",
+        "rotunda_door"
+      ],
+      [
+        "hall",
+        "vault",
+        "vault_door"
+      ],
+      [
+        "bend",
+        "cell",
+        "cell_door"
+      ],
+      [
+        "north_hall",
+        "hall",
+        "north_hall/hall"
+      ],
+      [
+        "north_hall",
+        "gallery",
+        "north_hall/gallery"
+      ],
+      [
+        "bend",
+        "vault",
+        "bend/vault"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "dedalo": {
+    "version": 1,
+    "comments": {
+      "leading": [
+        "# La Cripta Dimenticata: a reconstruction of the product draft's reference",
+        "# example, corrected as in specification 7.3 (align = end on treasure_room)."
+      ]
+    }
+  },
+  "dungeon": {
+    "id": "forgotten_crypt",
+    "name": "La Cripta Dimenticata",
+    "grid": {
+      "unit": "5ft"
+    },
+    "settings": {
+      "default_wall": "stone",
+      "default_floor": "stone"
+    },
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "entrance",
+        "name": "Ingresso",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        },
+        "tags": [
+          "entrance"
+        ],
+        "elements": [
+          {
+            "class": "feature",
+            "id": "pressure_trap",
+            "type": "trap",
+            "subtype": "pressure_plate",
+            "position": [
+              4,
+              3
+            ],
+            "visibility": "dm",
+            "properties": {
+              "damage": "2d10",
+              "detection_dc": 15,
+              "disarm_dc": 14
+            }
+          },
+          {
+            "class": "feature",
+            "id": "wall_torch",
+            "type": "lighting",
+            "subtype": "torch",
+            "placement": {
+              "wall": "south",
+              "offset": 2
+            },
+            "properties": {
+              "radius": 4
+            }
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "guard_room",
+        "name": "Sala delle Guardie",
+        "shape": {
+          "fn": "square",
+          "args": [
+            6
+          ]
+        },
+        "layout": {
+          "adjacent_to": "entrance",
+          "direction": "north"
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "brazier",
+            "type": "lighting",
+            "subtype": "brazier",
+            "placement": {
+              "anchor": "center"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "guard_table",
+            "type": "furniture",
+            "subtype": "table",
+            "position": [
+              3,
+              4
+            ]
+          },
+          {
+            "class": "entity",
+            "id": "skeletons",
+            "type": "creature",
+            "position": [
+              1,
+              1
+            ],
+            "reference": "srd:skeleton",
+            "properties": {
+              "count": 3
+            }
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "treasure_room",
+        "name": "Sala del Tesoro",
+        "shape": {
+          "fn": "square",
+          "args": [
+            8
+          ]
+        },
+        "layout": {
+          "adjacent_to": "guard_room",
+          "direction": "east",
+          "align": "end"
+        },
+        "visibility": "dm",
+        "elements": [
+          {
+            "class": "feature",
+            "id": "column_nw",
+            "type": "architecture",
+            "subtype": "column",
+            "position": [
+              2,
+              2
+            ]
+          },
+          {
+            "class": "feature",
+            "id": "column_se",
+            "type": "architecture",
+            "subtype": "column",
+            "position": [
+              5,
+              5
+            ]
+          },
+          {
+            "class": "feature",
+            "id": "chest",
+            "type": "container",
+            "subtype": "chest",
+            "position": [
+              6,
+              1
+            ],
+            "properties": {
+              "locked": true
+            }
+          },
+          {
+            "class": "entity",
+            "id": "crown",
+            "type": "item",
+            "subtype": "treasure",
+            "name": "Corona del Re Sepolto",
+            "contained_in": "chest"
+          }
+        ],
+        "comments": {
+          "leading": [
+            "# Hidden from the players until they find the secret door."
+          ],
+          "attrs": {
+            "layout.align": {
+              "trailing": "# without this the room overlaps the entrance"
+            }
+          }
+        }
+      },
+      {
+        "kind": "room",
+        "id": "armory",
+        "name": "Armeria",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "entrance",
+          "direction": "west"
+        },
+        "elements": [
+          {
+            "class": "entity",
+            "id": "old_sword",
+            "type": "item",
+            "subtype": "weapon",
+            "position": [
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "corridor",
+        "id": "west_passage",
+        "connects": [
+          "entrance",
+          "armory"
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "id": "entrance_door",
+        "from": "entrance",
+        "to": "guard_room",
+        "type": "door",
+        "placement": {
+          "wall": "north",
+          "offset": 3
+        }
+      },
+      {
+        "id": "secret_door",
+        "from": "guard_room",
+        "to": "treasure_room",
+        "type": "door",
+        "secret": true
+      }
+    ],
+    "notes": [
+      {
+        "id": "entrance_note",
+        "target": "entrance",
+        "text": "Esaminare attentamente il pavimento."
+      }
+    ],
+    "exports": [
+      {
+        "name": "dm",
+        "preset": "dm"
+      },
+      {
+        "name": "player",
+        "preset": "player"
+      }
+    ]
+  }
+}

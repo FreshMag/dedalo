@@ -1,0 +1,10 @@
+dungeon "d" {
+    room "a" {
+        shape = square(4)
+    }
+
+    room "sealed" {
+        shape = square(4)
+        layout { east_of = "a" }
+    }
+}

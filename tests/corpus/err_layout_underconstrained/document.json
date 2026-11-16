@@ -1,0 +1,27 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "island",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        }
+      }
+    ]
+  }
+}

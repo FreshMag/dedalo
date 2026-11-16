@@ -1,0 +1,11 @@
+dungeon "d" {
+    room "a" {
+        shape = rectangle(8, 6)
+
+        feature "table" {
+            type = furniture
+            subtype = table
+            position = [7, 6]
+        }
+    }
+}

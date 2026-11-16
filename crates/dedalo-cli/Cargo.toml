@@ -1,0 +1,23 @@
+[package]
+name = "dedalo-cli"
+description = "The dedalo binary: validate, format, convert, inspect and render dungeon maps"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "dedalo"
+path = "src/main.rs"
+
+[dependencies]
+dedalo-core.workspace = true
+clap.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

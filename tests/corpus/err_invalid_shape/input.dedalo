@@ -1,0 +1,15 @@
+dungeon "d" {
+    room "a" {
+        shape = rectangle(8, 0)
+    }
+
+    room "b" {
+        shape = polygon([[0, 0], [4, 4], [4, 0], [0, 4]])
+        layout { east_of = "a" }
+    }
+
+    room "c" {
+        shape = hexagon(3)
+        layout { position = [20, 0] }
+    }
+}

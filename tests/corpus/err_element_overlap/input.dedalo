@@ -1,0 +1,17 @@
+dungeon "d" {
+    room "a" {
+        shape = rectangle(8, 6)
+
+        feature "column" {
+            type = architecture
+            subtype = column
+            position = [2, 2]
+        }
+
+        feature "statue" {
+            type = furniture
+            subtype = statue
+            position = [2, 2]
+        }
+    }
+}

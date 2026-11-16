@@ -1,0 +1,57 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 3,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "message": "`Great Hall` is not a valid ID. An ID starts with a lowercase letter and continues with lowercase letters, digits or underscores, up to 64 characters.",
+      "span": {
+        "start": [
+          2,
+          10
+        ],
+        "end": [
+          2,
+          22
+        ]
+      },
+      "suggestion": "Use `great_hall`."
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "Great Hall",
+      "message": "`rotation` is 45, but must be 0, 90, 180 or 270 degrees. Arbitrary angles arrive after 1.0.",
+      "span": {
+        "start": [
+          4,
+          9
+        ],
+        "end": [
+          4,
+          22
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "Great Hall",
+      "message": "`visibility` is `secret`, but must be public, dm, conditional or hidden.",
+      "span": {
+        "start": [
+          5,
+          22
+        ],
+        "end": [
+          5,
+          28
+        ]
+      }
+    }
+  ]
+}

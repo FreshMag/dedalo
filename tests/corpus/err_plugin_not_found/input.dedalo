@@ -1,0 +1,13 @@
+dedalo {
+    version = 1
+
+    plugin "hand_drawn" {
+        version = "^1.2"
+    }
+}
+
+dungeon "d" {
+    room "a" {
+        shape = square(4)
+    }
+}

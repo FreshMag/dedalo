@@ -1,0 +1,334 @@
+{
+  "dungeon": {
+    "id": "four_shapes",
+    "name": "Four Shapes",
+    "grid": {
+      "unit": "5ft"
+    },
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "hall",
+        "name": "Hall",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            10,
+            6
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        },
+        "tags": [
+          "entrance"
+        ],
+        "elements": [
+          {
+            "class": "entity",
+            "id": "steward",
+            "type": "npc",
+            "name": "Steward",
+            "position": [
+              8,
+              1
+            ],
+            "facing": "south_west",
+            "visibility": "public"
+          },
+          {
+            "class": "feature",
+            "id": "rubble",
+            "type": "terrain",
+            "subtype": "rubble",
+            "position": [
+              0,
+              4
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "rotunda",
+        "name": "Rotunda",
+        "shape": {
+          "fn": "circle",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hall",
+          "direction": "east",
+          "gap": 1
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "idol",
+            "type": "furniture",
+            "subtype": "statue",
+            "placement": {
+              "anchor": "center"
+            }
+          }
+        ],
+        "comments": {
+          "leading": [
+            "# A circle one cell away: the door gets a short stub passage."
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "vault",
+        "name": "Vault",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hall",
+          "direction": "south",
+          "align": "start"
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "lever",
+            "type": "mechanism",
+            "subtype": "lever",
+            "placement": {
+              "wall": "west",
+              "offset": 1
+            },
+            "properties": {
+              "linked_to": [
+                "cell_door"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "gallery",
+        "name": "Gallery",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                6,
+                0
+              ],
+              [
+                6,
+                3
+              ],
+              [
+                3,
+                3
+              ],
+              [
+                3,
+                6
+              ],
+              [
+                0,
+                6
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hall",
+          "direction": "north",
+          "align": "end",
+          "gap": 3
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "pool",
+            "type": "terrain",
+            "subtype": "water",
+            "position": [
+              4,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          {
+            "class": "feature",
+            "id": "sigil",
+            "type": "custom",
+            "position": [
+              1,
+              4
+            ],
+            "properties": {
+              "label": "Arcane sigil",
+              "symbol": "Si"
+            }
+          }
+        ],
+        "comments": {
+          "leading": [
+            "# An L-shaped polygon, three cells north of the hall."
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "cell",
+        "name": "Cell",
+        "shape": {
+          "fn": "square",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "position": [
+            8,
+            9
+          ]
+        }
+      },
+      {
+        "kind": "corridor",
+        "id": "north_hall",
+        "connects": [
+          "hall",
+          "gallery"
+        ],
+        "width": 2,
+        "comments": {
+          "leading": [
+            "# Automatic routing: straight across the gap."
+          ]
+        }
+      },
+      {
+        "kind": "corridor",
+        "id": "bend",
+        "connects": [
+          "vault",
+          "cell"
+        ],
+        "path": [
+          [
+            4,
+            7.5
+          ],
+          [
+            6.5,
+            7.5
+          ],
+          [
+            6.5,
+            10.5
+          ],
+          [
+            8,
+            10.5
+          ]
+        ],
+        "comments": {
+          "leading": [
+            "# Explicit routing with one bend. Half-cell coordinates keep a corridor",
+            "# of width 1 on the grid."
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "rotunda_door",
+        "from": "hall",
+        "to": "rotunda",
+        "type": "door"
+      },
+      {
+        "id": "vault_door",
+        "from": "hall",
+        "to": "vault",
+        "type": "door",
+        "secret": true
+      },
+      {
+        "id": "cell_door",
+        "from": "bend",
+        "to": "cell",
+        "type": "door",
+        "properties": {
+          "locked": true
+        },
+        "comments": {
+          "leading": [
+            "# A door at the end of the corridor instead of its open end."
+          ]
+        }
+      },
+      {
+        "id": "way_down",
+        "from": "cell",
+        "type": "stairs",
+        "position": [
+          1,
+          1
+        ]
+      }
+    ],
+    "notes": [
+      {
+        "id": "idol_note",
+        "target": "idol",
+        "text": "The idol turns to face whoever enters the rotunda."
+      }
+    ],
+    "exports": [
+      {
+        "name": "dm",
+        "preset": "dm"
+      },
+      {
+        "name": "player",
+        "preset": "player"
+      },
+      {
+        "name": "clean",
+        "preset": "clean"
+      },
+      {
+        "name": "turned",
+        "preset": "dm",
+        "rotation": 90
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Four rooms of four different shapes, joined by doors, a secret door and",
+        "# corridors: the exit criterion of milestone M2."
+      ]
+    }
+  }
+}

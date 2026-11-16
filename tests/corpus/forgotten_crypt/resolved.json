@@ -1,0 +1,1361 @@
+{
+  "id": "forgotten_crypt",
+  "name": "La Cripta Dimenticata",
+  "grid_unit": "5ft",
+  "seed": 7704177383713537822,
+  "bounds": [
+    -6,
+    -8,
+    15,
+    6
+  ],
+  "spaces": [
+    {
+      "id": "entrance",
+      "kind": "room",
+      "name": "Ingresso",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        8,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "tags": [
+        "entrance"
+      ],
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "guard_room",
+      "kind": "room",
+      "name": "Sala delle Guardie",
+      "polygon": [
+        [
+          1,
+          -6
+        ],
+        [
+          7,
+          -6
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "bbox": [
+        1,
+        -6,
+        7,
+        0
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "treasure_room",
+      "kind": "room",
+      "name": "Sala del Tesoro",
+      "polygon": [
+        [
+          7,
+          -8
+        ],
+        [
+          15,
+          -8
+        ],
+        [
+          15,
+          0
+        ],
+        [
+          7,
+          0
+        ]
+      ],
+      "bbox": [
+        7,
+        -8,
+        15,
+        0
+      ],
+      "level": "default",
+      "visibility": "dm",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "armory",
+      "kind": "room",
+      "name": "Armeria",
+      "polygon": [
+        [
+          -6,
+          1
+        ],
+        [
+          -2,
+          1
+        ],
+        [
+          -2,
+          5
+        ],
+        [
+          -6,
+          5
+        ]
+      ],
+      "bbox": [
+        -6,
+        1,
+        -2,
+        5
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "west_passage",
+      "kind": "corridor",
+      "polygon": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          -2,
+          3
+        ],
+        [
+          -2,
+          2
+        ]
+      ],
+      "bbox": [
+        -2,
+        2,
+        0,
+        3
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone",
+      "connects": [
+        "entrance",
+        "armory"
+      ]
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          15,
+          -8
+        ],
+        [
+          15,
+          0
+        ]
+      ],
+      "spaces": [
+        "treasure_room"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            15,
+            -8
+          ],
+          [
+            15,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "entrance"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          -8
+        ],
+        [
+          7,
+          -6
+        ]
+      ],
+      "spaces": [
+        "treasure_room"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            7,
+            -8
+          ],
+          [
+            7,
+            -6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          -6
+        ],
+        [
+          7,
+          0
+        ]
+      ],
+      "spaces": [
+        "guard_room",
+        "treasure_room"
+      ],
+      "material": "stone",
+      "openings": [
+        "secret_door"
+      ],
+      "solid": [
+        [
+          [
+            7,
+            -6
+          ],
+          [
+            7,
+            -4
+          ]
+        ],
+        [
+          [
+            7,
+            -3
+          ],
+          [
+            7,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          1,
+          -6
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "spaces": [
+        "guard_room"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            1,
+            -6
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "spaces": [
+        "entrance"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "spaces": [
+        "entrance",
+        "west_passage"
+      ],
+      "material": "stone",
+      "openings": [
+        "west_passage/entrance"
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "entrance"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          1
+        ],
+        [
+          -2,
+          2
+        ]
+      ],
+      "spaces": [
+        "armory"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -2,
+            1
+          ],
+          [
+            -2,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          2
+        ],
+        [
+          -2,
+          3
+        ]
+      ],
+      "spaces": [
+        "armory",
+        "west_passage"
+      ],
+      "material": "stone",
+      "openings": [
+        "west_passage/armory"
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          3
+        ],
+        [
+          -2,
+          5
+        ]
+      ],
+      "spaces": [
+        "armory"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -2,
+            3
+          ],
+          [
+            -2,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -6,
+          1
+        ],
+        [
+          -6,
+          5
+        ]
+      ],
+      "spaces": [
+        "armory"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -6,
+            1
+          ],
+          [
+            -6,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          -8
+        ],
+        [
+          15,
+          -8
+        ]
+      ],
+      "spaces": [
+        "treasure_room"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            7,
+            -8
+          ],
+          [
+            15,
+            -8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          1,
+          -6
+        ],
+        [
+          7,
+          -6
+        ]
+      ],
+      "spaces": [
+        "guard_room"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            1,
+            -6
+          ],
+          [
+            7,
+            -6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "spaces": [
+        "entrance"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          1,
+          0
+        ],
+        [
+          7,
+          0
+        ]
+      ],
+      "spaces": [
+        "entrance",
+        "guard_room"
+      ],
+      "material": "stone",
+      "openings": [
+        "entrance_door"
+      ],
+      "solid": [
+        [
+          [
+            1,
+            0
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            4,
+            0
+          ],
+          [
+            7,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          7,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "entrance",
+        "treasure_room"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            7,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          15,
+          0
+        ]
+      ],
+      "spaces": [
+        "treasure_room"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            15,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -6,
+          1
+        ],
+        [
+          -2,
+          1
+        ]
+      ],
+      "spaces": [
+        "armory"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -6,
+            1
+          ],
+          [
+            -2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          2
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "spaces": [
+        "west_passage"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -2,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          3
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "spaces": [
+        "west_passage"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -2,
+            3
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -6,
+          5
+        ],
+        [
+          -2,
+          5
+        ]
+      ],
+      "spaces": [
+        "armory"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -6,
+            5
+          ],
+          [
+            -2,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "entrance"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "entrance_door",
+      "from": "entrance",
+      "to": "guard_room",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          3,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "secret_door",
+      "from": "guard_room",
+      "to": "treasure_room",
+      "type": "door",
+      "secret": true,
+      "locked": false,
+      "visibility": "dm",
+      "implicit": false,
+      "segment": [
+        [
+          7,
+          -4
+        ],
+        [
+          7,
+          -3
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "west_passage/entrance",
+      "from": "west_passage",
+      "to": "entrance",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "west_passage/armory",
+      "from": "west_passage",
+      "to": "armory",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          -2,
+          2
+        ],
+        [
+          -2,
+          3
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [
+    {
+      "id": "pressure_trap",
+      "class": "feature",
+      "type": "trap",
+      "subtype": "pressure_plate",
+      "category": "traps",
+      "label": "Pressure plate",
+      "type_label": "trap",
+      "glyph": "T",
+      "layer": "markers",
+      "space": "entrance",
+      "footprint": [
+        [
+          4,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "bbox": [
+        4,
+        3,
+        5,
+        4
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false,
+      "properties": {
+        "damage": "2d10",
+        "detection_dc": 15,
+        "disarm_dc": 14
+      }
+    },
+    {
+      "id": "wall_torch",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "torch",
+      "category": "lighting",
+      "label": "Torch",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "entrance",
+      "footprint": [
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          2,
+          6
+        ]
+      ],
+      "bbox": [
+        2,
+        5,
+        3,
+        6
+      ],
+      "rotation": 0,
+      "wall": "south",
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 4,
+      "properties": {
+        "radius": 4
+      }
+    },
+    {
+      "id": "brazier",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "brazier",
+      "category": "lighting",
+      "label": "Brazier",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "guard_room",
+      "footprint": [
+        [
+          3.5,
+          -3.5
+        ],
+        [
+          4.5,
+          -3.5
+        ],
+        [
+          4.5,
+          -2.5
+        ],
+        [
+          3.5,
+          -2.5
+        ]
+      ],
+      "bbox": [
+        3.5,
+        -3.5,
+        4.5,
+        -2.5
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 4
+    },
+    {
+      "id": "guard_table",
+      "class": "feature",
+      "type": "furniture",
+      "subtype": "table",
+      "category": "features",
+      "label": "Table",
+      "type_label": "furniture",
+      "glyph": "f",
+      "layer": "features",
+      "space": "guard_room",
+      "footprint": [
+        [
+          4,
+          -2
+        ],
+        [
+          6,
+          -2
+        ],
+        [
+          6,
+          -1
+        ],
+        [
+          4,
+          -1
+        ]
+      ],
+      "bbox": [
+        4,
+        -2,
+        6,
+        -1
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "skeletons",
+      "class": "entity",
+      "type": "creature",
+      "category": "creatures",
+      "label": "Creature",
+      "type_label": "creature",
+      "glyph": "M",
+      "layer": "entities",
+      "space": "guard_room",
+      "footprint": [
+        [
+          2,
+          -5
+        ],
+        [
+          3,
+          -5
+        ],
+        [
+          3,
+          -4
+        ],
+        [
+          2,
+          -4
+        ]
+      ],
+      "bbox": [
+        2,
+        -5,
+        3,
+        -4
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false,
+      "reference": "srd:skeleton",
+      "properties": {
+        "count": 3
+      }
+    },
+    {
+      "id": "column_nw",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "treasure_room",
+      "footprint": [
+        [
+          9,
+          -6
+        ],
+        [
+          10,
+          -6
+        ],
+        [
+          10,
+          -5
+        ],
+        [
+          9,
+          -5
+        ]
+      ],
+      "bbox": [
+        9,
+        -6,
+        10,
+        -5
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "column_se",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "treasure_room",
+      "footprint": [
+        [
+          12,
+          -3
+        ],
+        [
+          13,
+          -3
+        ],
+        [
+          13,
+          -2
+        ],
+        [
+          12,
+          -2
+        ]
+      ],
+      "bbox": [
+        12,
+        -3,
+        13,
+        -2
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "chest",
+      "class": "feature",
+      "type": "container",
+      "subtype": "chest",
+      "category": "treasure",
+      "label": "Chest",
+      "type_label": "chest",
+      "glyph": "$",
+      "layer": "features",
+      "space": "treasure_room",
+      "footprint": [
+        [
+          13,
+          -7
+        ],
+        [
+          14,
+          -7
+        ],
+        [
+          14,
+          -6
+        ],
+        [
+          13,
+          -6
+        ]
+      ],
+      "bbox": [
+        13,
+        -7,
+        14,
+        -6
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": true,
+      "properties": {
+        "locked": true
+      }
+    },
+    {
+      "id": "crown",
+      "class": "entity",
+      "type": "item",
+      "subtype": "treasure",
+      "category": "treasure",
+      "label": "Treasure",
+      "type_label": "item",
+      "glyph": "i",
+      "layer": "entities",
+      "name": "Corona del Re Sepolto",
+      "space": "treasure_room",
+      "bbox": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false,
+      "contained_in": "chest"
+    },
+    {
+      "id": "old_sword",
+      "class": "entity",
+      "type": "item",
+      "subtype": "weapon",
+      "category": "treasure",
+      "label": "Weapon",
+      "type_label": "item",
+      "glyph": "i",
+      "layer": "entities",
+      "space": "armory",
+      "footprint": [
+        [
+          -5,
+          2
+        ],
+        [
+          -4,
+          2
+        ],
+        [
+          -4,
+          3
+        ],
+        [
+          -5,
+          3
+        ]
+      ],
+      "bbox": [
+        -5,
+        2,
+        -4,
+        3
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false
+    }
+  ],
+  "notes": [
+    {
+      "id": "entrance_note",
+      "number": 1,
+      "target": "entrance",
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "text": "Esaminare attentamente il pavimento.",
+      "visibility": "dm"
+    }
+  ],
+  "reach": {
+    "entrance": "entrance",
+    "links": [
+      [
+        "entrance",
+        "guard_room",
+        "entrance_door"
+      ],
+      [
+        "guard_room",
+        "treasure_room",
+        "secret_door"
+      ],
+      [
+        "west_passage",
+        "entrance",
+        "west_passage/entrance"
+      ],
+      [
+        "west_passage",
+        "armory",
+        "west_passage/armory"
+      ]
+    ]
+  }
+}

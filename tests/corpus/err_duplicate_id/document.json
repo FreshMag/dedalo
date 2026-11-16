@@ -1,0 +1,24 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "crypt",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        }
+      }
+    ],
+    "notes": [
+      {
+        "id": "crypt",
+        "text": "The same ID as the room."
+      }
+    ]
+  }
+}

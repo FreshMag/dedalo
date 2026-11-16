@@ -1,0 +1,32 @@
+{
+  "status": "warning",
+  "summary": {
+    "errors": 0,
+    "warnings": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "ELEMENT_OVERLAP",
+      "element": "statue",
+      "message": "`statue` and `column` are both blocking features and share a cell in `a`.",
+      "span": {
+        "start": [
+          14,
+          24
+        ],
+        "end": [
+          14,
+          30
+        ]
+      },
+      "related": [
+        {
+          "element": "column",
+          "message": "occupies the same cell"
+        }
+      ],
+      "suggestion": "Move one of the two to a free cell."
+    }
+  ]
+}

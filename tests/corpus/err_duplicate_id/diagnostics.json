@@ -1,0 +1,25 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "DUPLICATE_ID",
+      "element": "crypt",
+      "message": "The ID `crypt` is used by a room and again by a note. IDs share one namespace per dungeon; rename one of them.",
+      "span": {
+        "start": [
+          6,
+          10
+        ],
+        "end": [
+          6,
+          17
+        ]
+      }
+    }
+  ]
+}

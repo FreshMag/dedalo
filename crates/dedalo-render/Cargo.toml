@@ -1,0 +1,19 @@
+[package]
+name = "dedalo-render"
+description = "View builder, painters and the built-in theme for Dedalo"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+dedalo-catalog.workspace = true
+dedalo-model.workspace = true
+dedalo-geom.workspace = true
+dedalo-scene.workspace = true
+serde.workspace = true
+toml.workspace = true
+libm.workspace = true
+
+[lints]
+workspace = true

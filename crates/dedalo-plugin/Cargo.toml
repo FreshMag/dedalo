@@ -1,0 +1,14 @@
+[package]
+name = "dedalo-plugin"
+description = "Registry, pack loader and plugin host for Dedalo"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+dedalo-catalog.workspace = true
+dedalo-render.workspace = true
+
+[lints]
+workspace = true

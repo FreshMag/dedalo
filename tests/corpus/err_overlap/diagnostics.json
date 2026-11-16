@@ -1,0 +1,39 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "OVERLAP",
+      "element": "treasure_room",
+      "message": "`treasure_room` overlaps `entrance`: their interiors intersect within x 7 to 8, y 0 to 1. Spaces may touch along an edge but may not overlap.",
+      "span": {
+        "start": [
+          14,
+          9
+        ],
+        "end": [
+          14,
+          15
+        ]
+      },
+      "related": [
+        {
+          "element": "entrance",
+          "message": "occupies x 0 to 8, y 0 to 6"
+        }
+      ],
+      "suggestion": "Set `layout.offset = -1` on `treasure_room`, the smallest shift that clears the overlap; `align = start` or `align = end` may do the same.",
+      "fix": {
+        "op": "update",
+        "id": "treasure_room",
+        "set": {
+          "layout.offset": -1
+        }
+      }
+    }
+  ]
+}

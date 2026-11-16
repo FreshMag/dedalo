@@ -1,0 +1,12 @@
+dungeon "d" {
+    room "a" {
+        shape = rectangle(8, 6)
+        colour = "red"
+
+        feature "plate" {
+            type = trap
+            position = [2, 2]
+            detection_dc = 15
+        }
+    }
+}

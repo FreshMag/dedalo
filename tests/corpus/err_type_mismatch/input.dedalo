@@ -1,0 +1,15 @@
+dungeon "d" {
+    room "a" {
+        name = Entrance
+        shape = rectangle(8, 6)
+
+        feature "plate" {
+            type = trap
+            position = 3
+
+            properties {
+                detection_dc = "high"
+            }
+        }
+    }
+}

@@ -1,0 +1,16 @@
+dungeon "d" {
+    room "a" {
+        shape = rectangle(8, 6)
+
+        feature "plate" {
+            type = trapp
+            position = [2, 2]
+        }
+
+        feature "light" {
+            type = lighting
+            subtype = lantern
+            position = [4, 2]
+        }
+    }
+}

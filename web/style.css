@@ -1,0 +1,149 @@
+:root {
+  --ink: #1b1b1f;
+  --muted: #5f6068;
+  --line: #d4d4da;
+  --panel: #f5f5f7;
+  --page: #ffffff;
+  --error: #b3261e;
+  --warning: #8a5a00;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--page);
+  color: var(--ink);
+  font: 15px/1.45 system-ui, sans-serif;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+header p {
+  margin: 0;
+  flex: 1 1 240px;
+  color: var(--muted);
+}
+
+select,
+button {
+  font: inherit;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--page);
+  color: var(--ink);
+}
+
+button:hover {
+  background: var(--panel);
+}
+
+#status {
+  color: var(--muted);
+  min-width: 9ch;
+}
+
+main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(280px, 2fr) 3fr;
+  min-height: 0;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--line);
+}
+
+#source {
+  flex: 1;
+  min-height: 300px;
+  padding: 12px 16px;
+  border: 0;
+  resize: none;
+  outline: none;
+  background: var(--panel);
+  color: var(--ink);
+  font: 13px/1.5 ui-monospace, "Cascadia Code", Consolas, monospace;
+  tab-size: 4;
+  white-space: pre;
+}
+
+#problems {
+  margin: 0;
+  padding: 0;
+  max-height: 34vh;
+  overflow: auto;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+#problems:empty {
+  display: none;
+}
+
+#problems li {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+
+#problems .code {
+  font-weight: 600;
+}
+
+#problems .error .code {
+  color: var(--error);
+}
+
+#problems .warning .code {
+  color: var(--warning);
+}
+
+#problems .where,
+#problems .help {
+  color: var(--muted);
+}
+
+#preview {
+  overflow: auto;
+  padding: 16px;
+}
+
+#preview svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 760px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+
+  .editor {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}

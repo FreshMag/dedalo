@@ -1,0 +1,39 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "plate",
+            "type": "trapp",
+            "position": [
+              2,
+              2
+            ]
+          },
+          {
+            "class": "feature",
+            "id": "light",
+            "type": "lighting",
+            "subtype": "lantern",
+            "position": [
+              4,
+              2
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

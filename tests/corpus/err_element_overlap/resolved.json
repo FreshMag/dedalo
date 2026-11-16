@@ -1,0 +1,244 @@
+{
+  "id": "d",
+  "seed": 12638183902020757363,
+  "bounds": [
+    0,
+    0,
+    8,
+    6
+  ],
+  "spaces": [
+    {
+      "id": "a",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        8,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [],
+  "elements": [
+    {
+      "id": "column",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "bbox": [
+        2,
+        2,
+        3,
+        3
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "statue",
+      "class": "feature",
+      "type": "furniture",
+      "subtype": "statue",
+      "category": "features",
+      "label": "Statue",
+      "type_label": "furniture",
+      "glyph": "f",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "bbox": [
+        2,
+        2,
+        3,
+        3
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    }
+  ],
+  "notes": [],
+  "reach": {
+    "entrance": "a",
+    "links": []
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 2,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "LAYOUT_CYCLE",
+      "element": "a",
+      "message": "Room `a` is placed in a loop of relative positions: `a`, `b` and back to `a`. No room of the loop has a fixed position.",
+      "span": {
+        "start": [
+          8,
+          29
+        ],
+        "end": [
+          8,
+          32
+        ]
+      },
+      "suggestion": "Give one room of the loop an absolute position, for example `layout { position = [0, 0] }` on `a`."
+    },
+    {
+      "severity": "error",
+      "code": "LAYOUT_CYCLE",
+      "element": "b",
+      "message": "Room `b` is placed in a loop of relative positions: `b`, `a` and back to `b`. No room of the loop has a fixed position.",
+      "span": {
+        "start": [
+          13,
+          29
+        ],
+        "end": [
+          13,
+          32
+        ]
+      },
+      "suggestion": "Give one room of the loop an absolute position, for example `layout { position = [0, 0] }` on `b`."
+    }
+  ]
+}

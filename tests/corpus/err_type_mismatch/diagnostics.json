@@ -1,0 +1,57 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 3,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "TYPE_MISMATCH",
+      "element": "a",
+      "message": "`name` expects a quoted string, but found the symbol `Entrance`.",
+      "span": {
+        "start": [
+          3,
+          16
+        ],
+        "end": [
+          3,
+          24
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "TYPE_MISMATCH",
+      "element": "plate",
+      "message": "`position` expects a point such as [3, 2], but found the number 3.",
+      "span": {
+        "start": [
+          8,
+          24
+        ],
+        "end": [
+          8,
+          25
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "TYPE_MISMATCH",
+      "element": "plate",
+      "message": "Property `detection_dc` of `plate` expects a whole number, but found \"high\".",
+      "span": {
+        "start": [
+          11,
+          32
+        ],
+        "end": [
+          11,
+          38
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "UNRESOLVABLE_CONNECTION",
+      "element": "far_door",
+      "message": "Connection `far_door` cannot join `a` and `b`: they share no wall and no walls face each other closely. Their nearest facing walls are 6 cells apart; a stub passage bridges at most 2.",
+      "span": {
+        "start": [
+          12,
+          16
+        ],
+        "end": [
+          12,
+          26
+        ]
+      },
+      "suggestion": "Make the rooms adjacent with `layout { adjacent_to = \"a\", direction = ... }`, or join them with a corridor: `corridor \"far_door_hall\" { connects = [\"a\", \"b\"] }`."
+    }
+  ]
+}

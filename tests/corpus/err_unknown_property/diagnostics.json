@@ -1,0 +1,25 @@
+{
+  "status": "warning",
+  "summary": {
+    "errors": 0,
+    "warnings": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "UNKNOWN_PROPERTY",
+      "element": "plate",
+      "message": "`plate` sets the property `detection`, which `trap` does not define. Did you mean `detection_dc`? The properties of `trap` are area, damage, damage_type, detection_dc, disarm_dc, effect, linked_to, trigger, description. Prefix a name with `x_` to keep custom data.",
+      "span": {
+        "start": [
+          10,
+          29
+        ],
+        "end": [
+          10,
+          31
+        ]
+      }
+    }
+  ]
+}

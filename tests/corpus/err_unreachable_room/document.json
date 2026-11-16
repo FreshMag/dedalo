@@ -1,0 +1,31 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "sealed",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "a",
+          "direction": "east"
+        }
+      }
+    ]
+  }
+}

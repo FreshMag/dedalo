@@ -1,0 +1,15 @@
+[package]
+name = "dedalo-export"
+description = "Text map, PNG and PDF output for Dedalo"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+dedalo-model.workspace = true
+dedalo-geom.workspace = true
+dedalo-render.workspace = true
+
+[lints]
+workspace = true

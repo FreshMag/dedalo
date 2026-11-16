@@ -1,0 +1,114 @@
+{
+  "dungeon": {
+    "id": "rotated",
+    "name": "Rotated",
+    "legend": {
+      "position": "bottom",
+      "title": "Legenda",
+      "entries": [
+        {
+          "key": "trap",
+          "label": "Trappola"
+        },
+        {
+          "key": "door",
+          "label": "Porta"
+        }
+      ]
+    },
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "start",
+        "name": "Start",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "annex",
+        "name": "Annex",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            4,
+            2
+          ]
+        },
+        "rotation": 90,
+        "elements": [
+          {
+            "class": "feature",
+            "id": "sconce",
+            "type": "lighting",
+            "subtype": "candle",
+            "placement": {
+              "wall": "north"
+            },
+            "comments": {
+              "leading": [
+                "# In the room's own frame this is the north wall; after the quarter",
+                "# turn it faces east."
+              ]
+            }
+          },
+          {
+            "class": "feature",
+            "id": "pit",
+            "type": "trap",
+            "subtype": "pit",
+            "position": [
+              0,
+              0
+            ],
+            "visibility": "conditional",
+            "reveal_when": "pit_found"
+          }
+        ],
+        "comments": {
+          "leading": [
+            "# No layout: placed on the side its door names."
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "annex_door",
+        "from": "start",
+        "to": "annex",
+        "type": "door",
+        "placement": {
+          "wall": "south"
+        }
+      }
+    ],
+    "exports": [
+      {
+        "name": "dm",
+        "preset": "dm"
+      },
+      {
+        "name": "player",
+        "preset": "player"
+      },
+      {
+        "name": "found",
+        "preset": "player",
+        "revealed": [
+          "pit_found"
+        ]
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Rotation, automatic placement, conditional visibility and a custom legend."
+      ]
+    }
+  }
+}

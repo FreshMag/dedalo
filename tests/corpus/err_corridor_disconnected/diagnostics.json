@@ -1,0 +1,53 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 2,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "CORRIDOR_DISCONNECTED",
+      "element": "diagonal",
+      "message": "Corridor `diagonal` cannot run straight from `a` to `b`: no wall of one faces a wall of the other. Automatic routing is straight only.",
+      "span": {
+        "start": [
+          13,
+          20
+        ],
+        "end": [
+          13,
+          30
+        ]
+      },
+      "suggestion": "Move the rooms so that their walls face each other, or give the corridor an explicit `path` of lattice points."
+    },
+    {
+      "severity": "error",
+      "code": "CORRIDOR_DISCONNECTED",
+      "element": "short",
+      "message": "Corridor `short` ends at [7, 6], where its 1-cell-wide end does not lie on a wall of `a` or `b`. Both ends of a path must touch the spaces named in `connects`.",
+      "span": {
+        "start": [
+          18,
+          16
+        ],
+        "end": [
+          18,
+          44
+        ]
+      },
+      "related": [
+        {
+          "element": "a",
+          "message": "occupies x 0 to 4, y 0 to 4"
+        },
+        {
+          "element": "b",
+          "message": "occupies x 10 to 14, y 10 to 14"
+        }
+      ],
+      "suggestion": "Start and end the path on the walls of the two spaces. Path points are lattice points along the centre line; with an odd width, use half-cell coordinates such as 3.5 to stay on the grid."
+    }
+  ]
+}

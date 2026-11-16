@@ -1,0 +1,40 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "column",
+            "type": "architecture",
+            "subtype": "column",
+            "position": [
+              2,
+              2
+            ]
+          },
+          {
+            "class": "feature",
+            "id": "statue",
+            "type": "furniture",
+            "subtype": "statue",
+            "position": [
+              2,
+              2
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

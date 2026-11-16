@@ -1,0 +1,9 @@
+dungeon "d" {
+    room "crypt" {
+        shape = rectangle(8, 6)
+    }
+
+    note "crypt" {
+        text = "The same ID as the room."
+    }
+}

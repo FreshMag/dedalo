@@ -1,0 +1,10 @@
+dungeon "d" {
+    room "a" {
+        shape = rectangle(4 + 4, 6)
+    }
+    room "b" {
+        name = "never closed
+        shape = square(3)
+        layout { east_of = "a" }
+    }
+    connection "ab" { from = "a", to = "b", type = door }

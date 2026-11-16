@@ -1,0 +1,15 @@
+dungeon "d" {
+    room "anchor" {
+        shape = square(4)
+    }
+
+    room "a" {
+        shape = square(4)
+        layout { north_of = "b" }
+    }
+
+    room "b" {
+        shape = square(4)
+        layout { south_of = "a" }
+    }
+}

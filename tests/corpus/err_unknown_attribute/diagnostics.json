@@ -1,0 +1,42 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 2,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "UNKNOWN_ATTRIBUTE",
+      "element": "a",
+      "message": "`colour` is not an attribute of `room`. The attributes of `room` are name, shape, rotation, visibility, reveal_when, tags. Game and descriptive data go in a `properties { }` block.",
+      "span": {
+        "start": [
+          4,
+          9
+        ],
+        "end": [
+          4,
+          15
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "UNKNOWN_ATTRIBUTE",
+      "element": "plate",
+      "message": "`detection_dc` is a property of `trap`, not an attribute of the `feature` block. Properties are written inside a `properties { }` block.",
+      "span": {
+        "start": [
+          9,
+          13
+        ],
+        "end": [
+          9,
+          25
+        ]
+      },
+      "suggestion": "Replace the line with `properties { detection_dc = 15 }`, or move it into the existing `properties` block."
+    }
+  ]
+}

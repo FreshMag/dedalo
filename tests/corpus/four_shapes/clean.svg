@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.6 -9.6 18.2 22.2" width="1165" height="1421">
+<g id="layer-background">
+<path d="M-0.6 -9.6L17.6 -9.6L17.6 12.6L-0.6 12.6Z" fill="#ffffff"/>
+</g>
+<g id="layer-floor">
+<path d="M0 0L10 0L10 6L0 6Z" fill="#ffffff"/>
+<path d="M11 3A3 3 0 0 1 17 3A3 3 0 0 1 11 3Z" fill="#ffffff"/>
+<path d="M0 6L4 6L4 10L0 10Z" fill="#ffffff"/>
+<path d="M4 -9L10 -9L10 -6L7 -6L7 -3L4 -3Z" fill="#ffffff"/>
+<path d="M8 9L11 9L11 12L8 12Z" fill="#ffffff"/>
+<path d="M4 -3L6 -3L6 0L4 0Z" fill="#ffffff"/>
+<path d="M4 7L7 7L7 10L8 10L8 11L6 11L6 8L4 8Z" fill="#ffffff"/>
+<path d="M11.042 2.5L11.042 3.5L10 3.5L10 2.5Z" fill="#ffffff"/>
+</g>
+<g id="layer-walls">
+<path d="M11 9L11 12" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 -9L10 -6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 0L10 2.5" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 3.5L10 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 9L8 10" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 11L8 12" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 -6L7 -3" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 7L7 10" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 -3L6 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 8L6 11" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 -9L4 -3" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 -3L4 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 6L4 7" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 8L4 10" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L0 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 6L0 10" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 -9L10 -9" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 -6L10 -6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 -3L7 -3" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 0L4 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 0L10 0" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 2.5L11.042 2.5" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 3.5L11.042 3.5" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 6L4 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 6L10 6" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 7L7 7" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 8L6 8" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 9L11 9" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 10L4 10" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 10L8 10" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 11L8 11" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 12L11 12" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.042 2.5A3 3 0 1 1 11.042 3.5" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g id="layer-openings">
+<g><path d="M10.16 2.5L10.16 3.5L9.84 3.5L9.84 2.5Z" fill="#ffffff" stroke="#111111" stroke-width="0.06"/>
+</g>
+<g><path d="M8.16 10L8.16 11L7.84 11L7.84 10Z" fill="#ffffff" stroke="#111111" stroke-width="0.06"/>
+<path d="M7.93 10.5A0.07 0.07 0 0 1 8.07 10.5A0.07 0.07 0 0 1 7.93 10.5Z" fill="#111111"/>
+</g>
+<g><path d="M9.08 10.9L9.92 10.9" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M9.155 10.7L9.845 10.7" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M9.23 10.5L9.77 10.5" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M9.305 10.3L9.695 10.3" fill="none" stroke="#111111" stroke-width="0.05"/>
+<path d="M9.38 10.1L9.62 10.1" fill="none" stroke="#111111" stroke-width="0.05"/>
+</g>
+</g>
+</svg>

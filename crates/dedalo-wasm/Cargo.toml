@@ -1,0 +1,19 @@
+[package]
+name = "dedalo-wasm"
+description = "Browser bindings for Dedalo: the core compiled to WebAssembly"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+dedalo-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+# This crate owns the WebAssembly boundary, so it is the one place where
+# `unsafe` is allowed (spec section 4). It does not inherit the workspace lints.
+[lints]

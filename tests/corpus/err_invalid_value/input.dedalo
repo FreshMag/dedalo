@@ -1,0 +1,7 @@
+dungeon "d" {
+    room "Great Hall" {
+        shape = rectangle(8, 6)
+        rotation = 45
+        visibility = secret
+    }
+}

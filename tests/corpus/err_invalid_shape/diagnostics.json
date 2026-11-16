@@ -1,0 +1,57 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 3,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "INVALID_SHAPE",
+      "element": "a",
+      "message": "The shape of room `a` is invalid: rectangle(8, 0) has a side below one cell; both sides must be at least 1.",
+      "span": {
+        "start": [
+          3,
+          17
+        ],
+        "end": [
+          3,
+          32
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_SHAPE",
+      "element": "b",
+      "message": "The shape of room `b` is invalid: the polygon intersects itself: edge 0 meets edge 2. A polygon must be simple.",
+      "span": {
+        "start": [
+          7,
+          17
+        ],
+        "end": [
+          7,
+          58
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_SHAPE",
+      "element": "c",
+      "message": "The shape of room `c` is invalid: `hexagon` is not a shape. The shapes are square(side), rectangle(width, height), circle(radius) and polygon(points).",
+      "span": {
+        "start": [
+          12,
+          17
+        ],
+        "end": [
+          12,
+          27
+        ]
+      }
+    }
+  ]
+}

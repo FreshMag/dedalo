@@ -1,0 +1,17 @@
+dungeon "d" {
+    room "a" {
+        shape = square(4)
+        layout { position = [0, 0] }
+    }
+
+    room "b" {
+        shape = square(4)
+        layout { position = [10, 0] }
+    }
+
+    connection "far_door" {
+        from = "a"
+        to = "b"
+        type = door
+    }
+}

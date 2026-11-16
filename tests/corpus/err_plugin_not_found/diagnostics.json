@@ -1,0 +1,15 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "PLUGIN_NOT_FOUND",
+      "message": "The document requires the plugin `hand_drawn`, which is not installed.",
+      "suggestion": "Install it with `dedalo plugin add <path-or-url>` (available from release 0.2), or remove the `plugin \"hand_drawn\"` block."
+    }
+  ]
+}

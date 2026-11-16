@@ -1,0 +1,25 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "UNKNOWN_BLOCK",
+      "element": "a",
+      "message": "`placment` is not a block allowed in `room`. The blocks allowed in `room` are layout, properties, feature, entity, note.",
+      "span": {
+        "start": [
+          5,
+          9
+        ],
+        "end": [
+          5,
+          17
+        ]
+      }
+    }
+  ]
+}

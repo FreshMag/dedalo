@@ -1,0 +1,65 @@
+{
+  "dungeon": {
+    "id": "d",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                4
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                0,
+                4
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "adjacent_to": "a",
+          "direction": "east"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "c",
+        "shape": {
+          "fn": "hexagon",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "position": [
+            20,
+            0
+          ]
+        }
+      }
+    ]
+  }
+}

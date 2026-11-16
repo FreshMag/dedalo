@@ -1,0 +1,36 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 1,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "OUT_OF_BOUNDS",
+      "element": "table",
+      "message": "`table` at position [7, 6] with a footprint of 2 by 1 cells lies outside `a`, which is 8 by 6 cells.",
+      "span": {
+        "start": [
+          8,
+          24
+        ],
+        "end": [
+          8,
+          30
+        ]
+      },
+      "suggestion": "The nearest position that fits is [6, 5]. Positions count cells from 0 at the room's top-left corner.",
+      "fix": {
+        "op": "update",
+        "id": "table",
+        "set": {
+          "position": [
+            6,
+            5
+          ]
+        }
+      }
+    }
+  ]
+}

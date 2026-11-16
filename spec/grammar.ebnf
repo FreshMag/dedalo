@@ -1,0 +1,35 @@
+(* The grammar of Dedalo language version 1 (specification 5.3).
+
+   A Dedalo file is a strict subset of HCL native syntax: blocks, attributes,
+   literals, lists, objects and function calls, with no expressions and no
+   templates. The parser in crates/dedalo-syntax implements this grammar. *)
+
+File      = { Block } ;
+Block     = Ident { Label } "{" Body "}" ;
+Label     = String | Ident ;
+Body      = { Attribute | Block } ;
+Attribute = Ident "=" Expr ;
+Expr      = Number | String | Heredoc | "true" | "false" | "null"
+          | Symbol | List | Object | Call ;
+Symbol    = Ident { "." Ident } ;
+List      = "[" [ Expr { "," Expr } [ "," ] ] "]" ;
+Object    = "{" [ Entry { ( "," | Newline ) Entry } ] "}" ;
+Entry     = ( Ident | String ) "=" Expr ;
+Call      = Ident "(" [ Expr { "," Expr } [ "," ] ] ")" ;
+
+(* Lexical rules (specification 5.2).
+
+   Comment : "#" or "//" to the end of the line, and "/*" ... "*/".
+   Ident   : a letter or underscore, then letters, digits, underscores or hyphens.
+   String  : double-quoted, with the escapes \n \t \" \\ and \uXXXX. The
+             sequences "${" and "%{" are rejected, so they stay available.
+   Heredoc : "<<TAG" or "<<-TAG" through a line holding only TAG.
+   Number  : decimal, optional leading minus, at most three decimals.
+
+   Attributes and blocks end at a newline. A one-line block holds a single
+   attribute.
+
+   Leniency. The reader also accepts a comma between the attributes of a
+   block written on one line, as in `placement { wall = north, offset = 2 }`,
+   which the specification's own examples use. `dedalo fmt` rewrites such a
+   block onto several lines, which is the form HCL accepts. *)

@@ -1,0 +1,48 @@
+# The built-in theme: black walls on a white floor, a light grid clipped to
+# floors, letter markers for traps and items (spec 9.4). It favours
+# structural correctness over artistic quality. Strokes and sizes are in cells.
+
+[theme]
+id = "classic"
+
+[palette]
+background = "#ffffff"
+floor      = "#ffffff"
+wall       = "#111111"
+grid       = "#c8c8c8"
+ink        = "#111111"
+muted      = "#666666"
+water      = "#a8d0f0"
+lava       = "#f2a06a"
+rubble     = "#b9b2a6"
+rocks      = "#9a958c"
+light      = "#ffd27a"
+npc        = "#dfe9f5"
+note       = "#fff3b0"
+
+[stroke]
+wall   = 0.14
+door   = 0.06
+grid   = 0.02
+symbol = 0.05
+
+[text]
+room   = 0.42
+marker = 0.5
+legend = 0.4
+note   = 0.34
+title  = 0.7
+
+# Markers drawn as a letter in a frame. Keys are `type` or `type.subtype`.
+[symbols]
+"trap"             = { glyph = "T", frame = "diamond" }
+"mechanism"        = { glyph = "M", frame = "square" }
+"mechanism.lever"  = { glyph = "L", frame = "square" }
+"mechanism.button" = { glyph = "B", frame = "square" }
+"item"             = { glyph = "i", frame = "circle" }
+"item.treasure"    = { glyph = "$", frame = "circle" }
+"item.key"         = { glyph = "k", frame = "circle" }
+"item.weapon"      = { glyph = "w", frame = "circle" }
+"item.armor"       = { glyph = "a", frame = "circle" }
+"item.scroll"      = { glyph = "s", frame = "circle" }
+"custom"           = { glyph = "?", frame = "circle" }
