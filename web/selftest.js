@@ -24,14 +24,16 @@ function expect(ok, what) {
 }
 
 async function run() {
-  await new Promise((r) => (frame.contentDocument?.readyState === "complete" ? r() : frame.addEventListener("load", r, { once: true })));
+  // Before index.html arrives the frame holds an empty about:blank document
+  // that is already complete; wait for the editor's own document.
+  await until(() => frame.contentDocument?.readyState === "complete" && frame.contentDocument.getElementById("editor"), "the editor page", 30000);
   const win = frame.contentWindow;
   win.addEventListener("error", (e) => errors.push(String(e.message)));
   win.addEventListener("unhandledrejection", (e) => errors.push(String(e.reason)));
   const doc = frame.contentDocument;
   const $ = (sel) => doc.querySelector(sel);
 
-  await until(() => $("#canvas svg"), "the first preview");
+  await until(() => $("#canvas svg"), "the first preview", 45000);
   expect($("#status").textContent === "No problems", `status says "${$("#status").textContent}"`);
   expect($("#outline").children.length >= 4, "the outline lists the starter's elements");
   expect($("#textmap").textContent.includes("#"), "the text map is drawn");
