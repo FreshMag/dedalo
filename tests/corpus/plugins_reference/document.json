@@ -1,0 +1,133 @@
+{
+  "dedalo": {
+    "version": 1,
+    "plugins": [
+      {
+        "id": "hand_drawn",
+        "version": "^1.2"
+      },
+      {
+        "id": "blueprint",
+        "version": "^1"
+      },
+      {
+        "id": "uvtt",
+        "version": "^0.3"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# The reference plugins at work: a theme pack, a WebAssembly scene pass and",
+        "# painter, and a WebAssembly exporter."
+      ]
+    }
+  },
+  "dungeon": {
+    "id": "plugins_reference",
+    "name": "Sketched Keep",
+    "render": {
+      "theme": "hand_drawn.sepia",
+      "plugins": {
+        "hand_drawn": {
+          "wobble": 1.2
+        }
+      }
+    },
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "gate",
+        "name": "Gate",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        },
+        "tags": [
+          "entrance"
+        ],
+        "elements": [
+          {
+            "class": "feature",
+            "id": "brazier",
+            "type": "lighting",
+            "subtype": "brazier",
+            "placement": {
+              "anchor": "center"
+            }
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "keep",
+        "name": "Keep",
+        "shape": {
+          "fn": "circle",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "adjacent_to": "gate",
+          "direction": "north"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "cellar",
+        "name": "Cellar",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "gate",
+          "direction": "east"
+        },
+        "visibility": "dm"
+      }
+    ],
+    "connections": [
+      {
+        "id": "gate_door",
+        "from": "gate",
+        "to": "keep",
+        "type": "door",
+        "properties": {
+          "locked": true
+        }
+      },
+      {
+        "id": "cellar_door",
+        "from": "gate",
+        "to": "cellar",
+        "type": "door",
+        "secret": true
+      }
+    ],
+    "exports": [
+      {
+        "name": "dm",
+        "preset": "dm"
+      },
+      {
+        "name": "player",
+        "preset": "player",
+        "render": {
+          "theme": "blueprint.default"
+        }
+      },
+      {
+        "name": "vtt",
+        "preset": "player",
+        "format": "uvtt.dd2vtt",
+        "cell_px": 32
+      }
+    ]
+  }
+}

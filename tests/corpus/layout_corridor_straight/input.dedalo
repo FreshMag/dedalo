@@ -1,0 +1,17 @@
+# A corridor sets the gap between two rooms placed relative to each other.
+dungeon "layout_corridor_straight" {
+    room "a" {
+        shape = rectangle(6, 4)
+    }
+
+    room "b" {
+        shape = rectangle(6, 4)
+        layout { east_of = "a" }
+    }
+
+    corridor "hall" {
+        connects = ["a", "b"]
+        length = 4
+        width = 2
+    }
+}

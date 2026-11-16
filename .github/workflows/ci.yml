@@ -45,17 +45,28 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install the pinned toolchain
         run: rustup show
-      - name: Build the module
+      - name: Build the modules and the reference plugins
         run: |
-          cargo build -p dedalo-wasm --target wasm32-unknown-unknown --profile wasm --locked
+          cargo build -p dedalo-wasm -p dedalo-wasm-export -p dedalo-plugin-hand-drawn -p dedalo-plugin-uvtt --target wasm32-unknown-unknown --profile wasm --locked
+          cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_hand_drawn.wasm plugins/hand_drawn/hand_drawn.wasm
+          cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_uvtt.wasm plugins/uvtt/uvtt.wasm
+          cargo run -p dedalo-cli --locked -- plugin list --plugin plugins --json > plugins/index.json
           cp target/wasm32-unknown-unknown/wasm/dedalo_wasm.wasm web/dedalo.wasm
-      - name: Size budget (1.5 MB compressed, spec 14.3)
+          cp target/wasm32-unknown-unknown/wasm/dedalo_wasm_export.wasm web/dedalo-export.wasm
+      - name: Size budgets (spec 14.3)
         run: |
-          size=$(gzip -9 -c web/dedalo.wasm | wc -c)
-          echo "core module: $size bytes compressed"
-          test "$size" -le 1572864
+          core=$(gzip -9 -c web/dedalo.wasm | wc -c)
+          export=$(gzip -9 -c web/dedalo-export.wasm | wc -c)
+          echo "core module: $core bytes compressed (budget 1572864)"
+          echo "export module: $export bytes compressed (budget 3145728)"
+          test "$core" -le 1572864
+          test "$export" -le 3145728
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Compare with the golden corpus
-        run: node web/golden.mjs web/dedalo.wasm tests/corpus
+        run: node web/golden.mjs
+      - name: Browser checks (golden corpus and editor self-test)
+        run: |
+          bash web/run-browser-check.sh golden.html
+          bash web/run-browser-check.sh selftest.html

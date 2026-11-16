@@ -3,7 +3,7 @@
     "version": 1,
     "plugins": [
       {
-        "id": "hand_drawn",
+        "id": "lantern_glow",
         "version": "^1.2"
       }
     ]

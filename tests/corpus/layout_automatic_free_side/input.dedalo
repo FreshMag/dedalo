@@ -1,0 +1,27 @@
+# No layout and no wall: the first free side among east, south, west, north.
+dungeon "layout_automatic_free_side" {
+    room "a" {
+        shape = square(4)
+    }
+
+    room "east" {
+        shape = square(4)
+        layout { east_of = "a" }
+    }
+
+    room "auto" {
+        shape = square(2)
+    }
+
+    connection "a_east" {
+        from = "a"
+        to = "east"
+        type = door
+    }
+
+    connection "a_auto" {
+        from = "a"
+        to = "auto"
+        type = door
+    }
+}

@@ -1,20 +1,22 @@
 // Runs the cross-target golden check in Node:
 //
-//     node web/golden.mjs web/dedalo.wasm tests/corpus
+//     node web/golden.mjs
 //
-// Exits with 1 when the WebAssembly build disagrees with the native build.
+// from the repository root, after building both modules into web/ and the
+// reference plugins into plugins/. Exits with 1 when the WebAssembly build
+// disagrees with the native build.
 
 import { readFile } from "node:fs/promises";
-import path from "node:path";
 import process from "node:process";
 
-import { loadDedalo } from "./dedalo.js";
+import { loadCore, loadDedalo } from "./dedalo.js";
 import { runGolden } from "./golden-core.js";
 
-const [wasmPath = "web/dedalo.wasm", corpus = "tests/corpus"] = process.argv.slice(2);
-const call = await loadDedalo(await readFile(wasmPath));
-const readText = async (relative) => (await readFile(path.join(corpus, relative), "utf8")).replaceAll("\r\n", "\n");
-const result = await runGolden(call, readText);
+const readBytes = async (path) => new Uint8Array(await readFile(path));
+const readText = async (path) => (await readFile(path, "utf8")).replaceAll("\r\n", "\n");
+const core = await loadCore(await readFile("web/dedalo.wasm"));
+const callExport = await loadDedalo(await readFile("web/dedalo-export.wasm"));
+const result = await runGolden(core, callExport, readText, readBytes);
 
 for (const failure of result.failures) {
   console.error(`FAIL ${failure}`);

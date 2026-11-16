@@ -1,0 +1,351 @@
+{
+  "id": "layout_north_end",
+  "seed": 3649104796822750249,
+  "bounds": [
+    0,
+    -3,
+    8,
+    6
+  ],
+  "spaces": [
+    {
+      "id": "base",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        8,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "other",
+      "kind": "room",
+      "polygon": [
+        [
+          4,
+          -3
+        ],
+        [
+          8,
+          -3
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "bbox": [
+        4,
+        -3,
+        8,
+        0
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          8,
+          -3
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "other"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            -3
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "base"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          -3
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "spaces": [
+        "other"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            -3
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "base"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          -3
+        ],
+        [
+          8,
+          -3
+        ]
+      ],
+      "spaces": [
+        "other"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            -3
+          ],
+          [
+            8,
+            -3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "spaces": [
+        "base"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "base",
+        "other"
+      ],
+      "material": "stone",
+      "openings": [
+        "link"
+      ],
+      "solid": [
+        [
+          [
+            4,
+            0
+          ],
+          [
+            5,
+            0
+          ]
+        ],
+        [
+          [
+            6,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "base"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "link",
+      "from": "base",
+      "to": "other",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          5,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [],
+  "notes": [],
+  "reach": {
+    "entrance": "base",
+    "links": [
+      [
+        "base",
+        "other",
+        "link"
+      ]
+    ]
+  }
+}

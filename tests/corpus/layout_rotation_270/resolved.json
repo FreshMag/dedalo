@@ -1,0 +1,495 @@
+{
+  "id": "layout_rotation_270",
+  "seed": 10931183991825256492,
+  "bounds": [
+    0,
+    0,
+    4,
+    9
+  ],
+  "spaces": [
+    {
+      "id": "turned",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        4,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "next",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "bbox": [
+        0,
+        6,
+        3,
+        9
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "spaces": [
+        "turned"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            0
+          ],
+          [
+            4,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          9
+        ]
+      ],
+      "spaces": [
+        "next"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            9
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "spaces": [
+        "turned"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "turned"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "spaces": [
+        "next"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            9
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "spaces": [
+        "turned"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "spaces": [
+        "turned"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "spaces": [
+        "turned",
+        "next"
+      ],
+      "material": "stone",
+      "openings": [
+        "link"
+      ],
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            1,
+            6
+          ]
+        ],
+        [
+          [
+            2,
+            6
+          ],
+          [
+            3,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "spaces": [
+        "turned"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            3,
+            6
+          ],
+          [
+            4,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          9
+        ],
+        [
+          3,
+          9
+        ]
+      ],
+      "spaces": [
+        "next"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            9
+          ],
+          [
+            3,
+            9
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "link",
+      "from": "turned",
+      "to": "next",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          6
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [
+    {
+      "id": "torch",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "torch",
+      "category": "lighting",
+      "label": "Torch",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "turned",
+      "footprint": [
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "bbox": [
+        0,
+        4,
+        1,
+        5
+      ],
+      "rotation": 0,
+      "wall": "west",
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 4
+    },
+    {
+      "id": "chest",
+      "class": "feature",
+      "type": "container",
+      "category": "treasure",
+      "label": "Chest",
+      "type_label": "chest",
+      "glyph": "$",
+      "layer": "features",
+      "space": "turned",
+      "footprint": [
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        5,
+        1,
+        6
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": true
+    }
+  ],
+  "notes": [],
+  "reach": {
+    "entrance": "turned",
+    "links": [
+      [
+        "turned",
+        "next",
+        "link"
+      ]
+    ]
+  }
+}

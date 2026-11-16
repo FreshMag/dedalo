@@ -10,7 +10,10 @@
 //! bindings and TypeScript types named in spec section 4 come with the web
 //! editor in milestone M4 and will wrap this same `handle` function.
 
-use std::sync::OnceLock;
+use std::cell::RefCell;
+use std::collections::BTreeMap;
+use std::rc::Rc;
+use std::sync::Arc;
 
 use dedalo_core::model::{Diagnostic, Preset, Report};
 use dedalo_core::{Compiled, Input, Registry};
@@ -35,6 +38,13 @@ enum Request {
         format: Option<String>,
         #[serde(default)]
         rotation: Option<i64>,
+        /// Temporary category toggles, such as `{ "grid": false }`.
+        #[serde(default)]
+        toggles: std::collections::BTreeMap<String, bool>,
+        /// A PNG rendering from the export module, base64, for plugin
+        /// exporters that need one.
+        #[serde(default)]
+        host_png: Option<String>,
         /// Render whatever resolved even when there are errors.
         #[serde(default)]
         force: bool,
@@ -45,11 +55,162 @@ enum Request {
     Convert { source: String, to: String },
     /// Every output the golden corpus records for this input.
     Golden { source: String },
+    /// Completions at an offset, counted in UTF-16 code units as in JavaScript.
+    Complete { source: String, offset: usize },
+    /// Hover help at an offset in UTF-16 code units.
+    Hover { source: String, offset: usize },
+    /// The line and column of the block declaring an ID.
+    Locate { source: String, id: String },
+    /// Spaces, elements, connections and notes, with their lines.
+    Outline { source: String },
+    /// Load a plugin package: its files, base64-encoded, by path.
+    LoadPlugin { files: BTreeMap<String, String> },
+    /// The plugins loaded.
+    Plugins,
+    /// Apply edit operations, such as a diagnostic's fix.
+    Edit {
+        source: String,
+        ops: Vec<dedalo_core::model::ops::Op>,
+        #[serde(default)]
+        force: bool,
+    },
 }
 
-fn registry() -> &'static Registry {
-    static REGISTRY: OnceLock<Registry> = OnceLock::new();
-    REGISTRY.get_or_init(Registry::builtin)
+/// UTF-16 offset to byte offset.
+fn to_byte(text: &str, utf16: usize) -> usize {
+    let mut units = 0;
+    for (i, c) in text.char_indices() {
+        if units >= utf16 {
+            return i;
+        }
+        units += c.len_utf16();
+    }
+    text.len()
+}
+
+/// Byte offset to UTF-16 offset.
+fn to_utf16(text: &str, byte: usize) -> usize {
+    text[..byte.min(text.len())]
+        .chars()
+        .map(char::len_utf16)
+        .sum()
+}
+
+thread_local! {
+    /// The registry: the built-ins and the plugins the page has loaded.
+    static REGISTRY: RefCell<Rc<Registry>> = RefCell::new(Rc::new(Registry::builtin()));
+}
+
+fn registry() -> Rc<Registry> {
+    REGISTRY.with(|r| r.borrow().clone())
+}
+
+/// Runs a plugin through the page: the worker instantiates the plugin's
+/// module with the browser's engine and answers synchronously.
+struct BrowserRuntime {
+    id: String,
+}
+
+#[cfg(target_arch = "wasm32")]
+#[link(wasm_import_module = "dedalo_host")]
+unsafe extern "C" {
+    fn plugin_call(
+        id_ptr: *const u8,
+        id_len: usize,
+        req_ptr: *const u8,
+        req_len: usize,
+        seed: i64,
+    ) -> i64;
+}
+
+impl dedalo_plugin::PluginRuntime for BrowserRuntime {
+    fn call(&self, request: &[u8], seed: u64) -> Result<Vec<u8>, dedalo_plugin::CallError> {
+        #[cfg(target_arch = "wasm32")]
+        {
+            // SAFETY: both buffers are valid for the call; the host returns a
+            // buffer it got from `dedalo_alloc`, packed, or 0 on failure.
+            let packed = unsafe {
+                plugin_call(
+                    self.id.as_ptr(),
+                    self.id.len(),
+                    request.as_ptr(),
+                    request.len(),
+                    seed as i64,
+                )
+            } as u64;
+            if packed == 0 {
+                return Err(dedalo_plugin::CallError::Timeout(format!(
+                    "the plugin `{}` did not answer",
+                    self.id
+                )));
+            }
+            let (ptr, len) = (
+                (packed >> 32) as usize as *mut u8,
+                (packed & 0xffff_ffff) as usize,
+            );
+            // SAFETY: the host allocated this buffer with `dedalo_alloc` and wrote `len` bytes.
+            let bytes = unsafe { Box::from_raw(std::ptr::slice_from_raw_parts_mut(ptr, len)) };
+            Ok(bytes.into_vec())
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let _ = (request, seed);
+            Err(dedalo_plugin::CallError::Failed(format!(
+                "the plugin `{}` needs a browser host",
+                self.id
+            )))
+        }
+    }
+}
+
+/// Loads a plugin package given as files, base64-encoded.
+fn load_plugin(files: BTreeMap<String, String>) -> Result<serde_json::Value, String> {
+    let mut decoded = BTreeMap::new();
+    for (path, data) in files {
+        let bytes = dedalo_plugin::base64::decode(&data)
+            .ok_or_else(|| format!("`{path}` is not valid base64"))?;
+        decoded.insert(path, bytes);
+    }
+    let id_holder = RefCell::new(String::new());
+    let factory = |_: &[u8],
+                   _: BTreeMap<String, Vec<u8>>|
+     -> Result<Arc<dyn dedalo_plugin::PluginRuntime>, String> {
+        Ok(Arc::new(BrowserRuntime {
+            id: id_holder.borrow().clone(),
+        }))
+    };
+    // The runtime needs the ID before the manifest is parsed by the loader.
+    let manifest = decoded
+        .get(dedalo_plugin::MANIFEST)
+        .ok_or("the package has no dedalo-plugin.toml")?;
+    *id_holder.borrow_mut() = dedalo_plugin::Manifest::parse(&String::from_utf8_lossy(manifest))?
+        .plugin
+        .id;
+    let plugin = dedalo_plugin::load_files(decoded, Some(&factory))?;
+    let info = json!({ "id": plugin.id(), "version": plugin.manifest.plugin.version, "sha256": plugin.sha256 });
+    REGISTRY.with(|r| {
+        let mut next = Registry::builtin();
+        let old = r.borrow().clone();
+        for p in &old.plugins {
+            if p.id() != plugin.id() {
+                // Re-adding keeps the order the page loaded them in.
+                let files = p.files.clone();
+                let id = p.id().to_string();
+                let again = dedalo_plugin::load_files(
+                    files,
+                    Some(&|_: &[u8], _| {
+                        Ok(Arc::new(BrowserRuntime { id: id.clone() })
+                            as Arc<dyn dedalo_plugin::PluginRuntime>)
+                    }),
+                )?;
+                next.add_plugin(again)?;
+            }
+        }
+        next.add_plugin(plugin)?;
+        *r.borrow_mut() = Rc::new(next);
+        Ok::<(), String>(())
+    })?;
+    Ok(info)
 }
 
 fn compile(source: &str) -> Compiled {
@@ -58,7 +219,7 @@ fn compile(source: &str) -> Compiled {
     } else {
         Input::Dsl(source)
     };
-    dedalo_core::compile(input, registry())
+    dedalo_core::compile(input, &registry())
 }
 
 fn failure(diagnostic: Diagnostic) -> Value {
@@ -85,6 +246,8 @@ pub fn handle(request: &str) -> String {
             preset,
             format,
             rotation,
+            toggles,
+            host_png,
             force,
         }) => {
             let compiled = compile(&source);
@@ -105,7 +268,9 @@ pub fn handle(request: &str) -> String {
             if let Some(rotation) = rotation.filter(|r| [0, 90, 180, 270].contains(r)) {
                 spec.rotation = rotation;
             }
-            match dedalo_core::render(&compiled, &spec, registry()) {
+            spec.toggles.extend(toggles);
+            spec.host_png = host_png.as_deref().and_then(dedalo_plugin::base64::decode);
+            match dedalo_core::render(&compiled, &spec, &registry()) {
                 Ok(rendered) => json!({
                     "ok": !report.has_errors(),
                     "report": report,
@@ -116,7 +281,7 @@ pub fn handle(request: &str) -> String {
                 Err(d) => json!({ "ok": false, "report": report, "error": d.message }),
             }
         }
-        Ok(Request::Format { source }) => match dedalo_core::format(&source, registry()) {
+        Ok(Request::Format { source }) => match dedalo_core::format(&source, &registry()) {
             Ok(text) => json!({ "ok": true, "text": text }),
             Err(diagnostics) => json!({ "ok": false, "report": Report::new(diagnostics) }),
         },
@@ -125,7 +290,7 @@ pub fn handle(request: &str) -> String {
             match (&compiled.document, to.as_str()) {
                 (Some(doc), "json") => json!({ "ok": true, "text": dedalo_core::to_json(doc) }),
                 (Some(doc), "dsl") => {
-                    json!({ "ok": true, "text": dedalo_core::to_dsl(doc, registry()) })
+                    json!({ "ok": true, "text": dedalo_core::to_dsl(doc, &registry()) })
                 }
                 (Some(_), other) => {
                     json!({ "ok": false, "error": format!("`{other}` is not a format; use json or dsl") })
@@ -133,9 +298,48 @@ pub fn handle(request: &str) -> String {
                 (None, _) => json!({ "ok": false, "report": compiled.report() }),
             }
         }
+        Ok(Request::LoadPlugin { files }) => match load_plugin(files) {
+            Ok(info) => json!({ "ok": true, "plugin": info }),
+            Err(e) => json!({ "ok": false, "error": e }),
+        },
+        Ok(Request::Plugins) => {
+            let reg = registry();
+            let list: Vec<serde_json::Value> = reg.plugins.iter().map(|p| json!({ "id": p.id(), "version": p.manifest.plugin.version, "sha256": p.sha256 })).collect();
+            json!({ "ok": true, "plugins": list, "themes": reg.themes.keys().collect::<Vec<_>>() })
+        }
+        Ok(Request::Complete { source, offset }) => {
+            let c = dedalo_core::assist::complete(&source, to_byte(&source, offset), &registry());
+            json!({ "ok": true, "from": to_utf16(&source, c.from), "items": c.items })
+        }
+        Ok(Request::Hover { source, offset }) => {
+            match dedalo_core::assist::hover(&source, to_byte(&source, offset), &registry()) {
+                Some(h) => {
+                    json!({ "ok": true, "from": to_utf16(&source, h.from), "to": to_utf16(&source, h.to), "markdown": h.markdown })
+                }
+                None => json!({ "ok": false }),
+            }
+        }
+        Ok(Request::Locate { source, id }) => match dedalo_core::assist::locate(&source, &id) {
+            Some([line, column]) => json!({ "ok": true, "line": line, "column": column }),
+            None => json!({ "ok": false }),
+        },
+        Ok(Request::Outline { source }) => {
+            json!({ "ok": true, "items": dedalo_core::assist::outline(&source, &registry()) })
+        }
+        Ok(Request::Edit { source, ops, force }) => {
+            let batch = dedalo_core::model::ops::Batch {
+                base_hash: None,
+                ops,
+            };
+            let result = dedalo_core::edit(&source, &batch, &registry(), force, "dungeon.dedalo");
+            let mut value = serde_json::to_value(&result).unwrap_or_default();
+            value["ok"] = json!(result.applied);
+            value["source"] = json!(result.source);
+            value
+        }
         Ok(Request::Golden { source }) => {
             let compiled = compile(&source);
-            json!({ "ok": true, "files": dedalo_core::golden_outputs(&compiled, registry()) })
+            json!({ "ok": true, "files": dedalo_core::golden_outputs(&compiled, &registry(), false) })
         }
     };
     response.to_string()
@@ -149,6 +353,21 @@ pub fn handle(request: &str) -> String {
 #[unsafe(no_mangle)]
 pub extern "C" fn dedalo_alloc(len: usize) -> *mut u8 {
     Box::into_raw(vec![0u8; len].into_boxed_slice()) as *mut u8
+}
+
+/// Text metrics for plugins: answers `dedalo.measure_text` for the page.
+///
+/// # Safety
+/// `ptr` and `len` must describe a readable buffer.
+#[cfg(target_arch = "wasm32")]
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn dedalo_measure(ptr: *const u8, len: usize) -> u64 {
+    // SAFETY: the caller wrote `len` bytes at `ptr`.
+    let request = unsafe { std::slice::from_raw_parts(ptr, len) };
+    let out = dedalo_plugin::runtime::measure_text(request).into_boxed_slice();
+    let out_len = out.len() as u64;
+    let out_ptr = Box::into_raw(out) as *mut u8 as usize as u64;
+    (out_ptr << 32) | out_len
 }
 
 /// Takes back a buffer obtained from `dedalo_alloc` or `dedalo_call`.

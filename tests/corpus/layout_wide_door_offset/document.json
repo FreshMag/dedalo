@@ -1,0 +1,62 @@
+{
+  "dungeon": {
+    "id": "layout_wide_door_offset",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            10,
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            10,
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "a",
+          "direction": "south"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "wide",
+        "from": "a",
+        "to": "b",
+        "type": "door",
+        "placement": {
+          "wall": "south",
+          "offset": 1,
+          "width": 3
+        }
+      },
+      {
+        "id": "arch",
+        "from": "a",
+        "to": "b",
+        "type": "archway",
+        "placement": {
+          "wall": "south",
+          "offset": 6,
+          "width": 2
+        }
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# A three-cell door at an explicit offset, and an archway beside it."
+      ]
+    }
+  }
+}

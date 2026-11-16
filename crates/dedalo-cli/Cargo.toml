@@ -6,6 +6,16 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
+repository = "https://github.com/FreshMag/dedalo"
+readme = "../../README.md"
+keywords = ["dungeon", "map", "rpg", "dsl", "mcp"]
+categories = ["command-line-utilities", "games"]
+
+# Prebuilt binaries for `cargo binstall dedalo-cli` (spec 16.1).
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/dedalo-{ target }{ archive-suffix }"
+bin-dir = "dedalo-{ target }/{ bin }{ binary-ext }"
+
 [[bin]]
 name = "dedalo"
 path = "src/main.rs"
@@ -13,6 +23,8 @@ path = "src/main.rs"
 [dependencies]
 dedalo-core.workspace = true
 clap.workspace = true
+dedalo-plugin.workspace = true
+toml.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 

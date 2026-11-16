@@ -1,0 +1,26 @@
+# Footprints with size and quarter-turn rotation.
+dungeon "layout_elements_size_rotation" {
+    room "a" {
+        shape = rectangle(8, 6)
+
+        feature "table" {
+            type = furniture
+            subtype = table
+            position = [1, 1]
+            rotation = 90
+        }
+
+        feature "pool" {
+            type = terrain
+            subtype = water
+            position = [4, 2]
+            size = [3, 3]
+        }
+
+        entity "guard" {
+            type = creature
+            position = [5, 3]
+            facing = north_west
+        }
+    }
+}

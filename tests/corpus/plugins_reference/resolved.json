@@ -1,0 +1,752 @@
+{
+  "id": "plugins_reference",
+  "name": "Sketched Keep",
+  "seed": 1276076140149271697,
+  "bounds": [
+    0,
+    -6,
+    10,
+    4
+  ],
+  "spaces": [
+    {
+      "id": "gate",
+      "kind": "room",
+      "name": "Gate",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        6,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "tags": [
+        "entrance"
+      ],
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "keep",
+      "kind": "room",
+      "name": "Keep",
+      "polygon": [
+        [
+          3,
+          -6
+        ],
+        [
+          3.469,
+          -5.963
+        ],
+        [
+          3.927,
+          -5.853
+        ],
+        [
+          4.362,
+          -5.673
+        ],
+        [
+          4.763,
+          -5.427
+        ],
+        [
+          5.121,
+          -5.121
+        ],
+        [
+          5.427,
+          -4.763
+        ],
+        [
+          5.673,
+          -4.362
+        ],
+        [
+          5.853,
+          -3.927
+        ],
+        [
+          5.963,
+          -3.469
+        ],
+        [
+          6,
+          -3
+        ],
+        [
+          5.963,
+          -2.531
+        ],
+        [
+          5.853,
+          -2.073
+        ],
+        [
+          5.673,
+          -1.638
+        ],
+        [
+          5.427,
+          -1.237
+        ],
+        [
+          5.121,
+          -0.879
+        ],
+        [
+          4.763,
+          -0.573
+        ],
+        [
+          4.362,
+          -0.327
+        ],
+        [
+          3.927,
+          -0.147
+        ],
+        [
+          3.469,
+          -0.037
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          2.531,
+          -0.037
+        ],
+        [
+          2.073,
+          -0.147
+        ],
+        [
+          1.638,
+          -0.327
+        ],
+        [
+          1.237,
+          -0.573
+        ],
+        [
+          0.879,
+          -0.879
+        ],
+        [
+          0.573,
+          -1.237
+        ],
+        [
+          0.327,
+          -1.638
+        ],
+        [
+          0.147,
+          -2.073
+        ],
+        [
+          0.037,
+          -2.531
+        ],
+        [
+          0,
+          -3
+        ],
+        [
+          0.037,
+          -3.469
+        ],
+        [
+          0.147,
+          -3.927
+        ],
+        [
+          0.327,
+          -4.362
+        ],
+        [
+          0.573,
+          -4.763
+        ],
+        [
+          0.879,
+          -5.121
+        ],
+        [
+          1.237,
+          -5.427
+        ],
+        [
+          1.638,
+          -5.673
+        ],
+        [
+          2.073,
+          -5.853
+        ],
+        [
+          2.531,
+          -5.963
+        ]
+      ],
+      "circle": {
+        "center": [
+          3,
+          -3
+        ],
+        "radius": 3
+      },
+      "bbox": [
+        0,
+        -6,
+        6,
+        0
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "cellar",
+      "kind": "room",
+      "name": "Cellar",
+      "polygon": [
+        [
+          6,
+          0
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "bbox": [
+        6,
+        0,
+        10,
+        4
+      ],
+      "level": "default",
+      "visibility": "dm",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "spaces": [
+        "cellar"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            0
+          ],
+          [
+            10,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "gate",
+        "cellar"
+      ],
+      "material": "stone",
+      "openings": [
+        "cellar_door"
+      ],
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            6,
+            1
+          ]
+        ],
+        [
+          [
+            6,
+            2
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3.5,
+          -0.042
+        ],
+        [
+          3.5,
+          0
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "solid": [
+        [
+          [
+            3.5,
+            -0.042
+          ],
+          [
+            3.5,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2.5,
+          -0.042
+        ],
+        [
+          2.5,
+          0
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "solid": [
+        [
+          [
+            2.5,
+            -0.042
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "spaces": [
+        "gate"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2.5,
+          -0.042
+        ],
+        [
+          3.5,
+          -0.042
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "openings": [
+        "gate_door"
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          2.5,
+          0
+        ]
+      ],
+      "spaces": [
+        "gate"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            2.5,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2.5,
+          0
+        ],
+        [
+          3.5,
+          0
+        ]
+      ],
+      "spaces": [
+        "gate"
+      ],
+      "material": "stone",
+      "openings": [
+        "gate_door"
+      ]
+    },
+    {
+      "line": [
+        [
+          3.5,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "gate"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            3.5,
+            0
+          ],
+          [
+            6,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          10,
+          0
+        ]
+      ],
+      "spaces": [
+        "cellar"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "gate"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          4
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "spaces": [
+        "cellar"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            4
+          ],
+          [
+            10,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "circle": {
+        "center": [
+          3,
+          -3
+        ],
+        "radius": 3
+      },
+      "spaces": [
+        "keep"
+      ],
+      "material": "stone",
+      "openings": [
+        "gate_door"
+      ],
+      "gaps": [
+        [
+          [
+            3.5,
+            -0.042
+          ],
+          [
+            2.5,
+            -0.042
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "gate_door",
+      "from": "gate",
+      "to": "keep",
+      "type": "door",
+      "secret": false,
+      "locked": true,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          2.5,
+          0
+        ],
+        [
+          3.5,
+          0
+        ]
+      ],
+      "far": [
+        [
+          2.5,
+          -0.042
+        ],
+        [
+          3.5,
+          -0.042
+        ]
+      ],
+      "width": 1,
+      "stub": [
+        [
+          2.5,
+          -0.042
+        ],
+        [
+          3.5,
+          -0.042
+        ],
+        [
+          3.5,
+          0
+        ],
+        [
+          2.5,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "cellar_door",
+      "from": "gate",
+      "to": "cellar",
+      "type": "door",
+      "secret": true,
+      "locked": false,
+      "visibility": "dm",
+      "implicit": false,
+      "segment": [
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [
+    {
+      "id": "brazier",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "brazier",
+      "category": "lighting",
+      "label": "Brazier",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "gate",
+      "footprint": [
+        [
+          2.5,
+          1.5
+        ],
+        [
+          3.5,
+          1.5
+        ],
+        [
+          3.5,
+          2.5
+        ],
+        [
+          2.5,
+          2.5
+        ]
+      ],
+      "bbox": [
+        2.5,
+        1.5,
+        3.5,
+        2.5
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 4
+    }
+  ],
+  "notes": [],
+  "reach": {
+    "entrance": "gate",
+    "links": [
+      [
+        "gate",
+        "keep",
+        "gate_door"
+      ],
+      [
+        "gate",
+        "cellar",
+        "cellar_door"
+      ]
+    ]
+  }
+}

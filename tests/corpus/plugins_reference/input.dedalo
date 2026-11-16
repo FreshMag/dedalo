@@ -1,0 +1,84 @@
+# The reference plugins at work: a theme pack, a WebAssembly scene pass and
+# painter, and a WebAssembly exporter.
+dedalo {
+    version = 1
+
+    plugin "hand_drawn" {
+        version = "^1.2"
+    }
+
+    plugin "blueprint" {
+        version = "^1"
+    }
+
+    plugin "uvtt" {
+        version = "^0.3"
+    }
+}
+
+dungeon "plugins_reference" {
+    name = "Sketched Keep"
+
+    render {
+        theme = hand_drawn.sepia
+
+        plugin "hand_drawn" {
+            wobble = 1.2
+        }
+    }
+
+    room "gate" {
+        name = "Gate"
+        shape = rectangle(6, 4)
+        tags = ["entrance"]
+
+        feature "brazier" {
+            type = lighting
+            subtype = brazier
+            placement { anchor = center }
+        }
+    }
+
+    room "keep" {
+        name = "Keep"
+        shape = circle(3)
+        layout { north_of = "gate" }
+    }
+
+    room "cellar" {
+        name = "Cellar"
+        shape = square(4)
+        visibility = dm
+        layout { east_of = "gate" }
+    }
+
+    connection "gate_door" {
+        from = "gate"
+        to = "keep"
+        type = locked_door
+    }
+
+    connection "cellar_door" {
+        from = "gate"
+        to = "cellar"
+        type = secret_door
+    }
+
+    export "dm" {
+        preset = dm
+    }
+
+    export "player" {
+        preset = player
+
+        render {
+            theme = blueprint.default
+        }
+    }
+
+    export "vtt" {
+        preset = player
+        format = uvtt.dd2vtt
+        cell_px = 32
+    }
+}

@@ -1,0 +1,60 @@
+{
+  "dungeon": {
+    "id": "layout_elements_size_rotation",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "table",
+            "type": "furniture",
+            "subtype": "table",
+            "position": [
+              1,
+              1
+            ],
+            "rotation": 90
+          },
+          {
+            "class": "feature",
+            "id": "pool",
+            "type": "terrain",
+            "subtype": "water",
+            "position": [
+              4,
+              2
+            ],
+            "size": [
+              3,
+              3
+            ]
+          },
+          {
+            "class": "entity",
+            "id": "guard",
+            "type": "creature",
+            "position": [
+              5,
+              3
+            ],
+            "facing": "north_west"
+          }
+        ]
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Footprints with size and quarter-turn rotation."
+      ]
+    }
+  }
+}

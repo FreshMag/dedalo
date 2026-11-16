@@ -1,0 +1,87 @@
+name: Release
+
+# A tagged commit produces the binaries on GitHub Releases (spec 16):
+# archives for five targets, SHA-256 checksums, build-provenance
+# attestations, and the install scripts. The site is deployed by pages.yml
+# from the same tag. Binaries are not code-signed until the signing
+# decision of spec 19.2 is taken.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  build:
+    name: build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl, archive: tar.gz }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, archive: tar.gz }
+          - { os: macos-latest, target: aarch64-apple-darwin, archive: tar.gz }
+          - { os: macos-13, target: x86_64-apple-darwin, archive: tar.gz }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc, archive: zip }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned toolchain and the target
+        run: |
+          rustup show
+          rustup target add ${{ matrix.target }}
+      - name: Install musl tools
+        if: contains(matrix.target, 'musl')
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: Test
+        run: cargo test --workspace --locked
+      - name: Build
+        run: cargo build --release --locked -p dedalo-cli --target ${{ matrix.target }}
+      - name: Package
+        shell: bash
+        run: |
+          name="dedalo-${{ matrix.target }}"
+          mkdir "$name"
+          bin="target/${{ matrix.target }}/release/dedalo"
+          [ -f "$bin.exe" ] && bin="$bin.exe"
+          cp "$bin" README.md "$name/"
+          cp crates/dedalo-scene/fonts/OFL.txt "$name/FONTS-OFL.txt"
+          if [ "${{ matrix.archive }}" = zip ]; then
+            7z a "$name.zip" "$name" > /dev/null
+            echo "ASSET=$name.zip" >> "$GITHUB_ENV"
+          else
+            tar czf "$name.tar.gz" "$name"
+            echo "ASSET=$name.tar.gz" >> "$GITHUB_ENV"
+          fi
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ${{ env.ASSET }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ASSET }}
+          path: ${{ env.ASSET }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        run: |
+          cp scripts/install.sh scripts/install.ps1 dist/
+          cd dist && sha256sum * > SHA256SUMS
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/* \
+            --title "Dedalo ${GITHUB_REF_NAME#v}" \
+            --notes "Release notes: language changes, output changes and plugin API changes are listed in CHANGELOG.md. Binaries are not code-signed; verify them with SHA256SUMS or \`gh attestation verify\`."

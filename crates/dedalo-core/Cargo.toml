@@ -13,10 +13,22 @@ dedalo-model.workspace = true
 dedalo-geom.workspace = true
 dedalo-scene.workspace = true
 dedalo-render.workspace = true
-dedalo-export.workspace = true
-dedalo-plugin.workspace = true
+dedalo-export = { workspace = true, default-features = false }
+dedalo-plugin = { workspace = true, default-features = false }
+dedalo-ops.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+sha2.workspace = true
+
+[features]
+default = ["raster", "native-plugins"]
+raster = ["dedalo-export/raster"]
+# The native WebAssembly plugin host.
+native-plugins = ["dedalo-plugin/wasmi"]
+
+[dev-dependencies]
+dedalo-plugin = { workspace = true, features = ["wasmi"] }
+dedalo-syntax.workspace = true
 
 [lints]
 workspace = true

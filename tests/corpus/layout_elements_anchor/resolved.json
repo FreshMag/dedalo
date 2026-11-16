@@ -1,0 +1,517 @@
+{
+  "id": "layout_elements_anchor",
+  "seed": 13891549136591034955,
+  "bounds": [
+    0,
+    0,
+    9,
+    7
+  ],
+  "spaces": [
+    {
+      "id": "a",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          9,
+          0
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          0,
+          7
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        9,
+        7
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          9,
+          0
+        ],
+        [
+          9,
+          7
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            9,
+            0
+          ],
+          [
+            9,
+            7
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          7
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            7
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          9,
+          0
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            9,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          7
+        ],
+        [
+          9,
+          7
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            7
+          ],
+          [
+            9,
+            7
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [],
+  "elements": [
+    {
+      "id": "center",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          4,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "bbox": [
+        4,
+        3,
+        5,
+        4
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "north",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          4,
+          0
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "bbox": [
+        4,
+        0,
+        5,
+        1
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "north_east",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          8,
+          0
+        ],
+        [
+          9,
+          0
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "bbox": [
+        8,
+        0,
+        9,
+        1
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "east",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          8,
+          3
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "bbox": [
+        8,
+        3,
+        9,
+        4
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "south_east",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ]
+      ],
+      "bbox": [
+        8,
+        6,
+        9,
+        7
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "south",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "bbox": [
+        4,
+        6,
+        5,
+        7
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "south_west",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          0,
+          7
+        ]
+      ],
+      "bbox": [
+        0,
+        6,
+        1,
+        7
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "west",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          0,
+          3
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        3,
+        1,
+        4
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "north_west",
+      "class": "feature",
+      "type": "architecture",
+      "subtype": "column",
+      "category": "features",
+      "label": "Column",
+      "type_label": "column",
+      "glyph": "O",
+      "layer": "features",
+      "space": "a",
+      "footprint": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    }
+  ],
+  "notes": [],
+  "reach": {
+    "entrance": "a",
+    "links": []
+  }
+}

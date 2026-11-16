@@ -15,5 +15,5 @@ mod walls;
 pub use model::{Circle, Opening, RElement, RNote, RSpace, Reach, Resolved, Wall};
 pub use overlap::interiors_intersect;
 pub use prim::{C, CELL, Loc, Pt, Rect, locate, locate_scaled};
-pub use resolve::resolve;
+pub use resolve::{ShapeHook, resolve, resolve_with};
 pub use walls::derive_walls;

@@ -1,0 +1,32 @@
+# Brown ink on parchment.
+
+[theme]
+id = "sepia"
+
+[palette]
+background = "#efe3c8"
+floor      = "#f7efdc"
+wall       = "#3b2a1e"
+grid       = "#d9c8a4"
+ink        = "#3b2a1e"
+muted      = "#7a6450"
+water      = "#9fbfc7"
+lava       = "#d98c5f"
+rubble     = "#b8a58a"
+rocks      = "#9c8b72"
+light      = "#f2c46d"
+npc        = "#ead9b8"
+note       = "#f2dc9b"
+
+[stroke]
+wall   = 0.12
+door   = 0.05
+grid   = 0.018
+symbol = 0.05
+
+[text]
+room   = 0.44
+marker = 0.5
+legend = 0.4
+note   = 0.34
+title  = 0.75

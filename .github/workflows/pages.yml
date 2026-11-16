@@ -31,11 +31,28 @@ jobs:
         run: rustup show
       - name: Build the site
         run: |
-          cargo build -p dedalo-wasm --target wasm32-unknown-unknown --profile wasm --locked
+          cargo build -p dedalo-wasm -p dedalo-wasm-export -p dedalo-plugin-hand-drawn -p dedalo-plugin-uvtt --target wasm32-unknown-unknown --profile wasm --locked
+          cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_hand_drawn.wasm plugins/hand_drawn/hand_drawn.wasm
+          cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_uvtt.wasm plugins/uvtt/uvtt.wasm
+          cargo build -p dedalo-cli --release --locked
           mkdir -p site/schema
-          cp web/index.html web/style.css web/main.js web/dedalo.js site/
+          cp web/index.html web/reference.html web/style.css web/*.js web/manifest.webmanifest web/icon.svg site/
+          rm -f site/golden*.js site/golden.mjs site/selftest.js site/run-browser-check.sh site/serve.py
+          mkdir -p site/docs site/examples
+          cp docs/tutorial.md docs/cookbook.md docs/plugins.md docs/compatibility.md site/docs/
+          for name in forgotten_crypt four_shapes rotated; do cp tests/corpus/$name/input.dedalo site/examples/$name.dedalo; done
           cp target/wasm32-unknown-unknown/wasm/dedalo_wasm.wasm site/dedalo.wasm
+          cp target/wasm32-unknown-unknown/wasm/dedalo_wasm_export.wasm site/dedalo-export.wasm
           cp spec/schema/*.json site/schema/
+          ./target/release/dedalo schema document --profile authoring > site/schema/document-1.authoring.json
+          ./target/release/dedalo skill export site/skill --llms-txt site/llms.txt
+          # The reviewed plugin index (spec 11.6): first-party plugins and their hashes.
+          mkdir -p site/plugins
+          for id in blueprint hand_drawn uvtt; do
+            mkdir -p site/plugins/$id
+            (cd plugins/$id && find . -type f ! -path './src/*' ! -name 'Cargo.toml' -exec cp --parents {} ../../site/plugins/$id/ \;)
+          done
+          ./target/release/dedalo plugin list --plugin plugins --json | python3 -c "import json,sys; d=json.load(sys.stdin); [p.pop('path',None) for p in d]; print(json.dumps(d, indent=2))" > site/plugins/index.json
       - name: Publish
         run: |
           git config user.name "github-actions[bot]"

@@ -135,6 +135,11 @@ codes! {
     PluginTimeout "PLUGIN_TIMEOUT" Error "any"
         "A plugin exceeded its time or memory budget."
         "Plugins run with a fuel budget and 64 MiB of memory per call.\n\nFix: simplify the input, or report the problem to the plugin author.";
+    PluginRule "PLUGIN_RULE" Warning "any"
+        "A plugin validator reported a problem."
+        "Validator plugins add their own checks after layout, such as \"every room needs a light\". The message ends with the plugin and rule that raised it; the plugin may mark a problem as an error.
+
+Fix: follow the message, or remove the plugin from the `dedalo` header block if its rules do not apply to this dungeon.";
     ExportTooLarge "EXPORT_TOO_LARGE" Error "emit"
         "The output image would exceed 16,384 pixels on one side."
         "The pixel size is the map size in cells times `cell_px` (or `resolution`).\n\nFix: lower `cell_px` to the largest valid value given in the message, or export SVG or PDF, which have no pixel limit.";

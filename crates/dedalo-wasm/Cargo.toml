@@ -10,7 +10,8 @@ license.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-dedalo-core.workspace = true
+dedalo-core = { workspace = true, default-features = false }
+dedalo-plugin = { workspace = true, default-features = false }
 serde.workspace = true
 serde_json.workspace = true
 

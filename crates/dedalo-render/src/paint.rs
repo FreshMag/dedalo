@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 
 use dedalo_geom::{Opening, Pt, RElement, RNote, RSpace, Wall};
 use dedalo_model::{Direction, Facing, Value};
-use dedalo_scene::shapes::{circle, line, polygon, rect};
+use dedalo_scene::shapes::{circle, ellipse, line, polygon, rect};
 use dedalo_scene::{Cmd, Node, Paint, Scene, Source, Stroke, TextAnchor};
 
 use crate::theme::Theme;
@@ -136,7 +136,7 @@ pub(crate) fn xy(p: Pt) -> (f64, f64) {
 
 pub(crate) fn outline(space: &RSpace) -> Vec<Cmd> {
     match space.circle {
-        Some(c) => circle(f(c.center.x), f(c.center.y), f(c.radius)),
+        Some(c) => ellipse(f(c.center.x), f(c.center.y), f(c.rx()), f(c.ry())),
         None => polygon(&space.polygon.iter().map(|p| xy(*p)).collect::<Vec<_>>()),
     }
 }
@@ -198,29 +198,22 @@ fn wall(item: &Item, cx: &Cx, scene: &mut Scene) {
         d.extend(line(xy(*a), xy(*b)));
     }
     if let Some(c) = wall.circle {
-        let (cx0, cy0, r) = (f(c.center.x), f(c.center.y), f(c.radius));
+        let (cx0, cy0, rx, ry) = (f(c.center.x), f(c.center.y), f(c.rx()), f(c.ry()));
         if wall.gaps.is_empty() {
-            d.extend(circle(cx0, cy0, r));
+            d.extend(ellipse(cx0, cy0, rx, ry));
         }
         // An arc from the end of each gap to the start of the next.
-        let angle = |p: Pt| {
-            let a = libm::atan2(f(p.x) - cx0, -(f(p.y) - cy0));
-            if a < 0.0 {
-                a + 2.0 * std::f64::consts::PI
-            } else {
-                a
-            }
-        };
         for (i, gap) in wall.gaps.iter().enumerate() {
             let next = wall.gaps[(i + 1) % wall.gaps.len()];
-            let mut sweep = angle(next[0]) - angle(gap[1]);
+            let mut sweep = c.angle(next[0]) - c.angle(gap[1]);
             if sweep <= 0.0 {
                 sweep += 2.0 * std::f64::consts::PI;
             }
             let (from, to) = (xy(gap[1]), xy(next[0]));
             d.push(Cmd::Move(from.0, from.1));
             d.push(Cmd::Arc {
-                r,
+                r: rx,
+                ry: (rx != ry).then_some(ry),
                 large: sweep > std::f64::consts::PI,
                 clockwise: true,
                 x: to.0,

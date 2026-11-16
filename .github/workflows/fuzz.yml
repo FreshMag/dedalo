@@ -1,0 +1,47 @@
+name: Fuzz and budgets
+
+# Long-running checks (spec 15.1 and 15.3): fuzzing for an hour in total and
+# the performance budgets. Weekly, and on demand.
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [parse, compile, format, json, edit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install nightly and cargo-fuzz
+        run: |
+          rustup toolchain install nightly --profile minimal
+          cargo +nightly install cargo-fuzz --locked
+      - name: Seed corpus
+        run: |
+          mkdir -p fuzz/corpus/${{ matrix.target }}
+          for f in tests/corpus/*/input.dedalo; do cp "$f" "fuzz/corpus/${{ matrix.target }}/$(basename $(dirname $f)).dedalo"; done
+          for f in tests/corpus/*/document.json; do cp "$f" "fuzz/corpus/${{ matrix.target }}/$(basename $(dirname $f)).json"; done
+      - name: Fuzz for twelve minutes
+        run: cargo +nightly fuzz run ${{ matrix.target }} -- -max_total_time=720 -max_len=65536
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: fuzz-artifacts-${{ matrix.target }}
+          path: fuzz/artifacts
+
+  budgets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned toolchain
+        run: rustup show
+      - name: Performance budgets
+        run: cargo run --release --locked -p dedalo-core --example budgets -- --check

@@ -32,8 +32,9 @@ struct Side {
     end: Pt,
     /// Edge index as the author counted it.
     index: usize,
-    /// For the virtual sides of a circle: its radius.
-    radius: Option<C>,
+    /// For the virtual sides of a circle or an ellipse: the radius along
+    /// the side and the radius across it.
+    curve: Option<(C, C)>,
 }
 
 impl Side {
@@ -48,11 +49,19 @@ impl Side {
         )
     }
 
-    /// How far a chord of width `w` lies inside the tangent of a circle.
+    /// How far a chord of width `w` lies inside the tangent of a curve.
     fn sagitta(&self, w: C) -> C {
-        self.radius.map_or(0, |r| {
-            r - isqrt(r as i128 * r as i128 - (w / 2) as i128 * (w / 2) as i128) as C
+        self.curve.map_or(0, |(along, across)| {
+            let (a, b, half) = (along as i128, across as i128, (w / 2) as i128);
+            // On the ellipse x^2/a^2 + y^2/b^2 = 1 the chord at half-width
+            // `half` lies at y = b * sqrt(1 - half^2 / a^2).
+            across - (isqrt(b * b * (a * a - half * half)) / a) as C
         })
+    }
+
+    /// The radius along the side, for a curved side.
+    fn along(&self) -> Option<C> {
+        self.curve.map(|c| c.0)
     }
 }
 
@@ -97,23 +106,48 @@ fn make_geo(local: &Local, rot: u8, origin: Pt) -> Geo {
     };
     let poly: Vec<Pt> = local.poly.iter().map(|p| xf.apply(*p)).collect();
     let mut sides = Vec::new();
-    let mut side = |name: Direction, a: Pt, b: Pt, index: usize, radius: Option<C>| {
+    let mut side = |name: Direction, a: Pt, b: Pt, index: usize, curve: Option<(C, C)>| {
         sides.push(Side {
             name,
             gdir: rotate_dir(name, rot),
             start: xf.apply(a),
             end: xf.apply(b),
             index,
-            radius,
+            curve,
         });
     };
-    if let Some(r) = local.radius {
-        // A circle has four virtual sides, each tangent at a compass point.
-        let d = 2 * r;
-        side(Direction::North, Pt::new(0, 0), Pt::new(d, 0), 0, Some(r));
-        side(Direction::East, Pt::new(d, 0), Pt::new(d, d), 1, Some(r));
-        side(Direction::South, Pt::new(0, d), Pt::new(d, d), 2, Some(r));
-        side(Direction::West, Pt::new(0, 0), Pt::new(0, d), 3, Some(r));
+    if let Some((rx, ry)) = local.radius {
+        // A circle or an ellipse has four virtual sides, each tangent at a
+        // compass point.
+        let (w, h) = (2 * rx, 2 * ry);
+        side(
+            Direction::North,
+            Pt::new(0, 0),
+            Pt::new(w, 0),
+            0,
+            Some((rx, ry)),
+        );
+        side(
+            Direction::East,
+            Pt::new(w, 0),
+            Pt::new(w, h),
+            1,
+            Some((ry, rx)),
+        );
+        side(
+            Direction::South,
+            Pt::new(0, h),
+            Pt::new(w, h),
+            2,
+            Some((rx, ry)),
+        );
+        side(
+            Direction::West,
+            Pt::new(0, 0),
+            Pt::new(0, h),
+            3,
+            Some((ry, rx)),
+        );
     } else {
         for (i, (a, b)) in edges(&local.poly).enumerate() {
             let index = local.edge_index[i];
@@ -129,9 +163,13 @@ fn make_geo(local: &Local, rot: u8, origin: Pt) -> Geo {
             }
         }
     }
-    let circle = local.radius.map(|r| Circle {
-        center: xf.apply(Pt::new(r, r)),
-        radius: r,
+    let circle = local.radius.map(|(rx, ry)| {
+        let c = Circle {
+            center: xf.apply(Pt::new(rx, ry)),
+            radius: rx,
+            radius_y: (rx != ry).then_some(ry),
+        };
+        c.turned(rot as i64)
     });
     Geo {
         bbox: Rect::of(&poly),
@@ -182,6 +220,20 @@ fn quote_list(ids: &[&str]) -> String {
 
 /// Resolves a document. Returns whatever resolved, and the diagnostics.
 pub fn resolve(doc: &Document, cat: &Catalog) -> (Resolved, Vec<Diagnostic>) {
+    resolve_with(doc, cat, &|_| None)
+}
+
+/// A shape function provided by a plugin: the call, to outline points in
+/// cells. `None` when no loaded plugin provides the function.
+pub type ShapeHook<'a> =
+    &'a dyn Fn(&dedalo_model::ShapeCall) -> Option<Result<Vec<[f64; 2]>, String>>;
+
+/// Resolves a document with plugin shape functions available.
+pub fn resolve_with(
+    doc: &Document,
+    cat: &Catalog,
+    shapes: ShapeHook,
+) -> (Resolved, Vec<Diagnostic>) {
     let d = &doc.dungeon;
     let mut diags = Vec::new();
     if !dedalo_model::check::geometry_limits(d).is_empty() {
@@ -227,7 +279,7 @@ pub fn resolve(doc: &Document, cat: &Catalog) -> (Resolved, Vec<Diagnostic>) {
                 )
                 .element(id.clone()),
             ),
-            Some(call) => match shape::build(call) {
+            Some(call) => match build_shape(call, shapes) {
                 Ok(local) => sp.local = Some(local),
                 Err(reason) => diags.push(
                     Diagnostic::new(
@@ -319,6 +371,35 @@ pub fn resolve(doc: &Document, cat: &Catalog) -> (Resolved, Vec<Diagnostic>) {
         reach,
     };
     (resolved, diags)
+}
+
+/// Builds a shape: a built-in function, or a dotted plugin function.
+fn build_shape(call: &dedalo_model::ShapeCall, shapes: ShapeHook) -> Result<Local, String> {
+    if !call.func.contains('.') {
+        return shape::build(call);
+    }
+    match shapes(call) {
+        None => Err(format!(
+            "the shape `{}` comes from a plugin that is not loaded.",
+            call.func
+        )),
+        Some(Err(reason)) => Err(reason),
+        Some(Ok(points)) => {
+            if points.iter().any(|p| {
+                !p[0].is_finite() || !p[1].is_finite() || p[0].abs() > 1e6 || p[1].abs() > 1e6
+            }) {
+                return Err(format!(
+                    "the plugin shape `{}` returned a point out of range.",
+                    call.func
+                ));
+            }
+            let points = points
+                .iter()
+                .map(|p| Pt::new((p[0] * 1000.0).round() as C, (p[1] * 1000.0).round() as C))
+                .collect();
+            shape::from_points(points)
+        }
+    }
 }
 
 /// A stable 64-bit hash, the default seed of a dungeon (spec 7.10).
@@ -690,12 +771,14 @@ fn candidates(a: &Geo, b: &Geo, w: C, pick: &dyn Fn(&Side) -> bool) -> (Vec<Cand
             .filter(|(_, s)| s.gdir == opposite(sa.gdir))
         {
             let d = sb.start.minus(sa.start).dot(n);
-            if d < 0 || sa.radius.is_some_and(|r| w > 2 * r) || sb.radius.is_some_and(|r| w > 2 * r)
+            if d < 0
+                || sa.along().is_some_and(|r| w > 2 * r)
+                || sb.along().is_some_and(|r| w > 2 * r)
             {
                 continue;
             }
             let (mut lo, mut hi, mut fixed) = (0, sa.len(), false);
-            if let Some(r) = sa.radius {
+            if let Some(r) = sa.along() {
                 (lo, hi, fixed) = (r - w / 2, r - w / 2 + w, true);
             }
             let (t0, t1) = (
@@ -703,7 +786,7 @@ fn candidates(a: &Geo, b: &Geo, w: C, pick: &dyn Fn(&Side) -> bool) -> (Vec<Cand
                 sb.end.minus(sa.start).dot(u),
             );
             let (mut blo, mut bhi) = (t0.min(t1), t0.max(t1));
-            if sb.radius.is_some() {
+            if sb.curve.is_some() {
                 let centre = (blo + bhi) / 2;
                 (blo, bhi, fixed) = (centre - w / 2, centre - w / 2 + w, true);
             }
@@ -778,6 +861,16 @@ fn span_text(side: &Side, lo: C, hi: C) -> String {
 
 fn resolve_corridors(sps: &mut [Sp], diags: &mut Vec<Diagnostic>) {
     let mut done: BTreeSet<usize> = BTreeSet::new();
+    // The outline of a corridor with a path follows from the path alone, so
+    // corridors with paths can check their ends against each other at once.
+    let provisional: BTreeMap<usize, Geo> = (0..sps.len())
+        .filter(|i| sps[*i].src.kind == SpaceKind::Corridor && !sps[*i].src.path.is_empty())
+        .filter_map(|i| {
+            path_shape(sps[i].src)
+                .ok()
+                .map(|(poly, _, _)| (i, geo_of_polygon(poly)))
+        })
+        .collect();
     loop {
         let mut progress = false;
         for i in 0..sps.len() {
@@ -797,14 +890,21 @@ fn resolve_corridors(sps: &mut [Sp], diags: &mut Vec<Diagnostic>) {
                 done.insert(i);
                 continue;
             };
-            // A corridor joined to another corridor waits for it.
-            let waiting = |j: usize| sps[j].src.kind == SpaceKind::Corridor && !done.contains(&j);
+            // A corridor joined to another corridor waits for it, unless both
+            // have paths and the outline is already known.
+            let has_path = !sps[i].src.path.is_empty();
+            let waiting = |j: usize| {
+                sps[j].src.kind == SpaceKind::Corridor
+                    && !done.contains(&j)
+                    && !(has_path && provisional.contains_key(&j))
+            };
             if waiting(a) || waiting(b) {
                 continue;
             }
             done.insert(i);
             progress = true;
-            let (Some(ga), Some(gb)) = (sps[a].geo.clone(), sps[b].geo.clone()) else {
+            let geo_of = |j: usize| sps[j].geo.clone().or_else(|| provisional.get(&j).cloned());
+            let (Some(ga), Some(gb)) = (geo_of(a), geo_of(b)) else {
                 continue;
             };
             let result = if sps[i].src.path.is_empty() {
@@ -822,6 +922,24 @@ fn resolve_corridors(sps: &mut [Sp], diags: &mut Vec<Diagnostic>) {
         }
         if !progress {
             break;
+        }
+    }
+    // Corridors that wait on each other without paths cannot be routed.
+    for (i, sp) in sps.iter().enumerate() {
+        let c = sp.src;
+        if c.kind == SpaceKind::Corridor && c.connects.len() == 2 && !done.contains(&i) {
+            diags.push(
+                Diagnostic::new(
+                    Code::CorridorDisconnected,
+                    format!(
+                        "Corridor `{}` joins another corridor that is itself waiting to be routed, so neither can be placed. Corridors that join corridors need an explicit `path`.",
+                        c.id
+                    ),
+                )
+                .element(c.id.clone())
+                .at("connects")
+                .suggest("Give the corridor a `path` of lattice points that starts or ends where the other corridor ends."),
+            );
         }
     }
 }
@@ -890,7 +1008,11 @@ fn straight_corridor(c: &Space, a: (&str, &Geo), b: (&str, &Geo)) -> Result<Corr
 }
 
 /// Explicit routing: the centre line widened by half the width on each side.
-fn path_corridor(c: &Space, a: (&str, &Geo), b: (&str, &Geo)) -> Result<Corridor, Diagnostic> {
+/// A corridor outline and its two end segments.
+type PathShape = (Vec<Pt>, [Pt; 2], [Pt; 2]);
+
+/// The outline of a corridor with a path, and its two end segments.
+fn path_shape(c: &Space) -> Result<PathShape, Diagnostic> {
     let id = &c.id;
     let w = num(c.width, CELL);
     let half = w / 2;
@@ -972,9 +1094,18 @@ fn path_corridor(c: &Space, a: (&str, &Geo), b: (&str, &Geo)) -> Result<Corridor
             }
         }
     }
+    Ok((clockwise(poly), start, end))
+}
+
+/// Explicit routing: the centre line widened by half the width on each side.
+fn path_corridor(c: &Space, a: (&str, &Geo), b: (&str, &Geo)) -> Result<Corridor, Diagnostic> {
+    let id = &c.id;
+    let w = num(c.width, CELL);
+    let (poly, start, end) = path_shape(c)?;
+    let pts: Vec<Pt> = c.path.iter().map(|p| Pt::new(p[0].0, p[1].0)).collect();
     let touches = |geo: &Geo, seg: [Pt; 2]| {
         geo.sides.iter().any(|s| {
-            s.radius.is_none()
+            s.curve.is_none()
                 && on_segment(s.start, s.end, seg[0])
                 && on_segment(s.start, s.end, seg[1])
         })
@@ -1008,7 +1139,7 @@ fn path_corridor(c: &Space, a: (&str, &Geo), b: (&str, &Geo)) -> Result<Corridor
         .related(b.0, format!("occupies x {} to {}, y {} to {}", cells(b.1.bbox.x0), cells(b.1.bbox.x1), cells(b.1.bbox.y0), cells(b.1.bbox.y1)))
         .suggest("Start and end the path on the walls of the two spaces. Path points are lattice points along the centre line; with an odd width, use half-cell coordinates such as 3.5 to stay on the grid."));
     };
-    Ok((clockwise(poly), ends))
+    Ok((poly, ends))
 }
 
 /// Each end of a corridor opens into its space unless a connection between
@@ -1287,10 +1418,7 @@ fn place_connection(
 /// Whether a point lies inside or on the boundary of a space.
 fn contains(geo: &Geo, p: Pt) -> bool {
     match geo.circle {
-        Some(c) => {
-            let (dx, dy) = ((p.x - c.center.x) as i128, (p.y - c.center.y) as i128);
-            dx * dx + dy * dy <= c.radius as i128 * c.radius as i128
-        }
+        Some(c) => c.contains(p),
         None => locate(p, &geo.poly) != Loc::Outside,
     }
 }

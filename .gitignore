@@ -1,4 +1,13 @@
 /target
 /web/dist
 /web/dedalo.wasm
+/web/dedalo-export.wasm
 *.new
+/web/skill
+/web/llms.txt
+/plugins/*/*.wasm
+/plugins/index.json
+/fuzz/target
+/fuzz/corpus
+/fuzz/artifacts
+/fuzz/Cargo.lock

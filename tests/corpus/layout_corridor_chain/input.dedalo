@@ -1,0 +1,22 @@
+# A corridor joined to another corridor.
+dungeon "layout_corridor_chain" {
+    room "a" {
+        shape = square(4)
+        layout { position = [0, 0] }
+    }
+
+    room "b" {
+        shape = square(4)
+        layout { position = [12, 0] }
+    }
+
+    corridor "first" {
+        connects = ["a", "second"]
+        path = [[4, 1.5], [8, 1.5]]
+    }
+
+    corridor "second" {
+        connects = ["first", "b"]
+        path = [[8, 1.5], [12, 1.5]]
+    }
+}

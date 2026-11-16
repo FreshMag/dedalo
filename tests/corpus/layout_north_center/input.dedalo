@@ -1,0 +1,17 @@
+# A 4 by 3 room north of an 8 by 6 room, aligned center.
+dungeon "layout_north_center" {
+    room "base" {
+        shape = rectangle(8, 6)
+    }
+
+    room "other" {
+        shape = rectangle(4, 3)
+        layout { north_of = "base", align = center }
+    }
+
+    connection "link" {
+        from = "base"
+        to = "other"
+        type = door
+    }
+}

@@ -1,0 +1,52 @@
+{
+  "dungeon": {
+    "id": "layout_stairs_ladder",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "down",
+        "from": "a",
+        "type": "stairs",
+        "position": [
+          1,
+          1
+        ]
+      },
+      {
+        "id": "up",
+        "from": "a",
+        "type": "ladder",
+        "position": [
+          4,
+          2
+        ]
+      },
+      {
+        "id": "hatch",
+        "from": "a",
+        "type": "trapdoor",
+        "position": [
+          2,
+          3
+        ]
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Vertical connections as marked exits."
+      ]
+    }
+  }
+}

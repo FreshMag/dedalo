@@ -1,0 +1,17 @@
+# No layout: placed on the side the door names.
+dungeon "layout_automatic_wall" {
+    room "a" {
+        shape = rectangle(6, 4)
+    }
+
+    room "b" {
+        shape = square(3)
+    }
+
+    connection "ab" {
+        from = "a"
+        to = "b"
+        type = door
+        placement { wall = west }
+    }
+}

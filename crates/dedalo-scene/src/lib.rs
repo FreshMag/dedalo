@@ -5,9 +5,10 @@
 //! cannot express scripts, filters, external references, foreign objects or
 //! animation, so whatever it holds renders the same everywhere.
 
+pub mod font;
 mod svg;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 pub use svg::to_svg;
 
@@ -27,29 +28,32 @@ pub const LAYERS: [&str; 12] = [
     "frame",
 ];
 
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Scene {
     /// `[x, y, width, height]` of the canvas, in cells.
     pub bounds: [f64; 4],
     /// Pixels per cell at emit time.
     pub cell_px: u32,
+    #[serde(default)]
+    /// Keep text as selectable `<text>` instead of outlines (`text = live`).
+    pub live_text: bool,
     pub layers: Vec<Layer>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Layer {
     pub name: String,
     pub nodes: Vec<Node>,
 }
 
 /// The element a node was drawn for. The editor uses it for click-to-source.
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Source {
     pub id: String,
     pub role: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "node", rename_all = "snake_case")]
 pub enum Node {
     Group {
@@ -92,14 +96,16 @@ pub enum Node {
 }
 
 /// A path command, in absolute coordinates.
-#[derive(Clone, Copy, Debug, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Cmd {
     Move(f64, f64),
     Line(f64, f64),
-    /// A circular arc to `(x, y)`.
+    /// An elliptical arc to `(x, y)`; `ry` defaults to `r`.
     Arc {
         r: f64,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        ry: Option<f64>,
         large: bool,
         clockwise: bool,
         x: f64,
@@ -109,7 +115,7 @@ pub enum Cmd {
     Close,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Paint {
     /// An sRGB colour such as `#a8d0f0`, with alpha.
@@ -123,7 +129,7 @@ pub enum Paint {
     },
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Stroke {
     pub color: String,
     /// Width in cells.
@@ -133,7 +139,7 @@ pub struct Stroke {
     pub round: bool,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TextAnchor {
     Start,
@@ -147,6 +153,7 @@ impl Scene {
         Scene {
             bounds,
             cell_px,
+            live_text: false,
             layers: LAYERS
                 .iter()
                 .map(|name| Layer {
@@ -289,11 +296,35 @@ pub mod shapes {
         vec![Cmd::Move(a.0, a.1), Cmd::Line(b.0, b.1)]
     }
 
+    pub fn ellipse(cx: f64, cy: f64, rx: f64, ry: f64) -> Vec<Cmd> {
+        vec![
+            Cmd::Move(cx - rx, cy),
+            Cmd::Arc {
+                r: rx,
+                ry: (ry != rx).then_some(ry),
+                large: false,
+                clockwise: true,
+                x: cx + rx,
+                y: cy,
+            },
+            Cmd::Arc {
+                r: rx,
+                ry: (ry != rx).then_some(ry),
+                large: false,
+                clockwise: true,
+                x: cx - rx,
+                y: cy,
+            },
+            Cmd::Close,
+        ]
+    }
+
     pub fn circle(cx: f64, cy: f64, r: f64) -> Vec<Cmd> {
         vec![
             Cmd::Move(cx - r, cy),
             Cmd::Arc {
                 r,
+                ry: None,
                 large: false,
                 clockwise: true,
                 x: cx + r,
@@ -301,6 +332,7 @@ pub mod shapes {
             },
             Cmd::Arc {
                 r,
+                ry: None,
                 large: false,
                 clockwise: true,
                 x: cx - r,

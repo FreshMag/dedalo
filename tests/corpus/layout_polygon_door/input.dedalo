@@ -1,0 +1,30 @@
+# Doors on the straight edges of a concave polygon, chosen by `edge`.
+dungeon "layout_polygon_door" {
+    room "hall" {
+        shape = polygon([[0, 0], [8, 0], [8, 3], [5, 3], [5, 6], [0, 6]])
+        layout { position = [0, 0] }
+    }
+
+    room "north" {
+        shape = rectangle(8, 3)
+        layout { north_of = "hall" }
+    }
+
+    room "notch" {
+        shape = square(3)
+        layout { position = [5, 3] }
+    }
+
+    connection "to_north" {
+        from = "hall"
+        to = "north"
+        type = door
+    }
+
+    connection "to_notch" {
+        from = "hall"
+        to = "notch"
+        type = door
+        placement { edge = 3 }
+    }
+}

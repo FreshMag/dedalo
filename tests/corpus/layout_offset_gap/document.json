@@ -1,0 +1,47 @@
+{
+  "dungeon": {
+    "id": "layout_offset_gap",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "base",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            6
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "other",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "base",
+          "direction": "east",
+          "offset": 1,
+          "gap": 2
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "stub",
+        "from": "base",
+        "to": "other",
+        "type": "door"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Offset along the side and a gap bridged by a stub door."
+      ]
+    }
+  }
+}

@@ -14,13 +14,21 @@ pub struct Local {
     pub poly: Vec<Pt>,
     pub w: C,
     pub h: C,
-    /// The exact radius when the shape is a circle.
-    pub radius: Option<C>,
+    /// The exact radii, horizontal and vertical, when the shape is a
+    /// circle or an ellipse.
+    pub radius: Option<(C, C)>,
     /// For each edge of `poly`, its index as the author counted it.
     pub edge_index: Vec<usize>,
 }
 
-const SHAPES: &[&str] = &["square", "rectangle", "circle", "polygon"];
+const SHAPES: &[&str] = &[
+    "square",
+    "rectangle",
+    "circle",
+    "ellipse",
+    "polygon",
+    "l_shape",
+];
 
 fn number(v: &Value) -> Option<C> {
     v.as_num().map(|n| n.0)
@@ -97,10 +105,18 @@ fn outline(call: &ShapeCall) -> Result<Local, String> {
         }
         ("circle", _) => Err("circle takes one number: circle(radius).".to_string()),
         ("polygon", _) => polygon(args),
-        ("ellipse" | "l_shape", _) => Err(format!(
-            "the shape `{}` arrives in release 1.0; use polygon(points) until then.",
-            call.func
-        )),
+        ("ellipse", Some([w, h])) => {
+            if *w < CELL || *h < CELL {
+                return Err(format!(
+                    "ellipse({}, {}) has a side below one cell; both must be at least 1.",
+                    cells(*w),
+                    cells(*h)
+                ));
+            }
+            Ok(ellipse(*w / 2, *h / 2))
+        }
+        ("ellipse", _) => Err("ellipse takes two numbers: ellipse(width, height).".to_string()),
+        ("l_shape", _) => l_shape(args),
         ("composite", _) => Err(
             "the shape `composite` arrives after release 1.0; use polygon(points) until then."
                 .to_string(),
@@ -115,25 +131,64 @@ fn outline(call: &ShapeCall) -> Result<Local, String> {
 /// A circle inscribed in a `2r` by `2r` bounding box. The vertices start at
 /// north and run clockwise, so the four compass points are exact vertices.
 fn circle(r: C) -> Local {
-    let cells = r as f64 / CELL as f64;
+    ellipse(r, r)
+}
+
+/// An ellipse inscribed in a `2rx` by `2ry` box. The vertices start at north
+/// and run clockwise, so the four compass points are exact vertices.
+fn ellipse(rx: C, ry: C) -> Local {
+    let cells = rx.max(ry) as f64 / CELL as f64;
     // The sagitta of a chord is about r * pi^2 / (2 n^2); keep it under 0.01.
     let n = (((22.3 * libm::sqrt(cells)) / 8.0).ceil() as usize * 8).max(16);
     let poly = (0..n)
         .map(|k| {
             let angle = 2.0 * std::f64::consts::PI * k as f64 / n as f64;
             Pt::new(
-                r + libm::round(r as f64 * libm::sin(angle)) as C,
-                r - libm::round(r as f64 * libm::cos(angle)) as C,
+                rx + libm::round(rx as f64 * libm::sin(angle)) as C,
+                ry - libm::round(ry as f64 * libm::cos(angle)) as C,
             )
         })
         .collect();
     Local {
         poly,
-        w: 2 * r,
-        h: 2 * r,
-        radius: Some(r),
+        w: 2 * rx,
+        h: 2 * ry,
+        radius: Some((rx, ry)),
         edge_index: (0..n).collect(),
     }
+}
+
+/// `l_shape(width, height, cutout)`: a rectangle with its north-east
+/// corner cut away; `cutout` is a side, or `[width, height]`.
+fn l_shape(args: &[Value]) -> Result<Local, String> {
+    const USAGE: &str = "l_shape takes a width, a height and the cut-out corner: l_shape(8, 6, 3) or l_shape(8, 6, [5, 2]).";
+    let (w, h, cw, ch) = match args {
+        [w, h, Value::List(c)] if c.len() == 2 => {
+            (number(w), number(h), number(&c[0]), number(&c[1]))
+        }
+        [w, h, c] => (number(w), number(h), number(c), number(c)),
+        _ => return Err(USAGE.to_string()),
+    };
+    let (Some(w), Some(h), Some(cw), Some(ch)) = (w, h, cw, ch) else {
+        return Err(USAGE.to_string());
+    };
+    if cw < CELL || ch < CELL || w - cw < CELL || h - ch < CELL {
+        return Err(format!(
+            "l_shape({}, {}, ...) cuts out {} by {}; the cut-out and what remains must each be at least one cell wide and tall.",
+            cells(w),
+            cells(h),
+            cells(cw),
+            cells(ch)
+        ));
+    }
+    from_points(vec![
+        Pt::new(0, 0),
+        Pt::new(w - cw, 0),
+        Pt::new(w - cw, ch),
+        Pt::new(w, ch),
+        Pt::new(w, h),
+        Pt::new(0, h),
+    ])
 }
 
 fn polygon(args: &[Value]) -> Result<Local, String> {
@@ -153,6 +208,12 @@ fn polygon(args: &[Value]) -> Result<Local, String> {
             _ => return Err(USAGE.to_string()),
         }
     }
+    from_points(points)
+}
+
+/// A shape from outline points in thousandths of a cell, as a plugin's
+/// shape function returns them. The same checks as `polygon` apply.
+pub fn from_points(points: Vec<Pt>) -> Result<Local, String> {
     if points.len() < 3 {
         return Err(format!(
             "a polygon needs at least three vertices, but {} were given.",
@@ -253,7 +314,12 @@ mod tests {
         let r = build(&call("rectangle", vec![n(8), n(6)])).unwrap();
         assert_eq!((r.w, r.h, r.poly.len()), (8000, 6000, 4));
         let c = build(&call("circle", vec![n(3)])).unwrap();
-        assert_eq!((c.w, c.h, c.radius), (6000, 6000, Some(3000)));
+        assert_eq!((c.w, c.h, c.radius), (6000, 6000, Some((3000, 3000))));
+        let e = build(&call("ellipse", vec![n(8), n(4)])).unwrap();
+        assert_eq!((e.w, e.h, e.radius), (8000, 4000, Some((4000, 2000))));
+        let l = build(&call("l_shape", vec![n(8), n(6), n(3)])).unwrap();
+        assert_eq!(l.poly.len(), 6);
+        assert!(build(&call("l_shape", vec![n(8), n(6), n(8)])).is_err());
         assert!(area2(&c.poly) > 0);
         let quarter = c.poly.len() / 4;
         assert_eq!(

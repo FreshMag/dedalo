@@ -1,6 +1,7 @@
 [workspace]
 resolver = "3"
-members = ["crates/*"]
+exclude = ["fuzz"]
+members = ["crates/*", "plugins/hand_drawn", "plugins/uvtt"]
 
 [workspace.package]
 version = "0.0.1"
@@ -15,6 +16,8 @@ serde_json = "1"
 schemars = "1"
 toml = "1"
 libm = "0.2"
+sha2 = "0.11"
+wasmi = "2"
 clap = { version = "4", features = ["derive"] }
 
 dedalo-syntax = { path = "crates/dedalo-syntax" }
@@ -25,7 +28,9 @@ dedalo-scene = { path = "crates/dedalo-scene" }
 dedalo-render = { path = "crates/dedalo-render" }
 dedalo-export = { path = "crates/dedalo-export" }
 dedalo-plugin = { path = "crates/dedalo-plugin" }
+dedalo-ops = { path = "crates/dedalo-ops" }
 dedalo-core = { path = "crates/dedalo-core" }
+dedalo-pdk = { path = "crates/dedalo-pdk" }
 
 # Core crates forbid unsafe code (spec section 4). dedalo-wasm is the one
 # crate that does not opt in, because it owns the WebAssembly boundary.
@@ -36,6 +41,21 @@ unsafe_code = "forbid"
 # A diagnostic is a rich record by design (spec 10.1) and travels only on
 # error paths, where its size does not matter.
 result_large_err = "allow"
+
+# Rasterising in tests is slow without optimisation; dependencies are
+# built optimised even in debug builds.
+[profile.dev.package."*"]
+opt-level = 2
+
+# The interpreter's debug assertions make it recurse far deeper; plugin
+# calls would need hundreds of megabytes of stack in debug builds.
+[profile.dev.package.wasmi]
+debug-assertions = false
+overflow-checks = false
+
+[profile.dev.package.wasmi_core]
+debug-assertions = false
+overflow-checks = false
 
 [profile.release]
 opt-level = 3

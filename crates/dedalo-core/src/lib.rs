@@ -4,6 +4,9 @@
 //! their own: they call `parse`, `compile` and `render` here, so they cannot
 //! disagree. Every function is pure: no I/O, no clock, no ambient randomness.
 
+pub mod assist;
+pub mod plugins;
+
 use dedalo_model::diag::Span;
 use dedalo_model::lower::lower;
 use dedalo_syntax::text::LineIndex;
@@ -14,7 +17,9 @@ pub use dedalo_export::text_map;
 pub use dedalo_geom::Resolved;
 pub use dedalo_model as model;
 pub use dedalo_model::{Code, Diagnostic, Document, Preset, Report, Severity};
+pub use dedalo_ops::content_hash;
 pub use dedalo_plugin::Registry;
+pub use dedalo_render::CLASSIC_TOML as CLASSIC_THEME_TOML;
 pub use dedalo_render::{Audience, ExportSpec, View, build_view};
 pub use dedalo_scene::Scene;
 
@@ -68,8 +73,8 @@ pub struct Rendered {
     pub view: View,
     pub scene: Scene,
     pub bytes: Vec<u8>,
-    pub media_type: &'static str,
-    pub extension: &'static str,
+    pub media_type: String,
+    pub extension: String,
 }
 
 fn too_large(source: &str) -> Option<Diagnostic> {
@@ -116,7 +121,18 @@ pub fn compile(input: Input, reg: &Registry) -> Compiled {
             }
             let parsed = parse(source);
             diagnostics.extend(parsed.diagnostics.iter().cloned());
-            let lowered = lower(&parsed.syntax(), source, &reg.catalog);
+            let external: Vec<(String, SyntaxNode)> = reg
+                .templates
+                .iter()
+                .filter_map(|(name, text)| {
+                    Some((
+                        name.clone(),
+                        dedalo_syntax::parse(text).syntax().first_child()?,
+                    ))
+                })
+                .collect();
+            let lowered =
+                dedalo_model::lower::lower_with(&parsed.syntax(), source, &reg.catalog, &external);
             diagnostics.extend(lowered.diagnostics);
             source_map = Some((lowered.source_map, source));
             lowered.document
@@ -151,18 +167,10 @@ pub fn compile(input: Input, reg: &Registry) -> Compiled {
     let mut resolved = None;
     if let Some(doc) = &document {
         let mut later = dedalo_model::check::check(doc, &reg.catalog);
-        for plugin in doc
-            .dedalo
-            .iter()
-            .flat_map(|h| &h.plugins)
-            .filter(|p| !reg.plugins.contains(&p.id))
-        {
-            later.push(
-                Diagnostic::new(Code::PluginNotFound, format!("The document requires the plugin `{}`, which is not installed.", plugin.id))
-                    .suggest(format!("Install it with `dedalo plugin add <path-or-url>` (available from release 0.2), or remove the `plugin \"{}\"` block.", plugin.id)),
-            );
-        }
-        let (model, geometry) = dedalo_geom::resolve(doc, &reg.catalog);
+        let active = plugins::active(doc, reg, &mut later);
+        let shapes = |call: &model::ShapeCall| plugins::shape(&active, call);
+        let (model, geometry) = dedalo_geom::resolve_with(doc, &reg.catalog, &shapes);
+        later.extend(plugins::validate(&active, &model, doc));
         // An element that already has an error is likely to fail again in
         // geometry for the same reason; report the cause, not the echo.
         let broken: Vec<&String> = diagnostics
@@ -260,7 +268,12 @@ pub fn render(c: &Compiled, export: &ExportSpec, reg: &Registry) -> Result<Rende
         });
     };
     let view = build_view(resolved, export);
-    let scene = dedalo_render::render_scene(&view, theme, &reg.painters);
+    let active: Vec<&std::sync::Arc<dedalo_plugin::LoadedPlugin>> = export
+        .plugins
+        .iter()
+        .filter_map(|id| reg.plugin(id))
+        .collect();
+    let scene = plugins::paint(&active, &view, theme, export)?;
     let (bytes, media_type, extension) = match export.format.as_str() {
         "svg" => (
             dedalo_scene::to_svg(&scene).into_bytes(),
@@ -272,16 +285,66 @@ pub fn render(c: &Compiled, export: &ExportSpec, reg: &Registry) -> Result<Rende
             "text/plain; charset=utf-8",
             "txt",
         ),
+        #[cfg(not(feature = "raster"))]
         "png" | "pdf" => {
             return Err(Diagnostic::new(
                 Code::InvalidValue,
                 format!(
-                    "The format `{}` is not available in this build: PNG and PDF output arrive with milestone M3. Use `svg` or `txt`.",
+                    "This build of the core has no `{}` output; the export module provides it.",
                     export.format
                 ),
             ));
         }
+        #[cfg(feature = "raster")]
+        "png" | "pdf" => {
+            let svg = dedalo_scene::to_svg(&scene);
+            if export.format == "png" {
+                // Spec 9.6: refuse before drawing, and say what would fit.
+                let [_, _, w, h] = scene.bounds;
+                let longest = w.max(h);
+                let px = (longest * scene.cell_px as f64).round() as u32;
+                if px > dedalo_export::MAX_PNG_SIDE {
+                    let fits = (dedalo_export::MAX_PNG_SIDE as f64 / longest).floor() as u32;
+                    let advice = if fits >= 16 {
+                        format!("The largest valid `cell_px` is {fits}.")
+                    } else {
+                        "No `cell_px` from 16 up fits; export SVG or PDF instead.".to_string()
+                    };
+                    return Err(Diagnostic::new(
+                        Code::ExportTooLarge,
+                        format!(
+                            "The PNG would be {px} pixels on its longest side at {} pixels per cell; the limit is {}. {advice}",
+                            scene.cell_px,
+                            dedalo_export::MAX_PNG_SIDE
+                        ),
+                    ));
+                }
+                let bytes = dedalo_export::png(&svg)
+                    .map_err(|e| Diagnostic::new(Code::ExportTooLarge, e))?;
+                (bytes, "image/png", "png")
+            } else {
+                let bytes = dedalo_export::pdf(
+                    &svg,
+                    export.page,
+                    export.orientation,
+                    export.tabletop.then_some(scene.cell_px),
+                )
+                .map_err(|e| Diagnostic::new(Code::InvalidValue, e))?;
+                (bytes, "application/pdf", "pdf")
+            }
+        }
         other if other.contains('.') => {
+            if let Some(bytes) = plugins::export(&active, other, &view, &scene, export)? {
+                let (_, decl) =
+                    plugins::exporter_decl(&active, other).expect("the exporter exists");
+                return Ok(Rendered {
+                    view,
+                    scene,
+                    bytes,
+                    media_type: decl.media_type.clone(),
+                    extension: decl.extension.clone(),
+                });
+            }
             return Err(Diagnostic::new(
                 Code::PluginNotFound,
                 format!("The format `{other}` comes from a plugin that is not installed."),
@@ -300,8 +363,8 @@ pub fn render(c: &Compiled, export: &ExportSpec, reg: &Registry) -> Result<Rende
         view,
         scene,
         bytes,
-        media_type,
-        extension,
+        media_type: media_type.to_string(),
+        extension: extension.to_string(),
     })
 }
 
@@ -340,7 +403,14 @@ pub fn stage_json<T: serde::Serialize>(value: &T) -> String {
 /// Every output the golden corpus records for one input, by file name
 /// (spec 15.1). The native test runner and the WebAssembly build both call
 /// this, so the two are compared on exactly the same bytes.
-pub fn golden_outputs(c: &Compiled, reg: &Registry) -> std::collections::BTreeMap<String, String> {
+/// With `raster`, PNG and PDF hashes are included; the WebAssembly core
+/// module leaves them to the export module.
+pub fn golden_outputs(
+    c: &Compiled,
+    reg: &Registry,
+    raster: bool,
+) -> std::collections::BTreeMap<String, String> {
+    let _ = raster;
     let mut files = std::collections::BTreeMap::new();
     files.insert("diagnostics.json".to_string(), stage_json(&c.report()));
     if let Some(doc) = &c.document {
@@ -379,6 +449,208 @@ pub fn golden_outputs(c: &Compiled, reg: &Registry) -> std::collections::BTreeMa
                 );
             }
         }
+        // A plugin format is recorded by hash; it may embed raster output.
+        let own = export_spec(c, Some(&spec.name))
+            .map(|s| s.format)
+            .unwrap_or_default();
+        if raster && own.contains('.') {
+            let mut plugin_spec = spec.clone();
+            plugin_spec.format = own.clone();
+            if let Ok(rendered) = render(c, &plugin_spec, reg) {
+                files.insert(
+                    format!("{}.{own}.sha256", spec.name),
+                    format!(
+                        "{}
+",
+                        sha256_hex(&rendered.bytes)
+                    ),
+                );
+            }
+        }
+        // PNG and PDF are recorded by hash, derived from the SVG above.
+        #[cfg(feature = "raster")]
+        if raster && let Some(svg) = files.get(&format!("{}.svg", spec.name)).cloned() {
+            if let Ok(png) = dedalo_export::png(&svg) {
+                files.insert(
+                    format!("{}.png.sha256", spec.name),
+                    format!(
+                        "{}
+",
+                        sha256_hex(&png)
+                    ),
+                );
+            }
+            if let Ok(pdf) = dedalo_export::pdf(
+                &svg,
+                spec.page,
+                spec.orientation,
+                spec.tabletop.then_some(spec.cell_px),
+            ) {
+                files.insert(
+                    format!("{}.pdf.sha256", spec.name),
+                    format!(
+                        "{}
+",
+                        sha256_hex(&pdf)
+                    ),
+                );
+            }
+        }
     }
     files
+}
+
+/// The SHA-256 of some bytes, in lowercase hexadecimal.
+pub fn sha256_hex(bytes: &[u8]) -> String {
+    use sha2::Digest;
+    sha2::Sha256::digest(bytes)
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect()
+}
+
+/// The result of an edit batch (spec 13.3).
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct EditResult {
+    pub status: dedalo_model::Status,
+    /// Whether the new text should be written: the batch applied and
+    /// introduced no new error (or `force` was given).
+    pub applied: bool,
+    /// The IDs the batch touched.
+    pub changed: Vec<String>,
+    /// Content hash of the text the file holds after this call.
+    pub hash: String,
+    /// Unified diff from the old text to the new one.
+    pub diff: String,
+    /// Diagnostics of the new text, or the reason the batch failed.
+    pub diagnostics: Vec<Diagnostic>,
+    /// The new text. Not part of the JSON result.
+    #[serde(skip)]
+    pub source: String,
+}
+
+fn error_keys(c: &Compiled) -> Vec<(Code, Option<String>, String)> {
+    c.diagnostics
+        .iter()
+        .filter(|d| d.severity == Severity::Error)
+        .map(|d| (d.code, d.element.clone(), d.message.clone()))
+        .collect()
+}
+
+/// Applies a batch of edit operations to DSL text (spec 3.5 and 13.3).
+///
+/// Operations patch the syntax tree in order. The result is validated, and
+/// is marked applied only if the batch introduces no new error, unless
+/// `force` is set. `name` labels the diff.
+pub fn edit(
+    source: &str,
+    batch: &dedalo_ops::Batch,
+    reg: &Registry,
+    force: bool,
+    name: &str,
+) -> EditResult {
+    let old_hash = dedalo_ops::content_hash(source);
+    let failed = |d: Diagnostic| EditResult {
+        status: dedalo_model::Status::Error,
+        applied: false,
+        changed: Vec::new(),
+        hash: old_hash.clone(),
+        diff: String::new(),
+        diagnostics: vec![d],
+        source: source.to_string(),
+    };
+    if let Some(base) = &batch.base_hash
+        && *base != old_hash
+    {
+        return failed(Diagnostic::new(
+            Code::StaleSource,
+            format!(
+                "The file changed since the edit was prepared: its hash is {old_hash}, not {base}. Read it again and recompute the edit."
+            ),
+        ));
+    }
+    let applied = match dedalo_ops::apply_ops(source, &batch.ops, &reg.catalog) {
+        Ok(applied) => applied,
+        Err(d) => return failed(d),
+    };
+    let before = error_keys(&compile(Input::Dsl(source), reg));
+    let after = compile(Input::Dsl(&applied.source), reg);
+    let mut diagnostics = after.diagnostics.clone();
+    let introduced: Vec<usize> = diagnostics
+        .iter()
+        .enumerate()
+        .filter(|(_, d)| {
+            d.severity == Severity::Error
+                && !before.contains(&(d.code, d.element.clone(), d.message.clone()))
+        })
+        .map(|(i, _)| i)
+        .collect();
+    let ok = introduced.is_empty() || force;
+    if !ok {
+        // The new errors first: they are why the batch was refused.
+        let mut new: Vec<Diagnostic> = introduced.iter().map(|i| diagnostics[*i].clone()).collect();
+        let rest = diagnostics
+            .into_iter()
+            .enumerate()
+            .filter(|(i, _)| !introduced.contains(i))
+            .map(|(_, d)| d);
+        new.extend(rest);
+        diagnostics = new;
+    }
+    let status = if ok {
+        Report::new(diagnostics.clone()).status
+    } else {
+        dedalo_model::Status::Error
+    };
+    EditResult {
+        status,
+        applied: ok,
+        changed: applied.changed,
+        hash: if ok {
+            dedalo_ops::content_hash(&applied.source)
+        } else {
+            old_hash.clone()
+        },
+        diff: dedalo_ops::unified(source, &applied.source, name),
+        diagnostics,
+        source: applied.source,
+    }
+}
+
+/// Applies every diagnostic fix that removes its diagnostic without adding
+/// an error, repeating while fixes keep applying. Returns the new text and
+/// the codes fixed, in order.
+pub fn fix_all(source: &str, reg: &Registry) -> (String, Vec<Code>) {
+    let mut text = source.to_string();
+    let mut fixed = Vec::new();
+    for _ in 0..16 {
+        let compiled = compile(Input::Dsl(&text), reg);
+        let mut progress = false;
+        for d in compiled.diagnostics.iter().filter(|d| d.fix.is_some()) {
+            let batch = dedalo_ops::Batch {
+                base_hash: None,
+                ops: vec![d.fix.clone().expect("filtered")],
+            };
+            let result = edit(&text, &batch, reg, false, "");
+            let gone = !result
+                .diagnostics
+                .iter()
+                .any(|x| x.code == d.code && x.element == d.element);
+            if result.applied && gone {
+                text = result.source;
+                fixed.push(d.code);
+                progress = true;
+                break;
+            }
+        }
+        if !progress {
+            break;
+        }
+    }
+    (text, fixed)
+}
+
+/// Whether a plugin version satisfies a document's requirement.
+pub fn version_ok(requirement: &str, version: &str) -> Result<bool, String> {
+    dedalo_plugin::version::matches(requirement, version)
 }

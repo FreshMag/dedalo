@@ -1,0 +1,51 @@
+# A circle with doors at its four compass points.
+dungeon "layout_circle_compass" {
+    room "hub" {
+        shape = circle(3)
+        layout { position = [0, 0] }
+    }
+
+    room "n" {
+        shape = square(2)
+        layout { north_of = "hub" }
+    }
+
+    room "s" {
+        shape = square(2)
+        layout { south_of = "hub" }
+    }
+
+    room "e" {
+        shape = square(2)
+        layout { east_of = "hub" }
+    }
+
+    room "w" {
+        shape = square(2)
+        layout { west_of = "hub" }
+    }
+
+    connection "dn" {
+        from = "hub"
+        to = "n"
+        type = door
+    }
+
+    connection "ds" {
+        from = "hub"
+        to = "s"
+        type = door
+    }
+
+    connection "de" {
+        from = "hub"
+        to = "e"
+        type = door
+    }
+
+    connection "dw" {
+        from = "hub"
+        to = "w"
+        type = door
+    }
+}

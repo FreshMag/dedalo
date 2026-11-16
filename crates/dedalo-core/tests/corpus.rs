@@ -13,6 +13,21 @@ use std::path::{Path, PathBuf};
 use dedalo_core::model::{Preset, Value};
 use dedalo_core::{Audience, Compiled, ExportSpec, Input, Registry, build_view};
 
+include!("../../../tests/support/build_plugins.rs");
+
+/// The built-ins and the reference plugins, which the plugin case needs.
+fn registry() -> Registry {
+    let mut reg = Registry::builtin();
+    let dir = reference_plugins();
+    for id in ["blueprint", "hand_drawn", "uvtt"] {
+        let files = dedalo_plugin::read_dir(&dir.join(id)).expect("a reference plugin");
+        let plugin = dedalo_plugin::load_files(files, Some(&dedalo_plugin::wasmi_factory))
+            .expect("it loads");
+        reg.add_plugin(plugin).expect("it registers");
+    }
+    reg
+}
+
 fn corpus_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../tests/corpus")
 }
@@ -63,12 +78,12 @@ fn specs(compiled: &Compiled) -> Vec<ExportSpec> {
 }
 
 fn outputs(compiled: &Compiled, reg: &Registry) -> BTreeMap<String, String> {
-    dedalo_core::golden_outputs(compiled, reg)
+    dedalo_core::golden_outputs(compiled, reg, true)
 }
 
 #[test]
 fn corpus_matches_the_golden_files() {
-    let reg = Registry::builtin();
+    let reg = registry();
     let bless = std::env::var_os("DEDALO_BLESS").is_some();
     let mut index: BTreeMap<String, Vec<String>> = BTreeMap::new();
     let mut failures = Vec::new();
@@ -125,7 +140,7 @@ fn corpus_matches_the_golden_files() {
 
 #[test]
 fn each_error_fixture_raises_its_code_with_a_span() {
-    let reg = Registry::builtin();
+    let reg = registry();
     let mut seen = 0;
     for (name, dir) in cases() {
         let Some(code) = name.strip_prefix("err_") else {
@@ -157,7 +172,7 @@ fn each_error_fixture_raises_its_code_with_a_span() {
 
 #[test]
 fn the_spec_examples_get_the_fixes_the_spec_describes() {
-    let reg = Registry::builtin();
+    let reg = registry();
     let find = |case: &str, code: &str| {
         let (_, compiled) = compile(&corpus_dir().join(case), &reg);
         compiled
@@ -211,7 +226,7 @@ fn strings(
 /// a player view appears anywhere in the player output.
 #[test]
 fn player_outputs_leak_nothing() {
-    let reg = Registry::builtin();
+    let reg = registry();
     let mut checked = 0;
     for (name, dir) in cases() {
         let (_, compiled) = compile(&dir, &reg);
@@ -271,6 +286,8 @@ fn player_outputs_leak_nothing() {
                 .filter(|s| s.len() >= 4 && !visible.contains(s))
                 .collect();
 
+            // Live text, so that every word on the map is searchable.
+            spec.live_text = true;
             spec.format = "svg".to_string();
             let svg = String::from_utf8(dedalo_core::render(&compiled, &spec, &reg).unwrap().bytes)
                 .unwrap();
@@ -312,7 +329,7 @@ fn player_outputs_leak_nothing() {
 
 #[test]
 fn the_text_map_of_one_room_matches_the_specification() {
-    let reg = Registry::builtin();
+    let reg = registry();
     // The entrance room of spec 9.6, on its own.
     let source = r#"dungeon "d" {
     room "entrance" {
@@ -370,13 +387,19 @@ fn the_text_map_of_one_room_matches_the_specification() {
 
 #[test]
 fn documentation_samples_compile() {
-    let reg = Registry::builtin();
-    let guide = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../docs/guide");
+    let reg = registry();
+    let docs = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../docs");
     let mut samples = 0;
-    for entry in std::fs::read_dir(guide)
+    // The guide and the user documentation; the specification holds
+    // fragments, not complete files.
+    let files = std::fs::read_dir(docs.join("guide"))
         .expect("the guide directory")
+        .chain(std::fs::read_dir(&docs).expect("the docs directory"))
         .flatten()
-    {
+        .filter(|e| {
+            e.path().extension().is_some_and(|x| x == "md") && e.file_name() != "specification.md"
+        });
+    for entry in files {
         let text = read(&entry.path());
         for block in text.split("```hcl\n").skip(1) {
             let sample = block.split("```").next().unwrap_or_default();
@@ -395,12 +418,12 @@ fn documentation_samples_compile() {
             samples += 1;
         }
     }
-    assert!(samples >= 1);
+    assert!(samples >= 15, "{samples} samples");
 }
 
 #[test]
 fn json_input_gives_the_same_map_as_dsl_input() {
-    let reg = Registry::builtin();
+    let reg = registry();
     for (name, dir) in cases() {
         let (_, compiled) = compile(&dir, &reg);
         let Some(doc) = compiled

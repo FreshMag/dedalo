@@ -1,0 +1,106 @@
+{
+  "dungeon": {
+    "id": "layout_elements_anchor",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            9,
+            7
+          ]
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "center",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "center"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "north",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "north"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "north_east",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "north_east"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "east",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "east"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "south_east",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "south_east"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "south",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "south"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "south_west",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "south_west"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "west",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "west"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "north_west",
+            "type": "architecture",
+            "subtype": "column",
+            "placement": {
+              "anchor": "north_west"
+            }
+          }
+        ]
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Elements placed by every anchor."
+      ]
+    }
+  }
+}

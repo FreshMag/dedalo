@@ -1,0 +1,214 @@
+{
+  "id": "layout_stairs_ladder",
+  "seed": 5619224172456895691,
+  "bounds": [
+    0,
+    0,
+    6,
+    4
+  ],
+  "spaces": [
+    {
+      "id": "a",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        6,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            6,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "spaces": [
+        "a"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            6,
+            4
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "down",
+      "from": "a",
+      "type": "stairs",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        1,
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "up",
+      "from": "a",
+      "type": "ladder",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        4,
+        2,
+        5,
+        3
+      ]
+    },
+    {
+      "id": "hatch",
+      "from": "a",
+      "type": "trapdoor",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        2,
+        3,
+        3,
+        4
+      ]
+    }
+  ],
+  "elements": [],
+  "notes": [],
+  "reach": {
+    "entrance": "a",
+    "links": []
+  }
+}

@@ -1,0 +1,516 @@
+{
+  "id": "layout_polygon_door",
+  "seed": 12327880210693404459,
+  "bounds": [
+    0,
+    -3,
+    8,
+    6
+  ],
+  "spaces": [
+    {
+      "id": "hall",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        8,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "north",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          -3
+        ],
+        [
+          8,
+          -3
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "bbox": [
+        0,
+        -3,
+        8,
+        0
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "notch",
+      "kind": "room",
+      "polygon": [
+        [
+          5,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "bbox": [
+        5,
+        3,
+        8,
+        6
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          8,
+          -3
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "north"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            -3
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          3
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "notch"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            3
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall",
+        "notch"
+      ],
+      "material": "stone",
+      "openings": [
+        "to_notch"
+      ],
+      "solid": [
+        [
+          [
+            5,
+            3
+          ],
+          [
+            5,
+            4
+          ]
+        ],
+        [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          -3
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "spaces": [
+        "north"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            -3
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          -3
+        ],
+        [
+          8,
+          -3
+        ]
+      ],
+      "spaces": [
+        "north"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            -3
+          ],
+          [
+            8,
+            -3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "hall",
+        "north"
+      ],
+      "material": "stone",
+      "openings": [
+        "to_north"
+      ],
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        [
+          [
+            4,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          5,
+          3
+        ],
+        [
+          8,
+          3
+        ]
+      ],
+      "spaces": [
+        "hall",
+        "notch"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            5,
+            3
+          ],
+          [
+            8,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            5,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "notch"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            5,
+            6
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "to_north",
+      "from": "hall",
+      "to": "north",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          3,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "to_notch",
+      "from": "hall",
+      "to": "notch",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ]
+      ],
+      "width": 1
+    }
+  ],
+  "elements": [],
+  "notes": [],
+  "reach": {
+    "entrance": "hall",
+    "links": [
+      [
+        "hall",
+        "north",
+        "to_north"
+      ],
+      [
+        "hall",
+        "notch",
+        "to_notch"
+      ]
+    ]
+  }
+}

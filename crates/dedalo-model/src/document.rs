@@ -68,6 +68,10 @@ symbols!(Resolution { Low => "low", Medium => "medium", High => "high" });
 symbols!(Bounds { Visible => "visible", Full => "full" });
 symbols!(Page { Fit => "fit", A4 => "a4", A3 => "a3", Letter => "letter" });
 symbols!(Orientation { Portrait => "portrait", Landscape => "landscape" });
+symbols!(
+    /// PDF only: fit the page, or print one cell per inch across pages.
+    PrintScale { Fit => "fit", Tabletop => "tabletop" }
+);
 symbols!(TextMode { Outline => "outline", Live => "live" });
 symbols!(LegendMode { Automatic => "automatic", Custom => "custom", None => "none" });
 symbols!(LegendPosition { Right => "right", Bottom => "bottom", Left => "left", Top => "top" });
@@ -542,6 +546,9 @@ pub struct Export {
     pub page: Option<Page>,
     #[serde(default, skip_serializing_if = "is_default")]
     pub orientation: Option<Orientation>,
+    /// PDF only: `fit` (default) or `tabletop`, one cell per inch.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub scale: Option<PrintScale>,
     /// Category toggles that override the preset.
     #[serde(default, skip_serializing_if = "is_default")]
     pub visibility: BTreeMap<String, bool>,

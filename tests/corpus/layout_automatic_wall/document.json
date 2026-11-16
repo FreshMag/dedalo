@@ -1,0 +1,44 @@
+{
+  "dungeon": {
+    "id": "layout_automatic_wall",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "a",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "b",
+        "shape": {
+          "fn": "square",
+          "args": [
+            3
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "ab",
+        "from": "a",
+        "to": "b",
+        "type": "door",
+        "placement": {
+          "wall": "west"
+        }
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# No layout: placed on the side the door names."
+      ]
+    }
+  }
+}

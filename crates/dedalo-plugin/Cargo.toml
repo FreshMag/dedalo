@@ -8,7 +8,24 @@ license.workspace = true
 
 [dependencies]
 dedalo-catalog.workspace = true
+dedalo-model.workspace = true
 dedalo-render.workspace = true
+dedalo-scene.workspace = true
+dedalo-syntax.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+toml.workspace = true
+wasmi = { workspace = true, optional = true }
+
+[dev-dependencies]
+wat = "1"
+
+[features]
+default = ["wasmi"]
+# The native WebAssembly host. The browser build leaves it out and runs
+# plugins with the browser's own engine.
+wasmi = ["dep:wasmi"]
 
 [lints]
 workspace = true

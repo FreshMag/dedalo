@@ -1,0 +1,91 @@
+{
+  "about": "Agent evaluation tasks (spec 13.7). Each task gives an agent a working folder and a prompt; the checks score the result with the dedalo binary. Seed files come from the golden corpus.",
+  "tasks": [
+    {
+      "id": "author_three_rooms",
+      "kind": "author",
+      "prompt": "Write dungeon.dedalo: a small crypt with an entrance hall, a guard room north of it and a burial chamber east of the guard room. Join them with doors. Put a pressure-plate trap in the entrance and three skeletons in the guard room.",
+      "checks": { "file": "dungeon.dedalo", "valid": true, "min_rooms": 3, "types": ["trap", "creature"], "min_connections": 2 }
+    },
+    {
+      "id": "author_secret_room",
+      "kind": "author",
+      "prompt": "Write vault.dedalo: two rooms, a study and a hidden vault. The vault must not appear on player maps, and the only way in is a secret door from the study. Put a chest in the vault.",
+      "checks": { "file": "vault.dedalo", "valid": true, "min_rooms": 2, "secret_door": true, "hidden_room": true, "types": ["container"] }
+    },
+    {
+      "id": "author_corridor",
+      "kind": "author",
+      "prompt": "Write mine.dedalo: two caves that do not touch, joined by a two-cell-wide corridor. Add rubble terrain in one cave and a lit torch on a wall of the other.",
+      "checks": { "file": "mine.dedalo", "valid": true, "min_rooms": 2, "corridors": 1, "types": ["terrain", "lighting"] }
+    },
+    {
+      "id": "author_round_temple",
+      "kind": "author",
+      "prompt": "Write temple.dedalo: a circular sanctum of radius 4 with an altar at its centre, entered from a rectangular antechamber to its south through an archway.",
+      "checks": { "file": "temple.dedalo", "valid": true, "min_rooms": 2, "shapes": ["circle"], "types": ["furniture"], "connection_types": ["archway"] }
+    },
+    {
+      "id": "author_exports",
+      "kind": "author",
+      "prompt": "Write tavern.dedalo: a tavern cellar of two rooms with a trapdoor down. Declare two exports: a DM map as PDF and a player map as PNG at 70 pixels per cell without the grid.",
+      "checks": { "file": "tavern.dedalo", "valid": true, "min_rooms": 2, "exports": ["dm", "player"], "connection_types": ["trapdoor"] }
+    },
+    {
+      "id": "author_large",
+      "kind": "author",
+      "prompt": "Write keep.dedalo: a ruined keep of at least eight rooms on two wings, every room reachable from the gate, with at least one locked door and one light source per wing.",
+      "checks": { "file": "keep.dedalo", "valid": true, "no_warnings": ["UNREACHABLE_ROOM"], "min_rooms": 8, "locked_door": true, "types": ["lighting"] }
+    },
+    { "id": "repair_door", "kind": "repair", "seed": "err_door_not_placeable", "prompt": "dungeon.dedalo does not validate. Fix it without removing any element.", "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true } },
+    { "id": "repair_overlap", "kind": "repair", "seed": "err_overlap", "prompt": "dungeon.dedalo does not validate. Fix it without removing any element.", "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true } },
+    { "id": "repair_reference", "kind": "repair", "seed": "err_unknown_reference", "prompt": "dungeon.dedalo does not validate. Fix it without removing any element.", "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true } },
+    { "id": "repair_type", "kind": "repair", "seed": "err_unknown_type", "prompt": "dungeon.dedalo does not validate. Fix it without removing any element.", "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true } },
+    { "id": "repair_attribute", "kind": "repair", "seed": "err_unknown_attribute", "prompt": "dungeon.dedalo does not validate. Fix it, keeping the information it holds.", "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true } },
+    { "id": "repair_bounds", "kind": "repair", "seed": "err_out_of_bounds", "prompt": "dungeon.dedalo does not validate. Fix it without removing any element.", "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true } },
+    { "id": "repair_unresolvable", "kind": "repair", "seed": "err_unresolvable_connection", "prompt": "dungeon.dedalo does not validate. Make the two rooms connected; keep both rooms.", "checks": { "file": "dungeon.dedalo", "valid": true, "keep_rooms": true } },
+    { "id": "repair_syntax", "kind": "repair", "seed": "err_syntax_error", "prompt": "dungeon.dedalo does not parse. Fix it.", "checks": { "file": "dungeon.dedalo", "valid": true, "min_rooms": 2 } },
+    {
+      "id": "edit_add_room",
+      "kind": "edit",
+      "seed": "forgotten_crypt",
+      "prompt": "In dungeon.dedalo, add a library west of the guard room, joined to it by a door. Change nothing else.",
+      "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true, "new_room_adjacent": "guard_room", "keep_comments": true }
+    },
+    {
+      "id": "edit_move_creatures",
+      "kind": "edit",
+      "seed": "forgotten_crypt",
+      "prompt": "In dungeon.dedalo, move the skeletons into the treasure room and make the chest unlocked. Change nothing else.",
+      "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true, "element_in": ["skeletons", "treasure_room"], "keep_comments": true }
+    },
+    {
+      "id": "edit_reveal_door",
+      "kind": "edit",
+      "seed": "forgotten_crypt",
+      "prompt": "In dungeon.dedalo, add an export named `found` for players that shows the secret door, because the party has found it.",
+      "checks": { "file": "dungeon.dedalo", "valid": true, "keep_ids": true, "exports": ["found"], "keep_comments": true }
+    },
+    {
+      "id": "edit_remove_room",
+      "kind": "edit",
+      "seed": "forgotten_crypt",
+      "prompt": "In dungeon.dedalo, remove the armory and everything that leads only to it. The rest must stay valid.",
+      "checks": { "file": "dungeon.dedalo", "valid": true, "missing_ids": ["armory", "west_passage"], "keep_comments": true }
+    },
+    {
+      "id": "render_dm_player",
+      "kind": "render",
+      "seed": "forgotten_crypt",
+      "prompt": "Render dungeon.dedalo as a DM map in dm.png and a player map in player.png.",
+      "checks": { "files": ["dm.png", "player.png"] }
+    },
+    {
+      "id": "render_text_map",
+      "kind": "render",
+      "seed": "four_shapes",
+      "prompt": "Write the player text map of dungeon.dedalo to player.txt.",
+      "checks": { "files": ["player.txt"], "file_contains": { "player.txt": "#" }, "file_lacks": { "player.txt": "S secret door" } }
+    }
+  ]
+}

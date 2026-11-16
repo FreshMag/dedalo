@@ -1,0 +1,16 @@
+# A straight corridor moved along the facing walls with `offset`.
+dungeon "layout_corridor_offset" {
+    room "a" {
+        shape = rectangle(4, 8)
+    }
+
+    room "b" {
+        shape = rectangle(4, 8)
+        layout { east_of = "a", gap = 3 }
+    }
+
+    corridor "hall" {
+        connects = ["a", "b"]
+        offset = 1
+    }
+}

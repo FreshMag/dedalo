@@ -1,0 +1,68 @@
+{
+  "dungeon": {
+    "id": "layout_rotation_90",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "turned",
+        "shape": {
+          "fn": "l_shape",
+          "args": [
+            6,
+            4,
+            2
+          ]
+        },
+        "rotation": 90,
+        "elements": [
+          {
+            "class": "feature",
+            "id": "torch",
+            "type": "lighting",
+            "subtype": "torch",
+            "placement": {
+              "wall": "north"
+            }
+          },
+          {
+            "class": "feature",
+            "id": "chest",
+            "type": "container",
+            "position": [
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "next",
+        "shape": {
+          "fn": "square",
+          "args": [
+            3
+          ]
+        },
+        "layout": {
+          "adjacent_to": "turned",
+          "direction": "south",
+          "align": "start"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "link",
+        "from": "turned",
+        "to": "next",
+        "type": "door"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# An L-shaped room turned 90 degrees, with a wall-mounted torch."
+      ]
+    }
+  }
+}

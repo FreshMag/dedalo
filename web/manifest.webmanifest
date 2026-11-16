@@ -1,0 +1,11 @@
+{
+  "name": "Dedalo",
+  "short_name": "Dedalo",
+  "description": "Describe a tabletop-RPG dungeon as text and get a map.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1b1b1f",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
