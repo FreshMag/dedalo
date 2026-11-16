@@ -1,0 +1,28 @@
+[
+  {
+    "id": "blueprint",
+    "provides": [
+      "theme blueprint.default"
+    ],
+    "sha256": "sha256:e50409aef9c06906210b3e9ca244a45641a4b54b12711aa5e59c019d4fc7c246",
+    "version": "1.0.0"
+  },
+  {
+    "id": "hand_drawn",
+    "provides": [
+      "theme hand_drawn.sepia",
+      "painter for opening door",
+      "scene pass wobble"
+    ],
+    "sha256": "sha256:f57298a8feae3969e111f99ce6d377da10d313f487553ee1e05075bba8651310",
+    "version": "1.2.0"
+  },
+  {
+    "id": "uvtt",
+    "provides": [
+      "format uvtt.dd2vtt"
+    ],
+    "sha256": "sha256:02f05ca5bfbbb6701c7429916f9193bea5537d44d0cd9040d8e70004ed76e0fe",
+    "version": "0.3.0"
+  }
+]

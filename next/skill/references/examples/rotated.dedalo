@@ -1,0 +1,65 @@
+# Rotation, automatic placement, conditional visibility and a custom legend.
+dungeon "rotated" {
+    name = "Rotated"
+
+    legend {
+        position = bottom
+        title = "Legenda"
+
+        entry "trap" {
+            label = "Trappola"
+        }
+
+        entry "door" {
+            label = "Porta"
+        }
+    }
+
+    room "start" {
+        name = "Start"
+        shape = rectangle(6, 4)
+    }
+
+    # No layout: placed on the side its door names.
+    room "annex" {
+        name = "Annex"
+        shape = rectangle(4, 2)
+        rotation = 90
+
+        # In the room's own frame this is the north wall; after the quarter
+        # turn it faces east.
+        feature "sconce" {
+            type = lighting
+            subtype = candle
+            placement { wall = north }
+        }
+
+        feature "pit" {
+            type = trap
+            subtype = pit
+            position = [0, 0]
+            visibility = conditional
+            reveal_when = "pit_found"
+        }
+    }
+
+    connection "annex_door" {
+        from = "start"
+        to = "annex"
+        type = door
+        placement { wall = south }
+    }
+
+    export "dm" {
+        preset = dm
+    }
+
+    export "player" {
+        preset = player
+    }
+
+    export "found" {
+        preset = player
+        revealed = ["pit_found"]
+    }
+}

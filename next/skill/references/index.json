@@ -1,0 +1,21 @@
+[
+  "quickstart.md",
+  "syntax.md",
+  "layout.md",
+  "catalog.md",
+  "errors.md",
+  "catalog/architecture.md",
+  "catalog/container.md",
+  "catalog/creature.md",
+  "catalog/custom.md",
+  "catalog/furniture.md",
+  "catalog/item.md",
+  "catalog/lighting.md",
+  "catalog/mechanism.md",
+  "catalog/npc.md",
+  "catalog/terrain.md",
+  "catalog/trap.md",
+  "examples/forgotten_crypt.dedalo",
+  "examples/four_shapes.dedalo",
+  "examples/rotated.dedalo"
+]

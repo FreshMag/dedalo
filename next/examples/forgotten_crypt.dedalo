@@ -1,0 +1,176 @@
+# La Cripta Dimenticata: a reconstruction of the product draft's reference
+# example, corrected as in specification 7.3 (align = end on treasure_room).
+dedalo {
+    version = 1
+}
+
+dungeon "forgotten_crypt" {
+    name = "La Cripta Dimenticata"
+
+    grid {
+        unit = "5ft"
+    }
+
+    settings {
+        default_wall = stone
+        default_floor = stone
+    }
+
+    room "entrance" {
+        name = "Ingresso"
+        shape = rectangle(8, 6)
+        tags = ["entrance"]
+
+        layout {
+            position = [0, 0]
+        }
+
+        feature "pressure_trap" {
+            type = trap
+            subtype = pressure_plate
+            position = [4, 3]
+            visibility = dm
+
+            properties {
+                detection_dc = 15
+                disarm_dc = 14
+                damage = "2d10"
+            }
+        }
+
+        feature "wall_torch" {
+            type = lighting
+            subtype = torch
+
+            placement {
+                wall = south
+                offset = 2
+            }
+
+            properties {
+                radius = 4
+            }
+        }
+    }
+
+    room "guard_room" {
+        name = "Sala delle Guardie"
+        shape = square(6)
+
+        layout {
+            north_of = "entrance"
+        }
+
+        feature "brazier" {
+            type = lighting
+            subtype = brazier
+            placement { anchor = center }
+        }
+
+        feature "guard_table" {
+            type = furniture
+            subtype = table
+            position = [3, 4]
+        }
+
+        entity "skeletons" {
+            type = creature
+            reference = "srd:skeleton"
+            position = [1, 1]
+
+            properties {
+                count = 3
+            }
+        }
+    }
+
+    # Hidden from the players until they find the secret door.
+    room "treasure_room" {
+        name = "Sala del Tesoro"
+        shape = square(8)
+        visibility = dm
+
+        layout {
+            east_of = "guard_room"
+            align = end # without this the room overlaps the entrance
+        }
+
+        feature "column_nw" {
+            type = architecture
+            subtype = column
+            position = [2, 2]
+        }
+
+        feature "column_se" {
+            type = architecture
+            subtype = column
+            position = [5, 5]
+        }
+
+        feature "chest" {
+            type = container
+            subtype = chest
+            position = [6, 1]
+
+            properties {
+                locked = true
+            }
+        }
+
+        entity "crown" {
+            type = item
+            subtype = treasure
+            name = "Corona del Re Sepolto"
+            contained_in = "chest"
+        }
+    }
+
+    room "armory" {
+        name = "Armeria"
+        shape = square(4)
+
+        layout {
+            west_of = "entrance"
+        }
+
+        entity "old_sword" {
+            type = item
+            subtype = weapon
+            position = [1, 1]
+        }
+    }
+
+    corridor "west_passage" {
+        connects = ["entrance", "armory"]
+    }
+
+    connection "entrance_door" {
+        from = "entrance"
+        to = "guard_room"
+        type = door
+
+        placement {
+            wall = north
+            offset = 3
+        }
+    }
+
+    connection "secret_door" {
+        from = "guard_room"
+        to = "treasure_room"
+        type = secret_door
+    }
+
+    note "entrance_note" {
+        target = "entrance"
+        text = "Esaminare attentamente il pavimento."
+    }
+
+    export "dm" {
+        preset = dm
+    }
+
+    export "player" {
+        preset = player
+    }
+}
