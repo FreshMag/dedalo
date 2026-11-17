@@ -770,15 +770,18 @@ impl Server {
 mod tests {
     use super::*;
 
-    fn server() -> (Server, PathBuf) {
-        let dir = std::env::temp_dir().join(format!("dedalo-mcp-unit-{}", std::process::id()));
+    /// A server on a root of its own: tests run in parallel and each one
+    /// removes its root when done.
+    fn server(name: &str) -> (Server, PathBuf) {
+        let dir =
+            std::env::temp_dir().join(format!("dedalo-mcp-unit-{}-{name}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         (Server::new(&dir, Registry::builtin()).unwrap(), dir)
     }
 
     #[test]
     fn paths_stay_inside_the_root() {
-        let (s, dir) = server();
+        let (s, dir) = server("paths");
         assert!(s.resolve("a/b.dedalo").is_ok());
         assert!(s.resolve("../x.dedalo").is_err());
         assert!(s.resolve(&dir.join("x").display().to_string()).is_err());
@@ -787,7 +790,7 @@ mod tests {
 
     #[test]
     fn both_handshakes_are_answered() {
-        let (s, dir) = server();
+        let (s, dir) = server("handshakes");
         let old = s.handle(&json!({ "jsonrpc": "2.0", "id": 1, "method": "initialize", "params": { "protocolVersion": "2025-06-18" } })).unwrap();
         assert_eq!(old["result"]["protocolVersion"], "2025-06-18");
         let new = s
