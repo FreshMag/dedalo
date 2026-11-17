@@ -80,6 +80,25 @@ fuzz/                  cargo-fuzz targets
 docs/                  specification, guide, tutorial, cookbook, plugin guide, accessibility audit
 ```
 
+## Releases
+
+Releases are automatic. When CI passes on `main`, the commits since the last
+release decide whether there is one and what its version is, from their
+[Conventional Commits](https://www.conventionalcommits.org/) prefixes:
+
+| Commit | Release |
+| --- | --- |
+| `fix: ...` | Patch, `0.1.0` to `0.1.1` |
+| `feat: ...` | Minor, `0.1.0` to `0.2.0` |
+| `feat!: ...`, or a `BREAKING CHANGE:` footer | Minor while the version is 0.x; major from 1.0 |
+| `docs:`, `test:`, `chore:`, `ci:`, `refactor:` ... | None |
+
+The release workflow then sets the version in `Cargo.toml`, `Cargo.lock` and
+`CHANGELOG.md` (the `Unreleased` notes become the release's), commits and
+tags it, builds the binaries for five targets, attaches them to the GitHub
+release with checksums and provenance attestations, and deploys the site.
+With squash merges, the pull request's title is the commit that counts.
+
 ## Building and testing
 
 The toolchain is pinned in `rust-toolchain.toml`.

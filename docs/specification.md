@@ -1195,6 +1195,7 @@ The size target is 25 MB uncompressed, fonts included. macOS notarisation and Wi
 - The release checklist is the CI pipeline: every test layer of 15.1, the performance and size budgets, the agent evaluation and the documentation build.
 - Release notes have three fixed headings: language changes, output changes (with before-and-after images from the corpus) and plugin API changes.
 - Releases follow milestones until 1.0.
+- Versions and tags are automatic (semantic release): Conventional Commit prefixes on `main` decide the next version once CI passes, and the release workflow builds and attaches the binaries before publishing.
 
 ### 16.5 Licensing
 
