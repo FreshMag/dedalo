@@ -35,6 +35,10 @@ struct Cli {
     /// Record the plugins in use in `dedalo.lock` instead of checking them.
     #[arg(long, global = true)]
     update_lock: bool,
+    /// With a Markdown note, the ```dedalo code block to use, counted from 1.
+    /// `validate` and `fmt` take every block when it is absent.
+    #[arg(long, global = true, value_name = "N")]
+    block: Option<usize>,
     #[command(subcommand)]
     command: Command,
 }
@@ -43,7 +47,7 @@ struct Cli {
 enum Command {
     /// Compile and write a map.
     Render {
-        /// A .dedalo or .json file, or `-` for standard input.
+        /// A .dedalo, .json or Markdown file, or `-` for standard input.
         file: String,
         /// Output path, or `-` for standard output.
         #[arg(short, long)]
@@ -272,8 +276,98 @@ struct Source {
     /// The name shown in diagnostics.
     name: String,
     path: Option<PathBuf>,
+    /// The DSL or JSON text. For a block of a Markdown note, the whole note
+    /// with every other line emptied, so line numbers are the note's.
     text: String,
     json: bool,
+    note: Option<Note>,
+}
+
+/// A Markdown note and the `dedalo` block a command works on.
+struct Note {
+    text: String,
+    block: dedalo_core::markdown::Block,
+}
+
+impl Source {
+    fn option(&self, key: &str) -> Option<String> {
+        self.note
+            .as_ref()
+            .and_then(|n| n.block.option(key))
+            .map(str::to_string)
+    }
+
+    /// Writes new DSL text back: the file, or the block of the note.
+    fn save(&self, text: &str) -> Outcome {
+        let bytes = match &self.note {
+            Some(note) => dedalo_core::markdown::replace(&note.text, &note.block, text),
+            None => text.to_string(),
+        };
+        match &self.path {
+            Some(path) => std::fs::write(path, bytes)
+                .map_err(|e| Failure::Io(format!("cannot write `{}`: {e}", self.name))),
+            None => write(None, text.as_bytes()),
+        }
+    }
+}
+
+/// Reads a file, or one block of a Markdown note.
+fn read_source(file: &str, block: Option<usize>) -> Result<Source, Failure> {
+    let mut source = read(file)?;
+    let markdown = source
+        .path
+        .as_deref()
+        .is_some_and(dedalo_core::markdown::is_markdown);
+    if !markdown {
+        if block.is_some() {
+            return Err(Failure::Usage(format!(
+                "`--block` picks a code block of a Markdown note, and `{file}` is not one"
+            )));
+        }
+        return Ok(source);
+    }
+    let picked = dedalo_core::markdown::select(&source.text, block).map_err(|e| {
+        let several = dedalo_core::markdown::blocks(&source.text).len() > 1;
+        Failure::Usage(format!(
+            "{file}: {e}{}",
+            if several { "; pass `--block N`" } else { "" }
+        ))
+    })?;
+    for option in picked.unknown_options() {
+        eprintln!(
+            "warning: {file}:{}: the fence option `{option}` is unknown; the options are {}",
+            picked.fence_line,
+            dedalo_core::markdown::OPTIONS
+                .iter()
+                .map(|(n, _)| *n)
+                .collect::<Vec<_>>()
+                .join(", ")
+        );
+    }
+    let note = std::mem::take(&mut source.text);
+    source.text = picked.masked(&note);
+    source.json = false;
+    source.note = Some(Note {
+        text: note,
+        block: picked,
+    });
+    Ok(source)
+}
+
+/// The blocks `validate` and `fmt` work on: the one chosen, else all.
+fn block_numbers(file: &str, block: Option<usize>) -> Result<Vec<Option<usize>>, Failure> {
+    if block.is_some() || file == "-" || !dedalo_core::markdown::is_markdown(Path::new(file)) {
+        return Ok(vec![block]);
+    }
+    let text = std::fs::read_to_string(file)
+        .map_err(|e| Failure::Io(format!("cannot read `{file}`: {e}")))?;
+    let count = dedalo_core::markdown::blocks(&text).len();
+    if count == 0 {
+        return Err(Failure::Usage(format!(
+            "{file}: the note has no `dedalo` code block"
+        )));
+    }
+    Ok((1..=count).map(Some).collect())
 }
 
 fn read(file: &str) -> Result<Source, Failure> {
@@ -288,6 +382,7 @@ fn read(file: &str) -> Result<Source, Failure> {
             path: None,
             text,
             json,
+            note: None,
         });
     }
     let path = PathBuf::from(file);
@@ -301,6 +396,7 @@ fn read(file: &str) -> Result<Source, Failure> {
         path: Some(path),
         text,
         json,
+        note: None,
     })
 }
 
@@ -534,9 +630,16 @@ fn run(cli: &Cli) -> Outcome {
             force,
             ..
         } => {
-            let source = read(file)?;
+            let source = read_source(file, cli.block)?;
             let compiled = compile(&source, &reg);
             let blocked = compiled.has_errors() && !*force;
+            // A note's fence options apply unless a flag says otherwise.
+            let export = export.clone().or_else(|| source.option("export"));
+            let levels: Vec<String> = compiled
+                .document
+                .iter()
+                .flat_map(|d| d.dungeon.levels.iter().map(|l| l.id.clone()))
+                .collect();
             let names: Vec<Option<String>> = match (&compiled.document, all) {
                 (Some(doc), true) if !doc.dungeon.exports.is_empty() => doc
                     .dungeon
@@ -559,6 +662,12 @@ fn run(cli: &Cli) -> Outcome {
                     Ok(spec) => spec,
                     Err(d) => return Err(Failure::Usage(d.message)),
                 };
+                if let Some(note) = &source.note {
+                    let known: Vec<&str> = levels.iter().map(String::as_str).collect();
+                    note.block.apply(&mut spec, &known).map_err(|e| {
+                        Failure::Usage(format!("{}:{}: {e}", source.name, note.block.fence_line))
+                    })?;
+                }
                 if let Some(p) = preset {
                     spec.preset = parse_preset(p)?;
                     if name.is_none() && spec.name == "default" {
@@ -668,32 +777,13 @@ fn run(cli: &Cli) -> Outcome {
             }
         }
         Command::Validate { file, fix } => {
-            let mut source = read(file)?;
-            if *fix {
-                if source.json {
-                    return Err(Failure::Usage(
-                        "`--fix` edits DSL text; convert the JSON document first".to_string(),
-                    ));
+            // Each block of a note on its own, read again after a fix.
+            let mut result = Ok(());
+            for block in block_numbers(file, cli.block)? {
+                let outcome = validate(cli, &reg, file, block, *fix);
+                if result.is_ok() {
+                    result = outcome;
                 }
-                let (text, fixed) = dedalo_core::fix_all(&source.text, &reg);
-                if !fixed.is_empty() {
-                    match &source.path {
-                        Some(path) => std::fs::write(path, &text).map_err(|e| {
-                            Failure::Io(format!("cannot write `{}`: {e}", source.name))
-                        })?,
-                        None => write(None, text.as_bytes())?,
-                    }
-                    if !cli.json {
-                        let codes: Vec<&str> = fixed.iter().map(|c| c.as_str()).collect();
-                        eprintln!("fixed {} problem(s): {}", fixed.len(), codes.join(", "));
-                    }
-                }
-                source.text = text;
-            }
-            let compiled = compile(&source, &reg);
-            let result = report(&compiled, &source, cli, json!({}));
-            if result.is_ok() && !cli.json {
-                eprintln!("{}: ok", source.name);
             }
             result
         }
@@ -704,7 +794,7 @@ fn run(cli: &Cli) -> Outcome {
             base_hash,
             force,
         } => {
-            let source = read(file)?;
+            let source = read_source(file, cli.block)?;
             if source.json {
                 return Err(Failure::Usage(
                     "`edit` patches DSL text; convert the JSON document first".to_string(),
@@ -746,13 +836,8 @@ fn run(cli: &Cli) -> Outcome {
                 .map_or("source".to_string(), |n| n.to_string_lossy().to_string());
             let result = dedalo_core::edit(&source.text, &batch, &reg, *force, &name);
             let write_it = result.applied && !dry_run && result.source != source.text;
-            if write_it {
-                match &source.path {
-                    Some(path) => std::fs::write(path, &result.source)
-                        .map_err(|e| Failure::Io(format!("cannot write `{}`: {e}", source.name)))?,
-                    None if !cli.json => write(None, result.source.as_bytes())?,
-                    None => {}
-                }
+            if write_it && (source.path.is_some() || !cli.json) {
+                source.save(&result.source)?;
             }
             if cli.json {
                 let mut value = serde_json::to_value(&result).unwrap_or_default();
@@ -770,6 +855,7 @@ fn run(cli: &Cli) -> Outcome {
                         path: None,
                         text: result.source.clone(),
                         json: false,
+                        note: None,
                     },
                 );
                 let verdict = if !result.applied {
@@ -790,52 +876,17 @@ fn run(cli: &Cli) -> Outcome {
             }
         }
         Command::Fmt { file, check } => {
-            let source = read(file)?;
-            if source.json {
-                return Err(Failure::Usage(
-                    "`fmt` formats DSL text; a JSON document has no formatting to fix".to_string(),
-                ));
-            }
-            match dedalo_core::format(&source.text, &reg) {
-                Err(mut diagnostics) => {
-                    for d in &mut diagnostics {
-                        if let Some(span) = &mut d.span {
-                            span.file = Some(source.name.clone());
-                        }
-                    }
-                    if cli.json {
-                        print_json(
-                            &serde_json::to_value(Report::new(diagnostics)).unwrap_or_default(),
-                        );
-                    } else {
-                        print_human(&diagnostics, &source);
-                    }
-                    Err(Failure::Diagnostics)
-                }
-                Ok(formatted) => {
-                    let changed = formatted != source.text;
-                    if cli.json {
-                        print_json(&json!({ "status": "ok", "changed": changed }));
-                    }
-                    match (&source.path, check) {
-                        (_, true) if changed => {
-                            eprintln!("{} is not formatted", source.name);
-                            Err(Failure::Diagnostics)
-                        }
-                        (_, true) => Ok(()),
-                        (None, false) if !cli.json => write(None, formatted.as_bytes()),
-                        (Some(path), false) if changed => {
-                            std::fs::write(path, formatted).map_err(|e| {
-                                Failure::Io(format!("cannot write `{}`: {e}", source.name))
-                            })
-                        }
-                        _ => Ok(()),
-                    }
+            let mut result = Ok(());
+            for block in block_numbers(file, cli.block)? {
+                let outcome = fmt(cli, &reg, file, block, *check);
+                if result.is_ok() {
+                    result = outcome;
                 }
             }
+            result
         }
         Command::Convert { file, to, output } => {
-            let source = read(file)?;
+            let source = read_source(file, cli.block)?;
             let compiled = compile(&source, &reg);
             // Conversion needs a document; geometry errors do not block it.
             let blocking: Vec<Diagnostic> = compiled
@@ -868,7 +919,7 @@ fn run(cli: &Cli) -> Outcome {
             text_map,
             preset,
         } => {
-            let source = read(file)?;
+            let source = read_source(file, cli.block)?;
             let compiled = compile(&source, &reg);
             let mut spec = ExportSpec::preset(parse_preset(preset)?);
             if *text_map {
@@ -1097,6 +1148,86 @@ fn run(cli: &Cli) -> Outcome {
             Ok(())
         }
     }
+}
+
+/// Formats a file, or one block of a note.
+fn fmt(cli: &Cli, reg: &Registry, file: &str, block: Option<usize>, check: bool) -> Outcome {
+    let source = read_source(file, block)?;
+    if source.json {
+        return Err(Failure::Usage(
+            "`fmt` formats DSL text; a JSON document has no formatting to fix".to_string(),
+        ));
+    }
+    match dedalo_core::format(&source.text, reg) {
+        Err(mut diagnostics) => {
+            for d in &mut diagnostics {
+                if let Some(span) = &mut d.span {
+                    span.file = Some(source.name.clone());
+                }
+            }
+            if cli.json {
+                print_json(&serde_json::to_value(Report::new(diagnostics)).unwrap_or_default());
+            } else {
+                print_human(&diagnostics, &source);
+            }
+            Err(Failure::Diagnostics)
+        }
+        Ok(formatted) => {
+            let changed = match &source.note {
+                Some(note) => {
+                    dedalo_core::markdown::replace(&note.text, &note.block, &formatted) != note.text
+                }
+                None => formatted != source.text,
+            };
+            if cli.json {
+                print_json(&json!({ "status": "ok", "changed": changed }));
+            }
+            match (&source.path, check) {
+                (_, true) if changed => {
+                    eprintln!("{} is not formatted", source.name);
+                    Err(Failure::Diagnostics)
+                }
+                (_, true) => Ok(()),
+                (None, false) if !cli.json => write(None, formatted.as_bytes()),
+                (Some(_), false) if changed => source.save(&formatted),
+                _ => Ok(()),
+            }
+        }
+    }
+}
+
+/// Validates a file, or one block of a note, fixing first if asked.
+fn validate(cli: &Cli, reg: &Registry, file: &str, block: Option<usize>, fix: bool) -> Outcome {
+    let mut source = read_source(file, block)?;
+    if fix {
+        if source.json {
+            return Err(Failure::Usage(
+                "`--fix` edits DSL text; convert the JSON document first".to_string(),
+            ));
+        }
+        let (text, fixed) = dedalo_core::fix_all(&source.text, reg);
+        if !fixed.is_empty() {
+            source.save(&text)?;
+            if !cli.json {
+                let codes: Vec<&str> = fixed.iter().map(|c| c.as_str()).collect();
+                eprintln!("fixed {} problem(s): {}", fixed.len(), codes.join(", "));
+            }
+        }
+        source.text = text;
+    }
+    let compiled = compile(&source, reg);
+    let label = match &source.note {
+        Some(note) => format!(
+            "{} (block {}, line {})",
+            source.name, note.block.index, note.block.fence_line
+        ),
+        None => source.name.clone(),
+    };
+    let result = report(&compiled, &source, cli, json!({}));
+    if result.is_ok() && !cli.json {
+        eprintln!("{label}: ok");
+    }
+    result
 }
 
 fn plugin_command(

@@ -10,6 +10,7 @@ use dedalo_core::model::Code;
 const QUICKSTART: &str = include_str!("../../../docs/guide/quickstart.md");
 const SYNTAX: &str = include_str!("../../../docs/guide/syntax.md");
 const LAYOUT: &str = include_str!("../../../docs/guide/layout.md");
+const NOTES: &str = include_str!("../../../docs/guide/notes.md");
 
 /// The complete examples, by name.
 pub const EXAMPLES: &[(&str, &str, &str)] = &[
@@ -54,6 +55,10 @@ pub fn topics(cat: &Catalog) -> Vec<(String, String)> {
         (
             "catalog".to_string(),
             "Element types, subtypes and categories".to_string(),
+        ),
+        (
+            "notes".to_string(),
+            "Dungeons in Markdown notes: ```dedalo code blocks and their options".to_string(),
         ),
         ("errors".to_string(), "Every diagnostic code".to_string()),
         ("examples".to_string(), "The complete examples".to_string()),
@@ -170,6 +175,7 @@ pub fn topic(name: &str, reg: &Registry) -> Result<String, String> {
         "quickstart" => QUICKSTART.to_string(),
         "syntax" => SYNTAX.to_string(),
         "layout" => LAYOUT.to_string(),
+        "notes" => NOTES.to_string(),
         "catalog" => catalog_table(cat),
         "errors" => {
             let mut out = String::from(
@@ -232,12 +238,12 @@ pub fn export_skill(dir: &std::path::Path, reg: &Registry) -> std::io::Result<Ve
     std::fs::create_dir_all(&refs)?;
     let mut written = Vec::new();
     let skill = format!(
-        "---\nname: dedalo\ndescription: Author, validate, edit and render tabletop-RPG dungeon maps with the Dedalo DSL and the `dedalo` command or MCP server. Use when asked to design a dungeon, draw a battle map, or change a `.dedalo` file.\n---\n\n# Dedalo\n\n{}\n\n## Working loop\n\n1. Read `references/quickstart.md` once.\n2. Write the file, then run `dedalo validate FILE --json` (MCP: `dedalo_validate`).\n3. Apply the `fix` of each diagnostic: `dedalo validate FILE --fix`, or send it to `dedalo edit FILE --ops -` (MCP: `dedalo_edit`).\n4. Read the result as text: `dedalo inspect FILE --text-map` (MCP: `dedalo_inspect` with `view = text_map`).\n5. Render: `dedalo render FILE --preset player --format png` (MCP: `dedalo_render`).\n6. Make further changes with small edit operations addressed by element ID rather than rewriting the file.\n\n## References\n\n- `references/quickstart.md`: the language in one page\n- `references/syntax.md`: values, blocks, connections, visibility, exports\n- `references/layout.md`: coordinates, shapes, placement, doors, corridors\n- `references/catalog.md`: element types; `references/catalog/<type>.md` for properties\n- `references/errors.md`: diagnostic codes and fixes\n- `references/examples/<name>.dedalo`: complete examples\n",
+        "---\nname: dedalo\ndescription: Author, validate, edit and render tabletop-RPG dungeon maps with the Dedalo DSL and the `dedalo` command or MCP server. Use when asked to design a dungeon, draw a battle map, or change a `.dedalo` file or a ```dedalo code block in a Markdown note.\n---\n\n# Dedalo\n\n{}\n\n## Working loop\n\n1. Read `references/quickstart.md` once.\n2. Write the file, then run `dedalo validate FILE --json` (MCP: `dedalo_validate`).\n3. Apply the `fix` of each diagnostic: `dedalo validate FILE --fix`, or send it to `dedalo edit FILE --ops -` (MCP: `dedalo_edit`).\n4. Read the result as text: `dedalo inspect FILE --text-map` (MCP: `dedalo_inspect` with `view = text_map`).\n5. Render: `dedalo render FILE --preset player --format png` (MCP: `dedalo_render`).\n6. Make further changes with small edit operations addressed by element ID rather than rewriting the file.\n\n## Dungeons in Markdown notes\n\nIn a note, such as a page of an Obsidian vault, a dungeon is a code block opened with ```dedalo and closed with ```; the Obsidian plugin draws it in place. Words after `dedalo` are options, such as `player` or `level=ground`. Every command above takes the note itself (`dedalo validate Note.md`), with `--block N` (MCP: `block`) when it holds several blocks; diagnostics give the note's line numbers, and writes change only the block. Read `references/notes.md` before writing into a note.\n\n## References\n\n- `references/quickstart.md`: the language in one page\n- `references/syntax.md`: values, blocks, connections, visibility, exports\n- `references/layout.md`: coordinates, shapes, placement, doors, corridors\n- `references/notes.md`: dungeons in Markdown notes and the fence options\n- `references/catalog.md`: element types; `references/catalog/<type>.md` for properties\n- `references/errors.md`: diagnostic codes and fixes\n- `references/examples/<name>.dedalo`: complete examples\n",
         "Dedalo compiles a text description of a dungeon into a map: SVG, PNG, PDF or a text map. Prefer relative room placement (`north_of`), wall and anchor placement for elements, and edit operations over regenerating files."
     );
     std::fs::write(dir.join("SKILL.md"), skill)?;
     written.push("SKILL.md".to_string());
-    for name in ["quickstart", "syntax", "layout", "catalog"] {
+    for name in ["quickstart", "syntax", "layout", "notes", "catalog"] {
         std::fs::write(
             refs.join(format!("{name}.md")),
             topic(name, reg).expect("a built-in topic"),
@@ -288,7 +294,14 @@ pub fn llms_txt(reg: &Registry) -> String {
     let mut out = String::from(
         "# Dedalo\n\n> Dedalo compiles a text description of a tabletop-RPG dungeon into a map. One Rust core powers a command-line binary, a static web editor and an MCP server.\n\n",
     );
-    for name in ["quickstart", "syntax", "layout", "catalog", "errors"] {
+    for name in [
+        "quickstart",
+        "syntax",
+        "layout",
+        "notes",
+        "catalog",
+        "errors",
+    ] {
         out.push_str(
             &topic(name, reg)
                 .expect("a built-in topic")

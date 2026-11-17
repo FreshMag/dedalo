@@ -270,3 +270,59 @@ fn reference_commands_answer() {
         Some(0)
     );
 }
+
+#[test]
+fn markdown_notes_hold_dungeons_in_code_blocks() {
+    let dir = scratch("markdown");
+    let note = dir.join("Crypt.md");
+    let crypt = read("forgotten_crypt", "input.dedalo");
+    let broken = read("err_unknown_attribute", "input.dedalo");
+    let prose = "# The crypt\n\nRead this aloud.\n\n";
+    std::fs::write(
+        &note,
+        format!("{prose}```dedalo player\n{crypt}```\n\nMore prose.\n\n```dedalo\n{broken}```\n"),
+    )
+    .unwrap();
+    let path = note.to_str().unwrap();
+
+    // The fence's `player` applies: the bytes are the player golden file.
+    let output = dedalo(
+        &["render", path, "--block", "1", "--format", "txt", "-o", "-"],
+        None,
+    );
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(stdout(&output), read("forgotten_crypt", "player.txt"));
+
+    // Several blocks and no `--block`: a usage error naming them.
+    let output = dedalo(&["render", path], None);
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("--block"));
+
+    // `validate` checks every block, with the note's own line numbers.
+    let line = 4 + 1 + crypt.lines().count() + 1 + 3 + 1 + 4;
+    let output = dedalo(&["validate", path], None);
+    assert_eq!(output.status.code(), Some(1));
+    let stderr = String::from_utf8_lossy(&output.stderr).replace('\\', "/");
+    assert!(stderr.contains(&format!("Crypt.md:{line}:9")), "{stderr}");
+
+    // `fmt` rewrites the blocks and nothing else.
+    let messy = "dungeon \"d\" {\nroom \"a\" { shape = rectangle(4,4) }\n}\n";
+    std::fs::write(
+        &note,
+        format!("{prose}```dedalo\n{messy}```\n\nMore prose.\n"),
+    )
+    .unwrap();
+    let output = dedalo(&["fmt", path], None);
+    assert_eq!(output.status.code(), Some(0));
+    let formatted = dedalo(&["fmt", "-"], Some(messy));
+    assert_eq!(
+        std::fs::read_to_string(&note).unwrap(),
+        format!(
+            "{prose}```dedalo\n{}```\n\nMore prose.\n",
+            stdout(&formatted)
+        )
+    );
+    let output = dedalo(&["fmt", "--check", path], None);
+    assert_eq!(output.status.code(), Some(0));
+    std::fs::remove_dir_all(dir).ok();
+}
