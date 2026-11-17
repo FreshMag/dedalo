@@ -25,7 +25,7 @@
       "painter for opening door",
       "scene pass wobble"
     ],
-    "sha256": "sha256:3bb90cc9e087782879e006eece61866081eec184049f4778f0b9746b0b839440",
+    "sha256": "sha256:2f1dff2ef5eddd3a0089f05c50db348a8a244bd513e249c17dd7dee7e65cb4fe",
     "version": "1.2.0"
   },
   {
@@ -37,7 +37,7 @@
     "provides": [
       "format uvtt.dd2vtt"
     ],
-    "sha256": "sha256:1348c3c94c3588a2fae99cd1ee6fdbef5eb74edffaf340060617b90330b8342b",
+    "sha256": "sha256:c16a1b097f69d3d4329a841fd7f03ab90f1e41ba4dd8cc0f4680ba6c0df97ae4",
     "version": "0.3.0"
   }
 ]
