@@ -1403,16 +1403,18 @@ The largest schedule risk is geometry, and the largest product risk is a secret 
 
 ### 19.2 Open questions for the product owner
 
-- [ ] **Implementation language.** Confirm Rust. If the team works only in TypeScript, the fallback of section 4 applies and sections 3, 11 and 16 change.
-- [ ] **Y axis.** Confirm that Y grows south (7.1). The alternative flips the meaning of every `position` already written.
-- [ ] **Vertical connections in 0.1.** Draw stairs, ladders and trapdoors as marked exits now, as proposed, or defer them to multi-level support.
-- [ ] **Default look.** Black on white for `classic`, as proposed, or a blue old-school look.
-- [ ] **Languages.** English only for the editor and default legend labels in 0.1, or English and Italian.
-- [ ] **Licence.** Dual MIT or Apache-2.0, as proposed.
-- [ ] **Signing budget.** Pay for Apple and Windows certificates for 1.0, or stay unsigned.
-- [ ] **Names and addresses.** Repository owner, site address for the schema URLs, and the file extension `.dedalo`.
+Answered by the product owner in November 2026, except staffing.
+
+- [x] **Implementation language.** Rust.
+- [x] **Y axis.** Y grows south (7.1).
+- [x] **Vertical connections in 0.1.** Decided beyond the two options: multi-level dungeons are supported now. `level` blocks group spaces, each level is laid out on its own plane, and stairs, ladders and trapdoors join levels, with `to_position` marking where they arrive. This brings forward the first row of section 18.
+- [x] **Default look.** Black on white for `classic`.
+- [x] **Languages.** English and Italian, for the editor and for default legend labels (`render { language = it }`).
+- [x] **Licence.** Apache-2.0 alone, not the dual licence proposed.
+- [x] **Signing budget.** Stay unsigned.
+- [x] **Names and addresses.** The owner is Francesco Magnani (`FreshMag`). The site address for the schema URLs is `https://freshmag.github.io/dedalo/next/`. The file extension is `.dedalo`.
 - [ ] **Staffing.** Who builds this and at what allocation, so that person-weeks become dates.
-- [ ] **Evaluation gate.** Accept 85% first-attempt and 95% within three rounds as the agent targets for 0.1.
+- [x] **Evaluation gate.** 85% first-attempt and 95% within three rounds are the agent targets for 0.1.
 
 ## 20. Appendix: differences from draft v1.0
 

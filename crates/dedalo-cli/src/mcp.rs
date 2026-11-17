@@ -158,6 +158,8 @@ fn tools() -> Value {
                 "export": { "type": "string", "description": "A named export block of the document" },
                 "format": { "type": "string", "enum": ["png", "svg", "txt", "pdf"], "default": "png" },
                 "rotation": { "type": "integer", "enum": [0, 90, 180, 270] },
+                "level": { "type": "string", "description": "One level of a multi-level dungeon; all levels side by side when absent" },
+                "language": { "type": "string", "enum": ["en", "it"], "description": "Language of default legend labels" },
                 "max_px": { "type": "integer", "default": 1024, "minimum": 64, "maximum": 4096 },
                 "out": { "type": "string", "description": "Where to write the output, relative to the root" }
             })) },
@@ -395,6 +397,28 @@ impl Server {
         }
         if let Some(r) = args.get("rotation").and_then(Value::as_i64) {
             spec.rotation = r;
+        }
+        if let Some(lang) = str_arg(args, "language") {
+            spec.language = dedalo_core::model::Language::parse(lang)
+                .ok_or_else(|| ToolError(format!("`{lang}` is not a language; use en or it")))?;
+        }
+        if let Some(level) = str_arg(args, "level") {
+            let known: Vec<&str> = compiled
+                .document
+                .iter()
+                .flat_map(|d| d.dungeon.levels.iter().map(|l| l.id.as_str()))
+                .collect();
+            if !known.contains(&level) {
+                return Err(ToolError(format!(
+                    "`{level}` is not a level of this dungeon. Its levels: {}.",
+                    if known.is_empty() {
+                        "none".to_string()
+                    } else {
+                        known.join(", ")
+                    }
+                )));
+            }
+            spec.level = Some(level.to_string());
         }
         let format = str_arg(args, "format").unwrap_or("png").to_string();
         spec.format = format.clone();

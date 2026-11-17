@@ -211,3 +211,133 @@ fn new_plugins_scaffold_and_check() {
     );
     std::fs::remove_dir_all(dir).ok();
 }
+
+/// Serves `body` once on a local port and returns the URL.
+fn serve_once(body: Vec<u8>) -> String {
+    use std::io::{Read, Write};
+    let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let url = format!(
+        "http://127.0.0.1:{}/blueprint.dedalopkg",
+        listener.local_addr().unwrap().port()
+    );
+    std::thread::spawn(move || {
+        if let Ok((mut stream, _)) = listener.accept() {
+            let mut request = [0u8; 2048];
+            let _ = stream.read(&mut request);
+            let head = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: application/zip\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+                body.len()
+            );
+            let _ = stream.write_all(head.as_bytes());
+            let _ = stream.write_all(&body);
+        }
+    });
+    url
+}
+
+#[test]
+fn zipped_packages_install_from_a_file_and_from_a_url() {
+    let plugins = reference_plugins();
+    let dir = scratch("zipped");
+    let source = plugins.join("blueprint");
+    let pack = dedalo(
+        &dir,
+        &["plugin", "pack", source.to_str().unwrap(), "--json"],
+    );
+    assert_eq!(
+        pack.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&pack.stderr)
+    );
+    let packed: serde_json::Value = serde_json::from_slice(&pack.stdout).unwrap();
+    let hash = packed["sha256"].as_str().unwrap().to_string();
+    let archive = dir.join("blueprint-1.0.0.dedalopkg");
+    assert!(archive.exists());
+
+    // The zipped package has the hash of the folder it was made from.
+    let listed = dedalo(
+        &dir,
+        &[
+            "plugin",
+            "list",
+            "--plugin",
+            archive.to_str().unwrap(),
+            "--json",
+        ],
+    );
+    let listed: serde_json::Value = serde_json::from_slice(&listed.stdout).unwrap();
+    assert_eq!(listed[0]["sha256"].as_str(), Some(hash.as_str()));
+    assert!(
+        listed[0]["files"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|f| f == "symbols/brazier.svg")
+    );
+
+    // A wrong hash installs nothing.
+    let refused = dedalo(
+        &dir,
+        &[
+            "plugin",
+            "add",
+            archive.to_str().unwrap(),
+            "--sha256",
+            "sha256:00",
+        ],
+    );
+    assert_eq!(refused.status.code(), Some(2));
+    assert!(!dir.join(".dedalo").exists());
+
+    let add = dedalo(
+        &dir,
+        &[
+            "plugin",
+            "add",
+            archive.to_str().unwrap(),
+            "--sha256",
+            &hash,
+        ],
+    );
+    assert_eq!(
+        add.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&add.stderr)
+    );
+    assert!(
+        dir.join(".dedalo/plugins/blueprint/symbols/table.svg")
+            .exists()
+    );
+
+    // From a URL, when the system has curl.
+    if Command::new("curl").arg("--version").output().is_err() {
+        eprintln!("skipping the URL install: no curl on this system");
+        return;
+    }
+    let remote = scratch("zipped-url");
+    let url = serve_once(std::fs::read(&archive).unwrap());
+    let add = dedalo(&remote, &["plugin", "add", &url, "--sha256", &hash]);
+    assert_eq!(
+        add.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&add.stderr)
+    );
+    let lock = std::fs::read_to_string(remote.join("dedalo.lock")).unwrap();
+    assert!(lock.contains(&hash), "{lock}");
+    assert!(
+        remote
+            .join(".dedalo/plugins/blueprint/dedalo-plugin.toml")
+            .exists()
+    );
+
+    // A URL that does not answer is an error, not a crash.
+    let dead = dedalo(
+        &remote,
+        &["plugin", "add", "http://127.0.0.1:9/x.dedalopkg"],
+    );
+    assert_eq!(dead.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&dead.stderr).contains("cannot"));
+}

@@ -1,0 +1,40 @@
+# Mistakes with levels: a room outside them, a door and a corridor between
+# two levels, a layout across levels, and an export of a level that is not
+# there.
+dungeon "diag_levels" {
+    level "ground" {
+        room "hall" {
+            shape = rectangle(6, 4)
+        }
+    }
+
+    level "upper" {
+        room "loft" {
+            shape = square(4)
+            layout { east_of = "hall" }
+        }
+
+        corridor "bridge" {
+            connects = ["loft", "hall"]
+        }
+
+        feature "oops" {
+            type = furniture
+        }
+    }
+
+    room "garden" {
+        shape = square(5)
+    }
+
+    connection "wrong_door" {
+        from = "hall"
+        to = "loft"
+        type = door
+        to_position = [1, 1]
+    }
+
+    export "missing" {
+        level = "cellar"
+    }
+}

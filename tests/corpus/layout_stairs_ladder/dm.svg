@@ -44,14 +44,14 @@
 <path d="M7.32 2.45L7.68 2.45" fill="none" stroke="#111111" stroke-width="0.05"/>
 <path d="M7.32 2.7L7.68 2.7" fill="none" stroke="#111111" stroke-width="0.05"/>
 </g>
-<g><path d="M7.2 3.39L7.8 3.39L7.8 3.71L7.2 3.71Z" fill="#ffffff" stroke="#111111" stroke-width="0.06"/>
+<g><path d="M7.15 3.2L7.85 3.2L7.85 3.9L7.15 3.9Z" fill="#ffffff" stroke="#111111" stroke-width="0.05" stroke-dasharray="0.12 0.08"/>
+<path d="M7.15 3.2L7.85 3.9" fill="none" stroke="#111111" stroke-width="0.05"/>
 </g>
 </g>
 <g id="layer-frame">
 <g transform="matrix(0.00044 0 0 -0.00044 7 0.557)" fill="#111111"><use href="#b45" x="0"/><use href="#b70" x="559"/><use href="#b72" x="1156"/><use href="#b70" x="1788"/><use href="#b79" x="2385"/><use href="#b69" x="3035"/></g>
 <g transform="matrix(0.0004 0 0 -0.0004 8.4 1.493)" fill="#111111"><use href="#r52" x="0"/><use href="#r85" x="549"/><use href="#r66" x="910"/><use href="#r74" x="1471"/><use href="#r83" x="1729"/><use href="#r84" x="2142"/></g>
 <g transform="matrix(0.0004 0 0 -0.0004 8.4 2.593)" fill="#111111"><use href="#r45" x="0"/><use href="#r66" x="524"/><use href="#r69" x="1085"/><use href="#r69" x="1700"/><use href="#r70" x="2315"/><use href="#r83" x="2879"/></g>
-<path d="M7 3.55L7.2 3.55M7.8 3.55L8 3.55" fill="none" stroke="#111111" stroke-width="0.14" stroke-linecap="round" stroke-linejoin="round"/>
 <g transform="matrix(0.0004 0 0 -0.0004 8.4 3.693)" fill="#111111"><use href="#r53" x="0"/><use href="#r83" x="556"/><use href="#r66" x="969"/><use href="#r81" x="1530"/><use href="#r69" x="2145"/><use href="#r80" x="2760"/><use href="#r80" x="3365"/><use href="#r83" x="3970"/></g>
 </g>
 </svg>

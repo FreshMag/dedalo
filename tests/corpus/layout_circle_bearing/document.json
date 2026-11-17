@@ -1,0 +1,125 @@
+{
+  "dungeon": {
+    "id": "layout_circle_bearing",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "hub",
+        "shape": {
+          "fn": "circle",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "east",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            3,
+            6
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "east"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "north",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            2
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "north"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "pool",
+        "shape": {
+          "fn": "ellipse",
+          "args": [
+            6,
+            4
+          ]
+        },
+        "rotation": 90,
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "south"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "cellar",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            2
+          ]
+        },
+        "layout": {
+          "adjacent_to": "pool",
+          "direction": "south"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "east_door",
+        "from": "hub",
+        "to": "east",
+        "type": "door",
+        "placement": {
+          "bearing": 70
+        }
+      },
+      {
+        "id": "north_arch",
+        "from": "hub",
+        "to": "north",
+        "type": "archway",
+        "placement": {
+          "bearing": 340,
+          "width": 2
+        }
+      },
+      {
+        "id": "to_pool",
+        "from": "hub",
+        "to": "pool",
+        "type": "door"
+      },
+      {
+        "id": "cellar_door",
+        "from": "pool",
+        "to": "cellar",
+        "type": "door",
+        "placement": {
+          "bearing": 75
+        }
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Doors on a round wall by bearing, in degrees clockwise from north."
+      ]
+    }
+  }
+}

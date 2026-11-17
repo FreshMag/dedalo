@@ -44,7 +44,9 @@ pub fn json(r: &Resolved, doc: Option<&Document>) -> Value {
         .iter()
         .map(|s| {
             let elements: Vec<Value> = r.elements.iter().filter(|e| e.space.as_ref() == Some(&s.id)).map(|e| json!({ "id": e.id, "type": e.ty, "subtype": e.subtype })).collect();
-            json!({ "id": s.id, "kind": s.kind, "name": s.name, "bbox": s.bbox, "visibility": s.visibility, "elements": elements })
+            // The level is named only in a dungeon that has levels.
+            let level = (!r.levels.is_empty()).then_some(&s.level);
+            json!({ "id": s.id, "kind": s.kind, "name": s.name, "level": level, "bbox": s.bbox, "visibility": s.visibility, "elements": elements })
         })
         .collect();
     let connections: Vec<Value> =
@@ -53,6 +55,7 @@ pub fn json(r: &Resolved, doc: Option<&Document>) -> Value {
         "id": r.id,
         "name": r.name,
         "bounds": r.bounds,
+        "levels": r.levels,
         "spaces": spaces,
         "connections": connections,
         "counts": { "spaces": r.spaces.len(), "connections": r.openings.len(), "elements": r.elements.len(), "notes": r.notes.len() },
@@ -77,6 +80,27 @@ pub fn text(r: &Resolved, doc: Option<&Document>) -> String {
         c(r.bounds.y0),
         c(r.bounds.y1)
     ));
+    if !r.levels.is_empty() {
+        out.push_str(&format!(
+            "\nlevels ({}), side by side on the map:\n",
+            r.levels.len()
+        ));
+        for level in &r.levels {
+            let name = level
+                .name
+                .as_ref()
+                .map(|n| format!(" \"{n}\""))
+                .unwrap_or_default();
+            out.push_str(&format!(
+                "  level {}{name}: x {} to {}, y {} to {}\n",
+                level.id,
+                c(level.bounds.x0),
+                c(level.bounds.x1),
+                c(level.bounds.y0),
+                c(level.bounds.y1)
+            ));
+        }
+    }
     out.push_str(&format!("\nspaces ({}):\n", r.spaces.len()));
     for s in &r.spaces {
         let kind = format!("{:?}", s.kind).to_lowercase();
@@ -86,11 +110,14 @@ pub fn text(r: &Resolved, doc: Option<&Document>) -> String {
             .map(|n| format!(" \"{n}\""))
             .unwrap_or_default();
         let shape = if s.circle.is_some() { "circle, " } else { "" };
-        let hidden = if s.visibility == dedalo_core::model::Visibility::Public {
+        let mut hidden = if s.visibility == dedalo_core::model::Visibility::Public {
             String::new()
         } else {
             format!("  [{}]", s.visibility.as_str())
         };
+        if !r.levels.is_empty() {
+            hidden.push_str(&format!("  (level {})", s.level));
+        }
         out.push_str(&format!(
             "  {kind} {}{name}: {shape}{} by {} at x {} to {}, y {} to {}{hidden}\n",
             s.id,

@@ -9,6 +9,7 @@ use dedalo_model::{Class, LegendMode, LegendPosition, Props, Value, Visibility};
 use dedalo_scene::shapes::{line, polygon};
 use dedalo_scene::{Cmd, Node, Scene, Stroke, TextAnchor};
 
+use crate::locale;
 use crate::paint::{Cx, Item, Painters, f, outline, xy};
 use crate::theme::Theme;
 use crate::view::View;
@@ -75,7 +76,11 @@ const OPENING_KEYS: [(&str, &str); 7] = [
 ];
 
 fn opening_sample(key: &str) -> Sample {
-    let ty = if key.ends_with("door") { "door" } else { key };
+    let ty = if matches!(key, "locked_door" | "secret_door") {
+        "door"
+    } else {
+        key
+    };
     Sample::Opening {
         ty: ty.to_string(),
         secret: key == "secret_door",
@@ -127,7 +132,7 @@ fn legend_entries(view: &View) -> Vec<Entry> {
         if present {
             entries.push(Entry {
                 key: key.to_string(),
-                label: label.to_string(),
+                label: locale::word_or(view.language, key, label).to_string(),
                 sample: opening_sample(key),
             });
         }
@@ -150,11 +155,13 @@ fn legend_entries(view: &View) -> Vec<Entry> {
                     subtype: e.subtype.clone(),
                     properties: e.properties.clone(),
                 };
-                entries.push(Entry {
-                    key,
-                    label: e.label.clone(),
-                    sample,
-                });
+                // A custom element carries its own label.
+                let label = if symbol.is_some() || e.ty == "custom" && e.label != "Custom" {
+                    e.label.clone()
+                } else {
+                    locale::word_or(view.language, &key, &e.label).to_string()
+                };
+                entries.push(Entry { key, label, sample });
             }
         }
     }
@@ -216,6 +223,7 @@ fn sample_element(
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect(),
         tags: Vec::new(),
+        level: None,
     }
 }
 
@@ -242,6 +250,8 @@ fn sample_opening(ty: &str, secret: bool, locked: bool, x: i64, y: i64) -> Openi
             y1: y + 1000,
         }),
         name: None,
+        level: None,
+        arrival: false,
     }
 }
 
@@ -282,12 +292,9 @@ pub fn render_scene(view: &View, theme: &Theme, painters: &Painters) -> Scene {
     let (legend_size, note_size) = (theme.size("legend"), theme.size("note"));
     let mut rows: Vec<Row> = Vec::new();
     if !entries.is_empty() {
-        rows.push(Row::Header(
-            view.legend
-                .title
-                .clone()
-                .unwrap_or_else(|| "Legend".to_string()),
-        ));
+        rows.push(Row::Header(view.legend.title.clone().unwrap_or_else(
+            || locale::word_or(view.language, "legend", "Legend").to_string(),
+        )));
         rows.extend((0..entries.len()).map(Row::Sample));
     }
     let has_notes = view.show_frame && (!view.notes.is_empty() || !view.contents.is_empty());
@@ -302,7 +309,9 @@ pub fn render_scene(view: &View, theme: &Theme, painters: &Painters) -> Scene {
         if !rows.is_empty() {
             rows.push(Row::Gap);
         }
-        rows.push(Row::Header("Notes".to_string()));
+        rows.push(Row::Header(
+            locale::word_or(view.language, "notes", "Notes").to_string(),
+        ));
         let columns = f(panel_w) - 0.2;
         for note in &view.notes {
             rows.extend(
@@ -334,7 +343,12 @@ pub fn render_scene(view: &View, theme: &Theme, painters: &Painters) -> Scene {
         .grid_unit
         .as_ref()
         .filter(|_| view.show_frame)
-        .map(|unit| format!("1 square = {unit}"));
+        .map(|unit| {
+            format!(
+                "1 {} = {unit}",
+                locale::word_or(view.language, "square", "square")
+            )
+        });
     let scale_h = if scale_text.is_some() { 700 } else { 0 };
     let mut canvas = Rect {
         x0: map.x0 - PAD,
@@ -568,6 +582,20 @@ pub fn render_scene(view: &View, theme: &Theme, painters: &Painters) -> Scene {
         }
     }
 
+    for level in &view.levels {
+        scene.push(
+            "frame",
+            Node::text(
+                f(level.bounds.x0),
+                f(level.bounds.y0) - 0.5,
+                level.name.as_deref().unwrap_or(&level.id),
+                legend_size * 1.1,
+                TextAnchor::Start,
+                ink,
+            )
+            .bold(),
+        );
+    }
     if let Some(title) = &view.title {
         scene.push(
             "frame",

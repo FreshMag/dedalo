@@ -1,0 +1,115 @@
+# A tower on three levels joined by stairs, a ladder and a secret trapdoor.
+dungeon "levels_tower" {
+    name = "The Leaning Tower"
+
+    # The way in.
+    level "ground" {
+        name = "Ground floor"
+
+        room "hall" {
+            name = "Hall"
+            shape = rectangle(8, 6)
+            tags = [entrance]
+
+            feature "brazier" {
+                type = lighting
+                subtype = brazier
+                position = [1, 1]
+            }
+        }
+
+        room "kitchen" {
+            name = "Kitchen"
+            shape = square(4)
+            layout { east_of = "hall" }
+        }
+
+        corridor "porch" {
+            connects = ["hall", "shed"]
+        }
+
+        room "shed" {
+            shape = square(3)
+            layout { south_of = "hall", gap = 2 }
+        }
+    }
+
+    level "upper" {
+        name = "Upper floor"
+
+        room "study" {
+            name = "Study"
+            shape = circle(3)
+
+            entity "wizard" {
+                type = npc
+                position = [3, 3]
+            }
+        }
+
+        room "balcony" {
+            shape = rectangle(6, 2)
+            layout { north_of = "study" }
+        }
+    }
+
+    level "cellar" {
+        room "vault" {
+            name = "Vault"
+            shape = rectangle(5, 4)
+            visibility = dm
+        }
+    }
+
+    connection "pantry_door" {
+        from = "hall"
+        to = "kitchen"
+        type = door
+    }
+
+    connection "spiral" {
+        from = "hall"
+        to = "study"
+        type = stairs
+        position = [6, 1]
+        to_position = [1, 3]
+    }
+
+    connection "balcony_door" {
+        from = "study"
+        to = "balcony"
+        type = door
+    }
+
+    connection "hatch" {
+        from = "kitchen"
+        to = "vault"
+        type = trapdoor
+        position = [2, 2]
+        to_position = [0, 0]
+        visibility = dm
+    }
+
+    note "warning" {
+        target = "vault"
+        text = "The vault floods at high tide."
+    }
+
+    note "general" {
+        text = "Every floor is 10 ft high."
+        visibility = public
+    }
+
+    export "upstairs" {
+        preset = player
+        level = "upper"
+    }
+
+    export "dm" {
+        preset = dm
+    }
+
+    export "player" {
+        preset = player
+    }
+}

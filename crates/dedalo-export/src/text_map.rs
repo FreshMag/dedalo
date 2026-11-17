@@ -159,7 +159,9 @@ pub fn text_map(view: &View) -> String {
     };
     for o in &view.openings {
         let c = opening_char(&o.ty, o.secret, o.implicit);
-        for (segment, c) in [(o.segment, c), (o.far, FLOOR)] {
+        // The far end of a stub first, so that the door itself stays visible
+        // where both fall on the same line of the grid.
+        for (segment, c) in [(o.far, FLOOR), (o.segment, c)] {
             let Some([a, b]) = segment else { continue };
             if (a.x - b.x).abs() >= (a.y - b.y).abs() {
                 let line = ((a.y + b.y) as f64 / 2000.0).round() as i64 - y0;
@@ -184,9 +186,16 @@ pub fn text_map(view: &View) -> String {
     }
 
     // Elements, in drawing order: a later element covers an earlier one.
+    let lower = |key: &str, english: &str| {
+        dedalo_render::locale::word(view.language, key)
+            .map_or_else(|| english.to_string(), str::to_lowercase)
+    };
     let mut legend: Vec<(char, String)> = used
         .iter()
-        .map(|c| (*c, opening_label(*c).to_string()))
+        .map(|c| {
+            let english = opening_label(*c);
+            (*c, lower(&english.replace(' ', "_"), english))
+        })
         .collect();
     for e in &view.elements {
         let glyph = e.glyph.chars().next().unwrap_or('?');
@@ -208,7 +217,7 @@ pub fn text_map(view: &View) -> String {
             }
         }
         if !legend.iter().any(|(c, _)| *c == glyph) {
-            legend.push((glyph, e.type_label.clone()));
+            legend.push((glyph, lower(&e.ty, &e.type_label)));
         }
     }
 

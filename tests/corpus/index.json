@@ -1,4 +1,12 @@
 {
+  "diag_bearing_and_slant": [
+    "diagnostics.json",
+    "document.json"
+  ],
+  "diag_levels": [
+    "diagnostics.json",
+    "document.json"
+  ],
   "ellipse_l": [
     "diagnostics.json",
     "dm.pdf.sha256",
@@ -153,6 +161,19 @@
     "turned.svg",
     "turned.txt"
   ],
+  "language_italian": [
+    "diagnostics.json",
+    "dm.pdf.sha256",
+    "dm.png.sha256",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "english.pdf.sha256",
+    "english.png.sha256",
+    "english.svg",
+    "english.txt",
+    "resolved.json"
+  ],
   "layout_absolute_negative": [
     "diagnostics.json",
     "dm.pdf.sha256",
@@ -180,6 +201,19 @@
     "resolved.json"
   ],
   "layout_automatic_wall": [
+    "diagnostics.json",
+    "dm.pdf.sha256",
+    "dm.png.sha256",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.pdf.sha256",
+    "player.png.sha256",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ],
+  "layout_circle_bearing": [
     "diagnostics.json",
     "dm.pdf.sha256",
     "dm.png.sha256",
@@ -426,6 +460,19 @@
     "player.txt",
     "resolved.json"
   ],
+  "layout_slanted_door": [
+    "diagnostics.json",
+    "dm.pdf.sha256",
+    "dm.png.sha256",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.pdf.sha256",
+    "player.png.sha256",
+    "player.svg",
+    "player.txt",
+    "resolved.json"
+  ],
   "layout_south_center": [
     "diagnostics.json",
     "dm.pdf.sha256",
@@ -529,6 +576,23 @@
     "player.svg",
     "player.txt",
     "resolved.json"
+  ],
+  "levels_tower": [
+    "diagnostics.json",
+    "dm.pdf.sha256",
+    "dm.png.sha256",
+    "dm.svg",
+    "dm.txt",
+    "document.json",
+    "player.pdf.sha256",
+    "player.png.sha256",
+    "player.svg",
+    "player.txt",
+    "resolved.json",
+    "upstairs.pdf.sha256",
+    "upstairs.png.sha256",
+    "upstairs.svg",
+    "upstairs.txt"
   ],
   "one_room": [
     "diagnostics.json",

@@ -6,7 +6,7 @@
 
 const BLOCKS = new Set([
   "dedalo", "dungeon", "grid", "settings", "render", "legend", "properties", "room", "corridor", "connection",
-  "feature", "entity", "note", "export", "layout", "placement", "visibility", "entry", "plugin",
+  "feature", "entity", "note", "export", "layout", "placement", "visibility", "entry", "plugin", "level",
 ]);
 
 function escapeHtml(text) {
@@ -57,7 +57,8 @@ function lineStarts(text) {
  * @param {HTMLElement} host
  * @param {{ onChange: (text: string) => void,
  *           complete: (text: string, offset: number) => Promise<{from: number, items: any[]}>,
- *           hover: (text: string, offset: number) => Promise<{from: number, to: number, markdown: string} | null> }} hooks
+ *           hover: (text: string, offset: number) => Promise<{from: number, to: number, markdown: string} | null>,
+ *           label?: () => string, describedBy?: string }} hooks
  */
 export function createEditor(host, hooks) {
   host.classList.add("editor-host");
@@ -66,10 +67,10 @@ export function createEditor(host, hooks) {
     <div class="code">
       <pre class="layer hl" aria-hidden="true"></pre>
       <pre class="layer marks" aria-hidden="true"></pre>
-      <textarea spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="Dungeon description"></textarea>
+      <textarea spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="editor-completions"></textarea>
     </div>
-    <ul class="completions" role="listbox" hidden></ul>
-    <div class="hover" role="tooltip" hidden></div>`;
+    <ul class="completions" id="editor-completions" role="listbox" hidden></ul>
+    <div class="hover" role="status" aria-live="polite" hidden></div>`;
   const gutter = host.querySelector(".gutter");
   const hl = host.querySelector(".hl");
   const marks = host.querySelector(".marks");
@@ -79,6 +80,10 @@ export function createEditor(host, hooks) {
   let diagnostics = [];
   let completion = null;
   let tabLeaves = false;
+  const label = () => (hooks.label ? hooks.label() : "Dungeon description");
+  area.setAttribute("aria-label", label());
+  if (hooks.describedBy) area.setAttribute("aria-describedby", hooks.describedBy);
+  list.setAttribute("aria-label", label());
 
   const metrics = () => {
     const style = getComputedStyle(area);
@@ -143,6 +148,7 @@ export function createEditor(host, hooks) {
   function closeCompletion() {
     completion = null;
     list.hidden = true;
+    area.removeAttribute("aria-activedescendant");
   }
 
   function renderCompletion() {
@@ -151,8 +157,10 @@ export function createEditor(host, hooks) {
       return;
     }
     list.innerHTML = completion.items
-      .map((item, i) => `<li role="option" data-i="${i}" aria-selected="${i === completion.selected}"><span class="k-${item.kind}">${escapeHtml(item.label)}</span><small>${escapeHtml(item.detail || "")}</small></li>`)
+      .map((item, i) => `<li role="option" id="editor-completion-${i}" data-i="${i}" aria-selected="${i === completion.selected}"><span class="k-${item.kind}">${escapeHtml(item.label)}</span><small>${escapeHtml(item.detail || "")}</small></li>`)
       .join("");
+    // The list never takes focus: the text area points at the chosen item.
+    area.setAttribute("aria-activedescendant", `editor-completion-${completion.selected}`);
     const point = caretPoint(completion.from);
     list.style.left = `${point.x + gutter.offsetWidth}px`;
     list.style.top = `${point.y}px`;
@@ -206,7 +214,10 @@ export function createEditor(host, hooks) {
     sync();
     closeCompletion();
   });
-  area.addEventListener("blur", () => setTimeout(closeCompletion, 150));
+  area.addEventListener("blur", () => {
+    tip.hidden = true;
+    setTimeout(closeCompletion, 150);
+  });
   area.addEventListener("keydown", (event) => {
     if (completion) {
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -232,7 +243,14 @@ export function createEditor(host, hooks) {
       event.preventDefault();
       return;
     }
+    if ((event.key === "i" || event.key === "I") && event.ctrlKey && !event.altKey) {
+      // Hover help without a mouse: the word at the cursor.
+      explain(area.selectionStart, caretPoint(area.selectionStart));
+      event.preventDefault();
+      return;
+    }
     if (event.key === "Escape") {
+      tip.hidden = true;
       // The next Tab moves focus out of the editor, for keyboard users.
       tabLeaves = true;
       return;
@@ -262,6 +280,22 @@ export function createEditor(host, hooks) {
     }
   });
 
+  function showTip(markdown, x, y) {
+    tip.innerHTML = escapeHtml(markdown).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\n/g, "<br>");
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+    tip.hidden = false;
+  }
+
+  async function explain(offset, point) {
+    const text = area.value;
+    // Between two words the one before the cursor is meant.
+    const at = offset > 0 && !/[\w.]/.test(text[offset] ?? "") ? offset - 1 : offset;
+    const result = await hooks.hover(text, at);
+    if (result) showTip(result.markdown, point.x + gutter.offsetWidth, point.y + 4);
+    else tip.hidden = true;
+  }
+
   let hoverTimer = 0;
   area.addEventListener("mousemove", (event) => {
     clearTimeout(hoverTimer);
@@ -278,10 +312,7 @@ export function createEditor(host, hooks) {
       if (offset >= end) return;
       const result = await hooks.hover(area.value, offset);
       if (!result) return;
-      tip.innerHTML = escapeHtml(result.markdown).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\n/g, "<br>");
-      tip.style.left = `${event.clientX - host.getBoundingClientRect().left + 12}px`;
-      tip.style.top = `${event.clientY - host.getBoundingClientRect().top + 16}px`;
-      tip.hidden = false;
+      showTip(result.markdown, event.clientX - host.getBoundingClientRect().left + 12, event.clientY - host.getBoundingClientRect().top + 16);
     }, 350);
   });
   area.addEventListener("mouseleave", () => {
@@ -300,6 +331,8 @@ export function createEditor(host, hooks) {
     },
     setDiagnostics(list) {
       diagnostics = list;
+      // The label may have changed language since the editor was made.
+      area.setAttribute("aria-label", label());
       paint();
     },
     // Selects a line, scrolls it into view and focuses the editor.

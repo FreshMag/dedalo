@@ -1,0 +1,807 @@
+{
+  "id": "layout_slanted_door",
+  "seed": 780634312577135790,
+  "bounds": [
+    -2,
+    0,
+    10,
+    10
+  ],
+  "spaces": [
+    {
+      "id": "hub",
+      "kind": "room",
+      "polygon": [
+        [
+          2,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "ne",
+      "kind": "room",
+      "polygon": [
+        [
+          6,
+          0
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          8,
+          2
+        ]
+      ],
+      "bbox": [
+        6,
+        0,
+        10,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "sw",
+      "kind": "room",
+      "polygon": [
+        [
+          0,
+          6
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          -2,
+          10
+        ],
+        [
+          -2,
+          6
+        ]
+      ],
+      "bbox": [
+        -2,
+        6,
+        2,
+        10
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "se",
+      "kind": "room",
+      "polygon": [
+        [
+          8,
+          6
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "bbox": [
+        6,
+        6,
+        10,
+        10
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "spaces": [
+        "ne"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            0
+          ],
+          [
+            10,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          10,
+          6
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "spaces": [
+        "se"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            10,
+            6
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "hub"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          10
+        ]
+      ],
+      "spaces": [
+        "se"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            8
+          ],
+          [
+            6,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          8
+        ],
+        [
+          2,
+          10
+        ]
+      ],
+      "spaces": [
+        "sw"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "hub"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          6
+        ],
+        [
+          -2,
+          10
+        ]
+      ],
+      "spaces": [
+        "sw"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -2,
+            6
+          ],
+          [
+            -2,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "spaces": [
+        "hub"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          8
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "hub",
+        "se"
+      ],
+      "material": "stone",
+      "openings": [
+        "to_se"
+      ],
+      "solid": [
+        [
+          [
+            7.414,
+            6.586
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          0
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "spaces": [
+        "hub"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            0
+          ],
+          [
+            6,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          10,
+          0
+        ]
+      ],
+      "spaces": [
+        "ne"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "sw"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -2,
+            6
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          6
+        ],
+        [
+          10,
+          6
+        ]
+      ],
+      "spaces": [
+        "se"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            6
+          ],
+          [
+            10,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          8
+        ],
+        [
+          6,
+          8
+        ]
+      ],
+      "spaces": [
+        "hub"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            8
+          ],
+          [
+            6,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          -2,
+          10
+        ],
+        [
+          2,
+          10
+        ]
+      ],
+      "spaces": [
+        "sw"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            -2,
+            10
+          ],
+          [
+            2,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          10
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "spaces": [
+        "se"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            6,
+            10
+          ],
+          [
+            10,
+            10
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          6,
+          0
+        ],
+        [
+          8,
+          2
+        ]
+      ],
+      "spaces": [
+        "hub",
+        "ne"
+      ],
+      "material": "stone",
+      "openings": [
+        "to_ne"
+      ],
+      "solid": [
+        [
+          [
+            6.707,
+            0.707
+          ],
+          [
+            8,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          2
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "spaces": [
+        "ne"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            2
+          ],
+          [
+            10,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          2,
+          8
+        ]
+      ],
+      "spaces": [
+        "hub",
+        "sw"
+      ],
+      "material": "stone",
+      "openings": [
+        "to_sw"
+      ],
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            0.354,
+            6.354
+          ]
+        ],
+        [
+          [
+            1.061,
+            7.061
+          ],
+          [
+            2,
+            8
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "to_ne",
+      "from": "hub",
+      "to": "ne",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          6,
+          0
+        ],
+        [
+          6.707,
+          0.707
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "to_sw",
+      "from": "sw",
+      "to": "hub",
+      "type": "archway",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          0.354,
+          6.354
+        ],
+        [
+          1.061,
+          7.061
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "to_se",
+      "from": "hub",
+      "to": "se",
+      "type": "door",
+      "secret": true,
+      "locked": false,
+      "visibility": "dm",
+      "implicit": false,
+      "segment": [
+        [
+          6,
+          8
+        ],
+        [
+          7.414,
+          6.586
+        ]
+      ],
+      "width": 2
+    }
+  ],
+  "elements": [],
+  "notes": [],
+  "reach": {
+    "entrance": "hub",
+    "links": [
+      [
+        "hub",
+        "ne",
+        "to_ne"
+      ],
+      [
+        "sw",
+        "hub",
+        "to_sw"
+      ],
+      [
+        "hub",
+        "se",
+        "to_se"
+      ]
+    ]
+  }
+}

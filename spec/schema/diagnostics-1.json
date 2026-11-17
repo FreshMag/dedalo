@@ -332,6 +332,7 @@
       "type": "object"
     }
   },
+  "$id": "https://freshmag.github.io/dedalo/next/schema/diagnostics-1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "The machine form of a validation result (spec 10.1).",
   "properties": {

@@ -1,0 +1,94 @@
+# Default labels in Italian: the legend, the panel headings, the scale line
+# and the text map. A legend entry still overrides a single label.
+dungeon "language_italian" {
+    name = "La Cantina"
+
+    grid {
+        unit = "1,5 m"
+    }
+
+    render {
+        language = it
+    }
+
+    legend {
+        entry "trap" {
+            label = "Insidia"
+        }
+    }
+
+    room "cantina" {
+        name = "Cantina"
+        shape = rectangle(8, 5)
+
+        feature "torcia" {
+            type = lighting
+            subtype = torch
+            placement { wall = north, offset = 1 }
+        }
+
+        feature "botte" {
+            type = furniture
+            subtype = crate
+            position = [6, 1]
+        }
+
+        feature "forziere" {
+            type = container
+            subtype = chest
+            position = [6, 3]
+        }
+
+        feature "fossa" {
+            type = trap
+            subtype = pit
+            position = [3, 2]
+        }
+
+        entity "chiave" {
+            type = item
+            subtype = key
+            contained_in = "forziere"
+        }
+
+        entity "oste" {
+            type = npc
+            position = [1, 3]
+        }
+    }
+
+    room "dispensa" {
+        name = "Dispensa"
+        shape = square(4)
+        layout { east_of = "cantina" }
+    }
+
+    connection "porta" {
+        from = "cantina"
+        to = "dispensa"
+        type = locked_door
+    }
+
+    connection "scala" {
+        from = "dispensa"
+        type = stairs
+        position = [2, 1]
+    }
+
+    note "avviso" {
+        target = "fossa"
+        text = "La fossa è profonda tre metri."
+    }
+
+    export "dm" {
+        preset = dm
+    }
+
+    export "english" {
+        preset = dm
+
+        render {
+            language = en
+        }
+    }
+}

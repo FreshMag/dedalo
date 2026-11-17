@@ -1,0 +1,86 @@
+{
+  "dungeon": {
+    "id": "diag_levels",
+    "levels": [
+      {
+        "id": "ground"
+      },
+      {
+        "id": "upper"
+      }
+    ],
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "hall",
+        "level": "ground",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            6,
+            4
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "loft",
+        "level": "upper",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hall",
+          "direction": "east"
+        }
+      },
+      {
+        "kind": "corridor",
+        "id": "bridge",
+        "level": "upper",
+        "connects": [
+          "loft",
+          "hall"
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "garden",
+        "shape": {
+          "fn": "square",
+          "args": [
+            5
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "wrong_door",
+        "from": "hall",
+        "to": "loft",
+        "type": "door",
+        "to_position": [
+          1,
+          1
+        ]
+      }
+    ],
+    "exports": [
+      {
+        "name": "missing",
+        "level": "cellar"
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Mistakes with levels: a room outside them, a door and a corridor between",
+        "# two levels, a layout across levels, and an export of a level that is not",
+        "# there."
+      ]
+    }
+  }
+}

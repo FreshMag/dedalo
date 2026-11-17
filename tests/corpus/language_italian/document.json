@@ -1,0 +1,153 @@
+{
+  "dungeon": {
+    "id": "language_italian",
+    "name": "La Cantina",
+    "grid": {
+      "unit": "1,5 m"
+    },
+    "render": {
+      "language": "it"
+    },
+    "legend": {
+      "entries": [
+        {
+          "key": "trap",
+          "label": "Insidia"
+        }
+      ]
+    },
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "cantina",
+        "name": "Cantina",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            8,
+            5
+          ]
+        },
+        "elements": [
+          {
+            "class": "feature",
+            "id": "torcia",
+            "type": "lighting",
+            "subtype": "torch",
+            "placement": {
+              "wall": "north",
+              "offset": 1
+            }
+          },
+          {
+            "class": "feature",
+            "id": "botte",
+            "type": "furniture",
+            "subtype": "crate",
+            "position": [
+              6,
+              1
+            ]
+          },
+          {
+            "class": "feature",
+            "id": "forziere",
+            "type": "container",
+            "subtype": "chest",
+            "position": [
+              6,
+              3
+            ]
+          },
+          {
+            "class": "feature",
+            "id": "fossa",
+            "type": "trap",
+            "subtype": "pit",
+            "position": [
+              3,
+              2
+            ]
+          },
+          {
+            "class": "entity",
+            "id": "chiave",
+            "type": "item",
+            "subtype": "key",
+            "contained_in": "forziere"
+          },
+          {
+            "class": "entity",
+            "id": "oste",
+            "type": "npc",
+            "position": [
+              1,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "room",
+        "id": "dispensa",
+        "name": "Dispensa",
+        "shape": {
+          "fn": "square",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "cantina",
+          "direction": "east"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "porta",
+        "from": "cantina",
+        "to": "dispensa",
+        "type": "door",
+        "properties": {
+          "locked": true
+        }
+      },
+      {
+        "id": "scala",
+        "from": "dispensa",
+        "type": "stairs",
+        "position": [
+          2,
+          1
+        ]
+      }
+    ],
+    "notes": [
+      {
+        "id": "avviso",
+        "target": "fossa",
+        "text": "La fossa è profonda tre metri."
+      }
+    ],
+    "exports": [
+      {
+        "name": "dm",
+        "preset": "dm"
+      },
+      {
+        "name": "english",
+        "preset": "dm",
+        "render": {
+          "language": "en"
+        }
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Default labels in Italian: the legend, the panel headings, the scale line",
+        "# and the text map. A legend entry still overrides a single label."
+      ]
+    }
+  }
+}

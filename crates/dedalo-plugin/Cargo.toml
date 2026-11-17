@@ -16,6 +16,8 @@ serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
 toml.workspace = true
+miniz_oxide = "0.8"
+crc32fast = "1"
 wasmi = { workspace = true, optional = true }
 
 [dev-dependencies]

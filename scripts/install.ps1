@@ -1,6 +1,6 @@
 # Installs the latest dedalo binary for Windows into %LOCALAPPDATA%\dedalo.
 #
-#     irm https://github.com/OWNER/dedalo/releases/latest/download/install.ps1 | iex
+#     irm https://github.com/FreshMag/dedalo/releases/latest/download/install.ps1 | iex
 #
 # $env:DEDALO_REPO (owner/name) changes the repository.
 $ErrorActionPreference = "Stop"

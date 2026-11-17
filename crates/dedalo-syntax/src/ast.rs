@@ -255,8 +255,14 @@ pub fn unquote(raw: &str) -> Result<String, String> {
 pub fn quote(text: &str) -> String {
     let mut out = String::with_capacity(text.len() + 2);
     out.push('"');
-    for c in text.chars() {
+    let mut chars = text.chars().peekable();
+    while let Some(c) = chars.next() {
         match c {
+            // `${` and `%{` are reserved for templates (spec 5.2). Written
+            // as an escape, text that holds them is kept.
+            '$' | '%' if chars.peek() == Some(&'{') => {
+                out.push_str(&format!("\\u{:04x}", c as u32))
+            }
             '\n' => out.push_str("\\n"),
             '\t' => out.push_str("\\t"),
             '"' => out.push_str("\\\""),

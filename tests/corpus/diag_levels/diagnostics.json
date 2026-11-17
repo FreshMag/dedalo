@@ -1,0 +1,122 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 7,
+    "warnings": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "loft",
+      "message": "Room `loft` on level `upper` is placed next to `hall`, which is on level `ground`. Each level is laid out on its own; place a room relative to a room of the same level.",
+      "span": {
+        "start": [
+          14,
+          32
+        ],
+        "end": [
+          14,
+          38
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "bridge",
+      "message": "Corridor `bridge` on level `upper` connects `hall`, which is on level `ground`. A corridor stays on one level; join levels with a connection of type stairs, ladder or trapdoor.",
+      "span": {
+        "start": [
+          18,
+          24
+        ],
+        "end": [
+          18,
+          40
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "UNKNOWN_BLOCK",
+      "element": "upper",
+      "message": "A `level` holds rooms and corridors, but found `feature`. Connections, notes and exports go in the `dungeon` block; features and entities go inside their room.",
+      "span": {
+        "start": [
+          21,
+          9
+        ],
+        "end": [
+          21,
+          23
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "garden",
+      "message": "The room `garden` is outside the `level` blocks. A dungeon with levels keeps every room and corridor inside one; move it into a level, for example `ground`.",
+      "span": {
+        "start": [
+          26,
+          10
+        ],
+        "end": [
+          26,
+          18
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "wrong_door",
+      "message": "Connection `wrong_door` of type `door` joins `hall` on level `ground` to `loft` on level `upper`. Only stairs, ladders and trapdoors join two levels.",
+      "span": {
+        "start": [
+          33,
+          16
+        ],
+        "end": [
+          33,
+          20
+        ]
+      },
+      "suggestion": "Set `type = stairs` and give it a `position` inside the first room."
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "wrong_door",
+      "message": "Connection `wrong_door` sets `to_position`, which marks where stairs, a ladder or a trapdoor arrive in the `to` room. It needs one of those types and a `to`.",
+      "span": {
+        "start": [
+          34,
+          23
+        ],
+        "end": [
+          34,
+          29
+        ]
+      }
+    },
+    {
+      "severity": "error",
+      "code": "UNKNOWN_REFERENCE",
+      "element": "export:missing",
+      "message": "Export `missing` asks for level `cellar`, but no level has that ID. The levels are ground, upper.",
+      "span": {
+        "start": [
+          38,
+          17
+        ],
+        "end": [
+          38,
+          25
+        ]
+      }
+    }
+  ]
+}

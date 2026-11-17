@@ -1,0 +1,55 @@
+# Doors on a round wall by bearing, in degrees clockwise from north.
+dungeon "layout_circle_bearing" {
+    room "hub" {
+        shape = circle(4)
+        layout { position = [0, 0] }
+    }
+
+    room "east" {
+        shape = rectangle(3, 6)
+        layout { east_of = "hub" }
+    }
+
+    room "north" {
+        shape = rectangle(8, 2)
+        layout { north_of = "hub" }
+    }
+
+    room "pool" {
+        shape = ellipse(6, 4)
+        rotation = 90
+        layout { south_of = "hub" }
+    }
+
+    room "cellar" {
+        shape = rectangle(6, 2)
+        layout { south_of = "pool" }
+    }
+
+    connection "east_door" {
+        from = "hub"
+        to = "east"
+        type = door
+        placement { bearing = 70 }
+    }
+
+    connection "north_arch" {
+        from = "hub"
+        to = "north"
+        type = archway
+        placement { bearing = 340, width = 2 }
+    }
+
+    connection "to_pool" {
+        from = "hub"
+        to = "pool"
+        type = door
+    }
+
+    connection "cellar_door" {
+        from = "pool"
+        to = "cellar"
+        type = door
+        placement { bearing = 75 }
+    }
+}

@@ -94,6 +94,15 @@ impl Painters {
             Item::Element(e) => ("element", e.ty.as_str(), e.subtype.as_deref().unwrap_or("")),
             Item::Note(_) => ("note", "", ""),
         };
+        // A symbol file of the theme replaces the painter of its type.
+        if let Item::Element(e) = item
+            && let Some(art) = cx.theme.art(&e.ty, e.subtype.as_deref())
+        {
+            glow(e, cx, scene);
+            let node = art.place(frame(e), e.rotation as f64, cx.theme.color("ink"));
+            push(scene, cx, e, vec![node]);
+            return;
+        }
         if let Some(painter) = self.find(kind, ty, subtype) {
             painter.paint(item, cx, scene);
         }
@@ -525,11 +534,11 @@ fn furniture(item: &Item, cx: &Cx, scene: &mut Scene) {
     push(scene, cx, e, nodes);
 }
 
-fn light(item: &Item, cx: &Cx, scene: &mut Scene) {
-    let Some(e) = element(item) else { return };
+/// The glow of a light source: a radial gradient of `radius` cells,
+/// clipped to the room.
+fn glow(e: &RElement, cx: &Cx, scene: &mut Scene) {
     let (x, y, w, h) = frame(e);
-    let (cx0, cy0, m) = (x + w / 2.0, y + h / 2.0, w.min(h));
-    // A radial gradient of `radius` cells, clipped to the room.
+    let (cx0, cy0) = (x + w / 2.0, y + h / 2.0);
     let room = e
         .space
         .as_ref()
@@ -553,6 +562,13 @@ fn light(item: &Item, cx: &Cx, scene: &mut Scene) {
         };
         scene.push("lighting", halo);
     }
+}
+
+fn light(item: &Item, cx: &Cx, scene: &mut Scene) {
+    let Some(e) = element(item) else { return };
+    let (x, y, w, h) = frame(e);
+    let (cx0, cy0, m) = (x + w / 2.0, y + h / 2.0, w.min(h));
+    glow(e, cx, scene);
     let flame = Some(Paint::solid(cx.theme.color("light")));
     let nodes = match e.subtype.as_deref().unwrap_or("") {
         "brazier" => vec![

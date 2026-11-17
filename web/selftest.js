@@ -52,8 +52,11 @@ async function run() {
 
   // A diagnostic with a fix: apply it from the problems panel.
   setText(original.replace("placement { wall = south, offset = 2 }", "placement { wall = south, offset = 2 }\n            position = [4, 3]").replace('position = [4, 3]\n        }\n    }', 'position = [9, 3]\n        }\n    }'));
-  await until(() => $("#problems button"), "a fix button");
-  $("#problems button")?.click();
+  await until(() => $("#problems button.fix"), "a fix button");
+  // Every problem is a button that goes to its line.
+  $("#problems button.jump")?.click();
+  expect(doc.activeElement === area && area.selectionStart !== area.selectionEnd, "a problem's button selects its line in the editor");
+  $("#problems button.fix")?.click();
   await until(() => $("#status").textContent === "No problems", "the fix to apply");
 
   // Completion after `type = ` inside a feature.
@@ -70,6 +73,14 @@ async function run() {
   area.dispatchEvent(new win.KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
   area.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
   expect(area.value.includes("subtype = brazier"), "Enter inserts the selected completion");
+
+  // Hover help from the keyboard: Control+I explains the word at the cursor.
+  const word = area.value.indexOf("shape = rectangle") + 2;
+  area.setSelectionRange(word, word);
+  area.dispatchEvent(new win.KeyboardEvent("keydown", { key: "i", ctrlKey: true, bubbles: true }));
+  await until(() => !$(".hover").hidden && $(".hover").textContent.length > 10, "hover help from the keyboard");
+  area.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  expect($(".hover").hidden, "Escape closes the hover help");
 
   // Player audience hides the trap and the creature.
   const preset = $("#preset");
@@ -112,6 +123,96 @@ async function run() {
   setText(header + original.replace('name = "The Crypt"', themed));
   await until(() => asked.includes("hand_drawn"), "the consent prompt for the plugin");
   await until(() => $("#canvas svg")?.outerHTML.includes("#efe3c8") && $("#status").textContent === "No problems", "the sepia preview", 30000);
+
+  // ----- levels ---------------------------------------------------------------
+  expect($("#level-field").hidden, "the level picker is hidden for a dungeon on one level");
+  const tower = await (await fetch("../tests/corpus/levels_tower/input.dedalo")).text();
+  setText(tower);
+  await until(() => !$("#level-field").hidden && $("#level").options.length === 4, "the level picker");
+  await until(() => $("#textmap").textContent.split("\n")[1]?.includes("   #"), "all levels side by side");
+  const whole = $("#canvas svg").getAttribute("width");
+  $("#level").value = "upper";
+  $("#level").dispatchEvent(new Event("change"));
+  await until(() => $("#canvas svg").getAttribute("width") !== whole, "the map of one level");
+  expect(!$("#textmap").textContent.includes("*"), "one level leaves out the light of another");
+
+  // ----- Italian ----------------------------------------------------------------
+  const language = $("#language");
+  language.value = "it";
+  language.dispatchEvent(new Event("change"));
+  await until(() => $("#status").textContent === "Nessun problema", "the Italian status line");
+  expect(doc.documentElement.lang === "it", "the page says it is in Italian");
+  expect($("#open").textContent === "Apri" && $("#tab-problems").textContent === "Problemi", "the controls are in Italian");
+  expect($("#level").options[0].textContent === "Tutti i livelli", "lists built by script are in Italian");
+  expect($("#textmap").textContent.includes("porta"), "default map labels follow the page language");
+  setText(tower.replace('name = "The Leaning Tower"', 'name = "The Leaning Tower"\n    render { language = en }'));
+  await until(() => $("#textmap").textContent.includes("door"), "the document's own language wins");
+  language.value = "en";
+  language.dispatchEvent(new Event("change"));
+  await until(() => $("#status").textContent === "No problems", "English again");
+  const { keysByLanguage } = await import("./i18n.js");
+  const keys = keysByLanguage();
+  expect(keys.en.join() === keys.it.join(), "both languages have the same keys");
+  for (const el of doc.querySelectorAll("[data-i18n], [data-i18n-title], [data-i18n-aria-label]")) {
+    for (const key of [el.dataset.i18n, el.dataset.i18nTitle, el.dataset.i18nAriaLabel]) {
+      if (key && !keys.en.includes(key)) failures.push(`the page uses the unknown text key ${key}`);
+    }
+  }
+
+  // ----- accessibility ------------------------------------------------------------
+  // Every control has a name.
+  const named = (el) => {
+    const labelled = (el.getAttribute("aria-labelledby") || "").split(" ").map((id) => doc.getElementById(id)?.textContent || "").join("");
+    return (el.getAttribute("aria-label") || labelled || el.labels?.[0]?.textContent || el.textContent || el.title || "").trim();
+  };
+  for (const el of doc.querySelectorAll("button, select, textarea, input:not([type=hidden]):not([hidden]), a[href], [role=tab], [role=tabpanel], [tabindex='0']")) {
+    if (!named(el)) failures.push(`a control has no accessible name: ${el.outerHTML.slice(0, 80)}`);
+  }
+  expect($("#canvas svg").getAttribute("role") === "img" && $("#canvas svg").getAttribute("aria-label"), "the map is one labelled image");
+  // Tabs: one tab stop, arrows move, the panel follows.
+  const tabs = [...doc.querySelectorAll('[role="tab"]')];
+  expect(tabs.filter((tab) => tab.tabIndex === 0).length === 1, "the tab list is one tab stop");
+  tabs[0].focus();
+  tabs[0].dispatchEvent(new win.KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+  expect(doc.activeElement === tabs[1] && tabs[1].getAttribute("aria-selected") === "true" && !$("#outline").hidden && $("#problems").hidden, "the right arrow moves to the next tab");
+  expect($("#outline button.jump"), "outline entries are buttons");
+  tabs[1].dispatchEvent(new win.KeyboardEvent("keydown", { key: "Home", bubbles: true }));
+  expect(tabs[0].getAttribute("aria-selected") === "true", "Home goes to the first tab");
+  // The preview answers the keyboard.
+  const before = $("#canvas").style.transform;
+  $("#viewport").dispatchEvent(new win.KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
+  $("#viewport").dispatchEvent(new win.KeyboardEvent("keydown", { key: "+", bubbles: true }));
+  expect($("#canvas").style.transform !== before, "arrow keys and plus move and zoom the preview");
+  // Escape then Tab leaves the editor instead of indenting.
+  area.focus();
+  const length = area.value.length;
+  area.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  const tab = new win.KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true });
+  area.dispatchEvent(tab);
+  expect(!tab.defaultPrevented && area.value.length === length, "Escape then Tab leaves the editor");
+  expect(area.getAttribute("aria-describedby") === "editor-help" && $("#editor-help").textContent.includes("Escape"), "the way out of the editor is described");
+  // The completion list is tied to the text area.
+  expect(area.getAttribute("aria-controls") === "editor-completions" && $("#editor-completions").getAttribute("role") === "listbox", "the completion list is announced with the editor");
+
+  // ----- a zipped package -----------------------------------------------------------
+  // `dedalo plugin pack plugins/blueprint -o web/test-package.dedalopkg`
+  const packed = await fetch("test-package.dedalopkg").catch(() => null);
+  if (packed && packed.ok) {
+    let question = "";
+    win.confirm = (text) => {
+      question = text;
+      return true;
+    };
+    $("#plugin-url").value = new URL("test-package.dedalopkg", location.href).href;
+    $("#plugin-url-form").dispatchEvent(new win.Event("submit", { cancelable: true }));
+    await until(() => $("#plugin-status").textContent.includes("blueprint"), "the package from an address", 30000);
+    expect(question.includes("blueprint") && question.includes("sha256:") && question.includes(location.origin), `the consent prompt names the plugin, its origin and its hash: ${question}`);
+    expect([...doc.querySelectorAll("#plugin-list li")].some((li) => li.textContent.includes("blueprint")), "the loaded package is listed");
+    setText(header.replace("hand_drawn", "blueprint").replace("^1.2", "^1") + original.replace('name = "The Crypt"', themed.replace("hand_drawn.sepia", "blueprint.default")));
+    await until(() => $("#canvas svg")?.outerHTML.includes("#1d4e89") && $("#status").textContent === "No problems", "the blueprint preview", 30000);
+  } else {
+    failures.push("web/test-package.dedalopkg is missing: run `dedalo plugin pack plugins/blueprint -o web/test-package.dedalopkg`");
+  }
 
   expect(errors.length === 0, `page errors: ${errors.join("; ")}`);
 }

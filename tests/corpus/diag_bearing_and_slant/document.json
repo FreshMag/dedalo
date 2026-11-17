@@ -1,0 +1,131 @@
+{
+  "dungeon": {
+    "id": "diag_bearing_and_slant",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "hub",
+        "shape": {
+          "fn": "circle",
+          "args": [
+            4
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "east",
+        "shape": {
+          "fn": "rectangle",
+          "args": [
+            3,
+            4
+          ]
+        },
+        "layout": {
+          "adjacent_to": "hub",
+          "direction": "east"
+        }
+      },
+      {
+        "kind": "room",
+        "id": "attic",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                4
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "position": [
+            20,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "loft",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                4
+              ],
+              [
+                0,
+                4
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "position": [
+            20,
+            0
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "wrong_side",
+        "from": "hub",
+        "to": "east",
+        "type": "door",
+        "placement": {
+          "bearing": 200
+        }
+      },
+      {
+        "id": "square_bearing",
+        "from": "east",
+        "to": "hub",
+        "type": "door",
+        "placement": {
+          "bearing": 270
+        }
+      },
+      {
+        "id": "past_the_end",
+        "from": "attic",
+        "to": "loft",
+        "type": "door",
+        "placement": {
+          "offset": 5
+        }
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# A bearing that faces no room, a bearing on a square, and an offset past",
+        "# the end of a slanted wall."
+      ]
+    }
+  }
+}

@@ -7,7 +7,10 @@ members = ["crates/*", "plugins/hand_drawn", "plugins/uvtt"]
 version = "0.0.1"
 edition = "2024"
 rust-version = "1.88"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
+authors = ["Francesco Magnani"]
+repository = "https://github.com/FreshMag/dedalo"
+homepage = "https://freshmag.github.io/dedalo/next/"
 
 [workspace.dependencies]
 rowan = "0.16"

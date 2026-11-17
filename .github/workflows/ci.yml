@@ -51,6 +51,7 @@ jobs:
           cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_hand_drawn.wasm plugins/hand_drawn/hand_drawn.wasm
           cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_uvtt.wasm plugins/uvtt/uvtt.wasm
           cargo run -p dedalo-cli --locked -- plugin list --plugin plugins --json > plugins/index.json
+          cargo run -p dedalo-cli --locked -- plugin pack plugins/blueprint -o web/test-package.dedalopkg
           cp target/wasm32-unknown-unknown/wasm/dedalo_wasm.wasm web/dedalo.wasm
           cp target/wasm32-unknown-unknown/wasm/dedalo_wasm_export.wasm web/dedalo-export.wasm
       - name: Size budgets (spec 14.3)

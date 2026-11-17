@@ -28,6 +28,7 @@ dungeon "crypt" {
 dedalo render crypt.dedalo --format png                 # the DM map
 dedalo render crypt.dedalo --preset player --format pdf # what the players may see
 dedalo inspect crypt.dedalo --text-map                  # the map as text
+dedalo render tower.dedalo --level upper --lang it      # one level, Italian labels
 dedalo validate crypt.dedalo --fix                      # apply the fixes diagnostics carry
 dedalo mcp                                              # serve agents over MCP
 ```
@@ -43,13 +44,14 @@ Work follows the milestones of specification section 17.
 | Milestone | State |
 | --- | --- |
 | M0 Walking skeleton | Done |
-| M1 Language | Done. Round-trip laws are checked on the corpus and on mutated input rather than with `proptest` generators |
-| M2 Geometry | Done, with 35 golden layout and feature cases. Not done: `bearing` on circles, and doors on diagonal polygon edges |
-| M3 Rendering and export | Done: views, presets, the `classic` theme, text as outlines from bundled fonts, SVG, PNG, PDF, rotation, legend, notes. Not done: SVG symbol files in themes and their sanitiser |
-| M4 Web editor | Done, without a build step: plain JavaScript instead of Vite, Svelte and CodeMirror (see below) |
+| M1 Language | Done. The round-trip laws are checked on the corpus and on generated documents |
+| M2 Geometry | Done, with golden layout and feature cases, including doors on slanted polygon edges and `bearing` on round walls |
+| M3 Rendering and export | Done: views, presets, the `classic` theme, text as outlines from bundled fonts, SVG, PNG, PDF, rotation, legend, notes, SVG symbol files in themes with their sanitiser, labels in English and Italian |
+| M4 Web editor | Done, without a build step: plain JavaScript instead of Vite, Svelte and CodeMirror (see below). In English and Italian; audited for accessibility (see [the audit](docs/accessibility.md)) |
 | M5 Agent interface | Done: edit operations, `--json` everywhere, MCP over stdio and HTTP, guide, skill, `llms.txt`, authoring schema, the evaluation suite. The suite has not been run against models yet |
-| M6 Plugin platform | Done: packs, templates, the WebAssembly host in the binary (wasmi) and the browser, `dedalo-pdk`, six extension points, lockfile, plugin commands, the web plugins panel, three reference plugins. Packages are folders; zipped `.dedalopkg` files and URL installs are not supported yet |
-| M7 Hardening | Partly done: `ellipse`, `l_shape`, tabletop PDF printing, fuzz targets, performance budgets, release workflow, install scripts, documentation. Not done: code signing (a product decision), npm and crates.io packages, Homebrew, an accessibility audit |
+| M6 Plugin platform | Done: packs, templates, the WebAssembly host in the binary (wasmi) and the browser, `dedalo-pdk`, six extension points, lockfile, plugin commands, the web plugins panel, three reference plugins, zipped `.dedalopkg` packages and installs from an address |
+| M7 Hardening | Partly done: `ellipse`, `l_shape`, tabletop PDF printing, fuzz targets, performance budgets, release workflow, install scripts, documentation, the accessibility audit. Not done: publishing to crates.io, npm and Homebrew, which need the owner's accounts; a screen-reader test of the editor by a person |
+| After 1.0, brought forward | Multi-level dungeons: `level` blocks, stairs between levels, one map per level or all side by side |
 
 ## Repository
 
@@ -75,7 +77,7 @@ tests/corpus/          golden inputs and expected outputs, byte for byte
 tests/perf/            50- and 100-room performance samples
 eval/                  the agent evaluation suite
 fuzz/                  cargo-fuzz targets
-docs/                  specification, guide, tutorial, cookbook, plugin guide
+docs/                  specification, guide, tutorial, cookbook, plugin guide, accessibility audit
 ```
 
 ## Building and testing
@@ -103,13 +105,16 @@ cp target/wasm32-unknown-unknown/wasm/dedalo_wasm_export.wasm web/dedalo-export.
 cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_hand_drawn.wasm plugins/hand_drawn/hand_drawn.wasm
 cp target/wasm32-unknown-unknown/wasm/dedalo_plugin_uvtt.wasm plugins/uvtt/uvtt.wasm
 cargo run -p dedalo-cli -- plugin list --plugin plugins --json > plugins/index.json
+cargo run -p dedalo-cli -- plugin pack plugins/blueprint -o web/test-package.dedalopkg
 cargo run -p dedalo-cli -- skill export web/skill --llms-txt web/llms.txt
 python web/serve.py           # then open http://127.0.0.1:8731/web/
 ```
 
 `bash web/run-browser-check.sh golden.html` runs the whole corpus through
 the WebAssembly modules in headless Chrome and compares every output with
-the native bytes; `selftest.html` drives the editor like a user. The editor
+the native bytes; `selftest.html` drives the editor like a user, keyboard
+and Italian included. Run them after `cargo test`, and write the plugin
+index again first: the tests rebuild the reference plugins. The editor
 is plain JavaScript with no build step, a departure from the Vite, Svelte and
 CodeMirror stack of spec section 4: it keeps the site dependency-free and
 offline, and all language knowledge still comes from the core.
@@ -119,16 +124,28 @@ offline, and all language knowledge still comes from the core.
 See [Writing plugins](docs/plugins.md). `dedalo plugin check PATH` runs the
 conformance suite.
 
-## Decisions waiting for the product owner
+## Decisions
 
-Specification section 19.2 lists ten open questions. The code follows the
-document's proposals meanwhile: Rust, Y growing south, stairs as marked
-exits, black-on-white `classic`, English labels, the extension `.dedalo`,
-unsigned binaries. The crates declare `MIT OR Apache-2.0`, as proposed, but
-the repository has no licence file until that choice is confirmed. The
-bundled Noto Sans fonts are under the SIL Open Font License
+The product owner answered the open questions of specification section 19.2:
+
+| Question | Decision |
+| --- | --- |
+| Implementation language | Rust |
+| Y axis | Grows south |
+| Vertical connections | Multi-level support now: `level` blocks, with stairs, ladders and trapdoors joining levels |
+| Default look | Black on white for `classic` |
+| Languages | English and Italian, for the editor and for default legend labels |
+| Licence | Apache-2.0 |
+| Signing | Binaries stay unsigned; releases carry checksums and build-provenance attestations |
+| Names and addresses | Owner Francesco Magnani (`FreshMag`); the site is `https://freshmag.github.io/dedalo/next/`, where the schemas are served under `schema/`; the file extension is `.dedalo` |
+| Evaluation gate | 85% of tasks on the first attempt and 95% within three rounds, for 0.1 |
+
+The bundled Noto Sans fonts are under the SIL Open Font License
 (`crates/dedalo-scene/fonts/OFL.txt`).
 
 The MCP server is hand-written, the fallback of spec risk 6, rather than
 built on the rmcp SDK: it answers both the stateless requests of revision
 2026-07-28 and the `initialize` handshake of earlier revisions.
+
+`dedalo plugin add` with an address downloads through the system's `curl`
+instead of a built-in HTTP client, which keeps TLS out of the binary.

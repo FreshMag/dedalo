@@ -105,6 +105,10 @@ pub fn geometry_limits(d: &Dungeon) -> Vec<Diagnostic> {
             .iter()
             .flatten()
             .for_each(|n| range(&c.id, "position", *n, MAX_COORDINATE));
+        c.to_position
+            .iter()
+            .flatten()
+            .for_each(|n| range(&c.id, "to_position", *n, MAX_COORDINATE));
         if let Some(p) = &c.placement {
             p.offset
                 .iter()
@@ -131,6 +135,7 @@ enum Kind {
     Entity,
     Connection,
     Note,
+    Level,
 }
 
 impl Kind {
@@ -142,6 +147,7 @@ impl Kind {
             Kind::Entity => "entity",
             Kind::Connection => "connection",
             Kind::Note => "note",
+            Kind::Level => "level",
         }
     }
 
@@ -152,6 +158,7 @@ impl Kind {
 
 struct Checker<'a> {
     cat: &'a Catalog,
+    d: &'a Dungeon,
     ids: BTreeMap<&'a str, Kind>,
     out: Vec<Diagnostic>,
 }
@@ -160,12 +167,14 @@ pub fn check(doc: &Document, cat: &Catalog) -> Vec<Diagnostic> {
     let d = &doc.dungeon;
     let mut c = Checker {
         cat,
+        d,
         ids: BTreeMap::new(),
         out: Vec::new(),
     };
 
     // One ID namespace per dungeon (spec 5.6).
     let mut declared: Vec<(&str, Kind)> = Vec::new();
+    declared.extend(d.levels.iter().map(|l| (l.id.as_str(), Kind::Level)));
     for space in &d.spaces {
         declared.push((
             &space.id,
@@ -226,6 +235,7 @@ pub fn check(doc: &Document, cat: &Catalog) -> Vec<Diagnostic> {
 
     for space in &d.spaces {
         c.space(space);
+        c.space_level(space);
         for el in &space.elements {
             c.element(el);
         }
@@ -379,7 +389,84 @@ impl<'a> Checker<'a> {
         );
     }
 
+    /// Whether two spaces are on different levels. Unknown IDs are left to
+    /// the reference checks.
+    fn levels_apart(&self, a: &str, b: &str) -> Option<(&'a str, &'a str)> {
+        let (la, lb) = (self.d.level_of(a)?, self.d.level_of(b)?);
+        (la != lb).then_some((la, lb))
+    }
+
+    /// A dungeon with levels keeps every space on one of them, and a
+    /// layout or a corridor stays on one level.
+    fn space_level(&mut self, s: &Space) {
+        let kind = s.kind.as_str();
+        match &s.level {
+            None if !self.d.levels.is_empty() => {
+                let first = &self.d.levels[0].id;
+                self.invalid(
+                    &s.id,
+                    "",
+                    format!("The {kind} `{}` is outside the `level` blocks. A dungeon with levels keeps every room and corridor inside one; move it into a level, for example `{first}`.", s.id),
+                );
+            }
+            Some(level) if !self.d.levels.iter().any(|l| l.id == *level) => {
+                let known: Vec<&str> = self.d.levels.iter().map(|l| l.id.as_str()).collect();
+                let message = format!(
+                    "The {kind} `{}` is on level `{level}`, but no level has that ID.{}",
+                    s.id,
+                    did_you_mean(level, known)
+                );
+                self.out.push(
+                    Diagnostic::new(Code::UnknownReference, message)
+                        .element(s.id.clone())
+                        .at("level"),
+                );
+            }
+            _ => {}
+        }
+        if let Some(target) = s.layout.as_ref().and_then(|l| l.adjacent_to.as_ref())
+            && let Some((own, other)) = self.levels_apart(&s.id, target)
+        {
+            self.invalid(
+                &s.id,
+                "layout.adjacent_to",
+                format!("Room `{}` on level `{own}` is placed next to `{target}`, which is on level `{other}`. Each level is laid out on its own; place a room relative to a room of the same level.", s.id),
+            );
+        }
+        for target in &s.connects {
+            if let Some((own, other)) = self.levels_apart(&s.id, target) {
+                self.invalid(
+                    &s.id,
+                    "connects",
+                    format!("Corridor `{}` on level `{own}` connects `{target}`, which is on level `{other}`. A corridor stays on one level; join levels with a connection of type stairs, ladder or trapdoor.", s.id),
+                );
+            }
+        }
+    }
+
     fn connection(&mut self, c: &Connection) {
+        let vertical = VERTICAL_TYPES.contains(&c.ty.as_str());
+        if let Some(to) = &c.to
+            && !vertical
+            && let Some((own, other)) = self.levels_apart(&c.from, to)
+        {
+            self.out.push(
+                Diagnostic::new(
+                    Code::InvalidValue,
+                    format!("Connection `{}` of type `{}` joins `{}` on level `{own}` to `{to}` on level `{other}`. Only stairs, ladders and trapdoors join two levels.", c.id, c.ty, c.from),
+                )
+                .element(c.id.clone())
+                .at("type")
+                .suggest("Set `type = stairs` and give it a `position` inside the first room.")
+            );
+        }
+        if c.to_position.is_some() && !(vertical && c.to.is_some()) {
+            self.invalid(
+                &c.id,
+                "to_position",
+                format!("Connection `{}` sets `to_position`, which marks where stairs, a ladder or a trapdoor arrive in the `to` room. It needs one of those types and a `to`.", c.id),
+            );
+        }
         self.reference(&c.id, "from", &c.from, "a room or corridor", Kind::is_space);
         if let Some(to) = &c.to {
             if *to == c.from {
@@ -632,6 +719,29 @@ impl<'a> Checker<'a> {
                     .push(Diagnostic::new(Code::DuplicateId, message).element(owner.clone()));
             }
             names.push(&ex.name);
+            if let Some(level) = &ex.level
+                && !d.levels.iter().any(|l| l.id == *level)
+            {
+                let known: Vec<&str> = d.levels.iter().map(|l| l.id.as_str()).collect();
+                let message = if known.is_empty() {
+                    format!(
+                        "Export `{}` asks for level `{level}`, but the dungeon declares no levels. Remove `level`, or group the rooms in `level` blocks.",
+                        ex.name
+                    )
+                } else {
+                    format!(
+                        "Export `{}` asks for level `{level}`, but no level has that ID.{} The levels are {}.",
+                        ex.name,
+                        did_you_mean(level, known.iter().copied()),
+                        known.join(", ")
+                    )
+                };
+                self.out.push(
+                    Diagnostic::new(Code::UnknownReference, message)
+                        .element(owner.clone())
+                        .at("level"),
+                );
+            }
             if let Some(format) = &ex.format
                 && !FORMATS.contains(&format.as_str())
                 && !format.contains('.')

@@ -279,7 +279,29 @@ impl Writer<'_> {
         }
         let cat = self.cat;
         self.properties(cm, &d.properties, &|n| cat.common.properties.get(n));
-        for space in &d.spaces {
+        for level in &d.levels {
+            let cm = &level.comments;
+            self.open(cm, &format!("level {}", quote(&level.id)));
+            if let Some(name) = &level.name {
+                self.text_attr(cm, "name", name);
+            }
+            for space in d
+                .spaces
+                .iter()
+                .filter(|s| s.level.as_ref() == Some(&level.id))
+            {
+                self.space(space);
+            }
+            self.close(cm);
+        }
+        // Spaces outside the declared levels: all of them in a dungeon on
+        // one level.
+        let known = |s: &Space| {
+            s.level
+                .as_ref()
+                .is_some_and(|l| d.levels.iter().any(|level| level.id == *l))
+        };
+        for space in d.spaces.iter().filter(|s| !known(s)) {
             self.space(space);
         }
         for el in &d.elements {
@@ -310,6 +332,11 @@ impl Writer<'_> {
             cm,
             &format!("{path}.room_ids"),
             r.room_ids.map(|v| v.to_string()),
+        );
+        self.opt(
+            cm,
+            &format!("{path}.language"),
+            r.language.map(|v| v.as_str().to_string()),
         );
         for (id, options) in &r.plugins {
             self.line(&format!("plugin {} {{", quote(id)));
@@ -486,6 +513,7 @@ impl Writer<'_> {
         self.attr(cm, "type", symbol(&c.ty));
         self.opt(cm, "secret", c.secret.map(|v| v.to_string()));
         self.opt(cm, "position", c.position.as_ref().map(point));
+        self.opt(cm, "to_position", c.to_position.as_ref().map(point));
         self.flags(cm, c.visibility, &c.reveal_when, &c.tags);
         if let Some(p) = &c.placement {
             self.open_sub(cm, "placement");
@@ -534,6 +562,7 @@ impl Writer<'_> {
         );
         self.opt(cm, "cell_px", e.cell_px.map(|v| v.to_string()));
         self.opt(cm, "rotation", e.rotation.map(|v| v.to_string()));
+        self.opt(cm, "level", e.level.as_deref().map(quote));
         for (name, list) in [
             ("revealed", &e.revealed),
             ("include", &e.include),

@@ -17,6 +17,14 @@ pub use value::{Num, Value};
 /// The schemas this crate publishes (spec 6.4).
 pub const SCHEMA_NAMES: &[&str] = &["document", "ops", "diagnostics"];
 
+/// The address of the site that serves the editor and the schemas.
+pub const SITE: &str = "https://freshmag.github.io/dedalo/next/";
+
+/// The versioned address a published schema is served at.
+pub fn schema_url(name: &str) -> String {
+    format!("{SITE}schema/{name}-{LANGUAGE_VERSION}.json")
+}
+
 /// A published JSON Schema, generated from the Rust types.
 pub fn schema(name: &str) -> Option<serde_json::Value> {
     let schema = match name {
@@ -25,7 +33,11 @@ pub fn schema(name: &str) -> Option<serde_json::Value> {
         "diagnostics" => schemars::schema_for!(Report),
         _ => return None,
     };
-    serde_json::to_value(schema).ok()
+    let mut schema = serde_json::to_value(schema).ok()?;
+    schema
+        .as_object_mut()?
+        .insert("$id".to_string(), schema_url(name).into());
+    Some(schema)
 }
 
 /// The `authoring` profile of the document schema (spec 6.4 and 13.5): a
@@ -88,6 +100,12 @@ pub fn authoring_schema() -> serde_json::Value {
         obj.insert(
             "$schema".to_string(),
             Value::String("https://json-schema.org/draft/2020-12/schema".to_string()),
+        );
+        obj.insert(
+            "$id".to_string(),
+            Value::String(format!(
+                "{SITE}schema/document-{LANGUAGE_VERSION}.authoring.json"
+            )),
         );
         obj.insert(
             "title".to_string(),

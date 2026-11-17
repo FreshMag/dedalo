@@ -16,6 +16,7 @@ use dedalo_catalog::Catalog;
 use dedalo_render::{Painters, Theme};
 
 pub mod manifest;
+pub mod package;
 pub mod points;
 pub mod runtime;
 pub mod version;
@@ -227,6 +228,17 @@ impl Registry {
             let mut theme = Theme::from_toml(&text)
                 .map_err(|e| format!("the theme `{id}.{name}` is not valid: {e}"))?;
             theme.theme.id = format!("{id}.{name}");
+            // Symbol files are named from the theme file's folder, or from
+            // the root of the package.
+            let folder = file.file.rsplit_once('/').map(|(dir, _)| dir);
+            theme
+                .load_symbols(&|path| {
+                    folder
+                        .and_then(|dir| plugin.files.get(&format!("{dir}/{path}")))
+                        .or_else(|| plugin.files.get(path))
+                        .cloned()
+                })
+                .map_err(|e| format!("the theme `{id}.{name}` is not valid: {e}"))?;
             // What a theme leaves out comes from `classic`.
             let base = Theme::classic();
             for (k, v) in base.palette {

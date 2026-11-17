@@ -1,0 +1,44 @@
+# A bearing that faces no room, a bearing on a square, and an offset past
+# the end of a slanted wall.
+dungeon "diag_bearing_and_slant" {
+    room "hub" {
+        shape = circle(4)
+        layout { position = [0, 0] }
+    }
+
+    room "east" {
+        shape = rectangle(3, 4)
+        layout { east_of = "hub" }
+    }
+
+    room "attic" {
+        shape = polygon([[0, 0], [4, 0], [4, 4]])
+        layout { position = [20, 0] }
+    }
+
+    room "loft" {
+        shape = polygon([[0, 0], [4, 4], [0, 4]])
+        layout { position = [20, 0] }
+    }
+
+    connection "wrong_side" {
+        from = "hub"
+        to = "east"
+        type = door
+        placement { bearing = 200 }
+    }
+
+    connection "square_bearing" {
+        from = "east"
+        to = "hub"
+        type = door
+        placement { bearing = 270 }
+    }
+
+    connection "past_the_end" {
+        from = "attic"
+        to = "loft"
+        type = door
+        placement { offset = 5 }
+    }
+}

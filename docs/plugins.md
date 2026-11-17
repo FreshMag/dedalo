@@ -11,7 +11,9 @@ API is version 1; it is unstable until Dedalo 1.0.
 
 ## The package
 
-A plugin is a folder with `dedalo-plugin.toml` at its root.
+A plugin is a folder with `dedalo-plugin.toml` at its root, or that folder
+zipped as a `.dedalopkg` file. `dedalo plugin pack FOLDER` writes the zipped
+form; a folder and its zipped form have the same hash.
 
 ```toml
 [plugin]
@@ -20,7 +22,7 @@ name = "Parchment"
 version = "1.0.0"
 api = 1
 dedalo = ">=0.2"
-license = "MIT"
+license = "Apache-2.0"
 
 [theme.default]           # used as `theme = parchment.default`
 file = "themes/default.toml"
@@ -69,6 +71,43 @@ does not name have no effect on it.
 A theme is the format of `crates/dedalo-render/classic.toml`: palette,
 stroke widths, text sizes and marker symbols. Whatever a theme leaves out
 comes from `classic`.
+
+### Symbols
+
+The `[symbols]` table maps a type, or a type and subtype, to how it is
+drawn: a letter in a frame, or an SVG file of the package.
+
+```toml
+[symbols]
+"trap"             = { glyph = "T", frame = "diamond" }   # diamond, circle, square or none
+"lighting.brazier" = "symbols/brazier.svg"
+"furniture.table"  = "symbols/table.svg"
+```
+
+A symbol file replaces the built-in drawing of its type, in the map and in
+the legend. It is fitted into the element's footprint, centred, and turns
+with the element's `rotation`. The path is relative to the theme file's
+folder or to the root of the package.
+
+Symbol files are untrusted, so they pass a sanitiser that keeps plain
+geometry and drops everything else:
+
+- Kept: `svg`, `g`, `path`, `rect`, `circle`, `ellipse`, `line`, `polyline`
+  and `polygon`, with their geometry, `transform`, `fill`, `stroke`,
+  `stroke-width`, `stroke-linecap`, `stroke-dasharray`, `opacity` and
+  `fill-opacity`.
+- Dropped, with whatever they contain: scripts, styles, event attributes,
+  links and every other external reference, images, text, `use`, filters,
+  gradients, animation and foreign objects.
+- Colours are `none`, `currentColor`, `black`, `white` or hex. A shape with
+  no `fill` and every `currentColor` take the theme's `ink`, so one file
+  suits a light and a dark theme.
+- The `svg` element needs a `viewBox`. A file is at most 64 KB, 500
+  elements and 16 levels deep. Arcs are drawn without their x-axis rotation.
+
+A file the sanitiser cannot read at all, or that has nothing left to draw,
+fails the load of the package with the reason. The `blueprint` reference
+plugin has two symbols to copy from.
 
 ## Code plugins
 
@@ -137,9 +176,17 @@ more than 200,000 nodes, or coordinates beyond a million cells are refused.
 
 ```
 dedalo plugin check path/to/parchment      # the conformance suite
+dedalo plugin pack path/to/parchment       # writes parchment-1.0.0.dedalopkg
 dedalo plugin add path/to/parchment        # into .dedalo/plugins, recorded in dedalo.lock
+dedalo plugin add parchment-1.0.0.dedalopkg
+dedalo plugin add https://example.org/parchment-1.0.0.dedalopkg --sha256 sha256:...
 dedalo render map.dedalo --plugin path/to/parchment
 ```
+
+`dedalo plugin add` with an address is the only command that touches the
+network; it downloads with the system's `curl`. Rendering never downloads.
+`--sha256` takes the hash `dedalo plugin pack` and `dedalo plugin list`
+print, and installs nothing when the package has another.
 
 `dedalo plugin check` loads the package, runs every theme and exporter on an
 example dungeon twice, and fails on any difference or on element IDs in a
@@ -147,9 +194,15 @@ player map. The lockfile records each plugin's hash; a changed package is
 refused until `--update-lock`.
 
 In the web editor, the Plugins panel loads reviewed plugins from the site's
-index, or a package folder from your disk after you confirm.
+index, or, after you confirm, a package folder or a `.dedalopkg` file from
+your disk, or a `.dedalopkg` from an address. Before loading from an address
+the editor shows the plugin's name, its origin and its hash. It remembers
+the address and the hash, and asks again if the package has changed. A
+shared link carries the addresses of such plugins, and whoever opens it is
+asked before any of them is loaded. The server at that address must allow
+cross-origin requests.
 
 ## Reference plugins
 
-`plugins/` holds three: `blueprint` (a theme pack), `hand_drawn` (a scene
+`plugins/` holds three: `blueprint` (a theme pack with SVG symbols), `hand_drawn` (a scene
 pass, a door painter and a theme) and `uvtt` (an exporter to Universal VTT).

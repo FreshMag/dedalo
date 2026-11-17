@@ -25,10 +25,15 @@ function fromBase64(text) {
 export async function runGolden(core, callExport, readText, readBytes) {
   const failures = [];
   // The plugin case needs the reference plugins, run by the browser's engine.
+  // The plugin index lists every file of each package, so that the page
+  // loads the package whose hash the index states.
+  const listed = JSON.parse(await readText("plugins/index.json"));
   for (const id of REFERENCE_PLUGINS) {
-    const files = await fetchPackage(null, (path) => readBytes(`plugins/${id}/${path}`));
+    const entry = listed.find((p) => p.id === id);
+    const files = await fetchPackage(null, (path) => readBytes(`plugins/${id}/${path}`), entry?.files);
     const loaded = await core.loadPlugin(files);
     if (!loaded.ok) failures.push(`plugin ${id}: ${loaded.error}`);
+    else if (entry && loaded.plugin.sha256 !== entry.sha256) failures.push(`plugin ${id}: the page loaded ${loaded.plugin.sha256}, the index states ${entry.sha256}`);
   }
   const index = JSON.parse(await readText("tests/corpus/index.json"));
   let files = 0;

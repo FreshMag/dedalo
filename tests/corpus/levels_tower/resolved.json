@@ -1,0 +1,1659 @@
+{
+  "id": "levels_tower",
+  "name": "The Leaning Tower",
+  "seed": 7400998352187518044,
+  "bounds": [
+    0,
+    0,
+    29,
+    11
+  ],
+  "levels": [
+    {
+      "id": "ground",
+      "name": "Ground floor",
+      "bounds": [
+        0,
+        0,
+        12,
+        11
+      ]
+    },
+    {
+      "id": "upper",
+      "name": "Upper floor",
+      "bounds": [
+        15,
+        0,
+        21,
+        8
+      ]
+    },
+    {
+      "id": "cellar",
+      "bounds": [
+        24,
+        0,
+        29,
+        4
+      ]
+    }
+  ],
+  "spaces": [
+    {
+      "id": "hall",
+      "kind": "room",
+      "name": "Hall",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        8,
+        6
+      ],
+      "level": "ground",
+      "visibility": "public",
+      "tags": [
+        "entrance"
+      ],
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "kitchen",
+      "kind": "room",
+      "name": "Kitchen",
+      "polygon": [
+        [
+          8,
+          1
+        ],
+        [
+          12,
+          1
+        ],
+        [
+          12,
+          5
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "bbox": [
+        8,
+        1,
+        12,
+        5
+      ],
+      "level": "ground",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "porch",
+      "kind": "corridor",
+      "polygon": [
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          3,
+          8
+        ]
+      ],
+      "bbox": [
+        3,
+        6,
+        4,
+        8
+      ],
+      "level": "ground",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone",
+      "connects": [
+        "hall",
+        "shed"
+      ]
+    },
+    {
+      "id": "shed",
+      "kind": "room",
+      "polygon": [
+        [
+          2,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          5,
+          11
+        ],
+        [
+          2,
+          11
+        ]
+      ],
+      "bbox": [
+        2,
+        8,
+        5,
+        11
+      ],
+      "level": "ground",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "study",
+      "kind": "room",
+      "name": "Study",
+      "polygon": [
+        [
+          18,
+          2
+        ],
+        [
+          18.469,
+          2.037
+        ],
+        [
+          18.927,
+          2.147
+        ],
+        [
+          19.362,
+          2.327
+        ],
+        [
+          19.763,
+          2.573
+        ],
+        [
+          20.121,
+          2.879
+        ],
+        [
+          20.427,
+          3.237
+        ],
+        [
+          20.673,
+          3.638
+        ],
+        [
+          20.853,
+          4.073
+        ],
+        [
+          20.963,
+          4.531
+        ],
+        [
+          21,
+          5
+        ],
+        [
+          20.963,
+          5.469
+        ],
+        [
+          20.853,
+          5.927
+        ],
+        [
+          20.673,
+          6.362
+        ],
+        [
+          20.427,
+          6.763
+        ],
+        [
+          20.121,
+          7.121
+        ],
+        [
+          19.763,
+          7.427
+        ],
+        [
+          19.362,
+          7.673
+        ],
+        [
+          18.927,
+          7.853
+        ],
+        [
+          18.469,
+          7.963
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          17.531,
+          7.963
+        ],
+        [
+          17.073,
+          7.853
+        ],
+        [
+          16.638,
+          7.673
+        ],
+        [
+          16.237,
+          7.427
+        ],
+        [
+          15.879,
+          7.121
+        ],
+        [
+          15.573,
+          6.763
+        ],
+        [
+          15.327,
+          6.362
+        ],
+        [
+          15.147,
+          5.927
+        ],
+        [
+          15.037,
+          5.469
+        ],
+        [
+          15,
+          5
+        ],
+        [
+          15.037,
+          4.531
+        ],
+        [
+          15.147,
+          4.073
+        ],
+        [
+          15.327,
+          3.638
+        ],
+        [
+          15.573,
+          3.237
+        ],
+        [
+          15.879,
+          2.879
+        ],
+        [
+          16.237,
+          2.573
+        ],
+        [
+          16.638,
+          2.327
+        ],
+        [
+          17.073,
+          2.147
+        ],
+        [
+          17.531,
+          2.037
+        ]
+      ],
+      "circle": {
+        "center": [
+          18,
+          5
+        ],
+        "radius": 3
+      },
+      "bbox": [
+        15,
+        2,
+        21,
+        8
+      ],
+      "level": "upper",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "balcony",
+      "kind": "room",
+      "polygon": [
+        [
+          15,
+          0
+        ],
+        [
+          21,
+          0
+        ],
+        [
+          21,
+          2
+        ],
+        [
+          15,
+          2
+        ]
+      ],
+      "bbox": [
+        15,
+        0,
+        21,
+        2
+      ],
+      "level": "upper",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "vault",
+      "kind": "room",
+      "name": "Vault",
+      "polygon": [
+        [
+          24,
+          0
+        ],
+        [
+          29,
+          0
+        ],
+        [
+          29,
+          4
+        ],
+        [
+          24,
+          4
+        ]
+      ],
+      "bbox": [
+        24,
+        0,
+        29,
+        4
+      ],
+      "level": "cellar",
+      "visibility": "dm",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          29,
+          0
+        ],
+        [
+          29,
+          4
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            29,
+            0
+          ],
+          [
+            29,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          24,
+          0
+        ],
+        [
+          24,
+          4
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            24,
+            0
+          ],
+          [
+            24,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          21,
+          0
+        ],
+        [
+          21,
+          2
+        ]
+      ],
+      "spaces": [
+        "balcony"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            21,
+            0
+          ],
+          [
+            21,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          18.5,
+          2
+        ],
+        [
+          18.5,
+          2.042
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "solid": [
+        [
+          [
+            18.5,
+            2
+          ],
+          [
+            18.5,
+            2.042
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          17.5,
+          2
+        ],
+        [
+          17.5,
+          2.042
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "solid": [
+        [
+          [
+            17.5,
+            2
+          ],
+          [
+            17.5,
+            2.042
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          15,
+          0
+        ],
+        [
+          15,
+          2
+        ]
+      ],
+      "spaces": [
+        "balcony"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            15,
+            0
+          ],
+          [
+            15,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          12,
+          1
+        ],
+        [
+          12,
+          5
+        ]
+      ],
+      "spaces": [
+        "kitchen"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            12,
+            1
+          ],
+          [
+            12,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "spaces": [
+        "hall",
+        "kitchen"
+      ],
+      "material": "stone",
+      "openings": [
+        "pantry_door"
+      ],
+      "solid": [
+        [
+          [
+            8,
+            1
+          ],
+          [
+            8,
+            2
+          ]
+        ],
+        [
+          [
+            8,
+            3
+          ],
+          [
+            8,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            5
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          5,
+          8
+        ],
+        [
+          5,
+          11
+        ]
+      ],
+      "spaces": [
+        "shed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            5,
+            8
+          ],
+          [
+            5,
+            11
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "spaces": [
+        "porch"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            6
+          ],
+          [
+            4,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          8
+        ]
+      ],
+      "spaces": [
+        "porch"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            3,
+            6
+          ],
+          [
+            3,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          8
+        ],
+        [
+          2,
+          11
+        ]
+      ],
+      "spaces": [
+        "shed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            8
+          ],
+          [
+            2,
+            11
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          15,
+          0
+        ],
+        [
+          21,
+          0
+        ]
+      ],
+      "spaces": [
+        "balcony"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            15,
+            0
+          ],
+          [
+            21,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          24,
+          0
+        ],
+        [
+          29,
+          0
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            24,
+            0
+          ],
+          [
+            29,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          1
+        ],
+        [
+          12,
+          1
+        ]
+      ],
+      "spaces": [
+        "kitchen"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            1
+          ],
+          [
+            12,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          15,
+          2
+        ],
+        [
+          17.5,
+          2
+        ]
+      ],
+      "spaces": [
+        "balcony"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            15,
+            2
+          ],
+          [
+            17.5,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          17.5,
+          2
+        ],
+        [
+          18.5,
+          2
+        ]
+      ],
+      "spaces": [
+        "balcony"
+      ],
+      "material": "stone",
+      "openings": [
+        "balcony_door"
+      ]
+    },
+    {
+      "line": [
+        [
+          18.5,
+          2
+        ],
+        [
+          21,
+          2
+        ]
+      ],
+      "spaces": [
+        "balcony"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            18.5,
+            2
+          ],
+          [
+            21,
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          17.5,
+          2.042
+        ],
+        [
+          18.5,
+          2.042
+        ]
+      ],
+      "spaces": [],
+      "material": "",
+      "openings": [
+        "balcony_door"
+      ]
+    },
+    {
+      "line": [
+        [
+          24,
+          4
+        ],
+        [
+          29,
+          4
+        ]
+      ],
+      "spaces": [
+        "vault"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            24,
+            4
+          ],
+          [
+            29,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          5
+        ],
+        [
+          12,
+          5
+        ]
+      ],
+      "spaces": [
+        "kitchen"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            5
+          ],
+          [
+            12,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          6
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            6
+          ],
+          [
+            3,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall",
+        "porch"
+      ],
+      "material": "stone",
+      "openings": [
+        "porch/hall"
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "spaces": [
+        "hall"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            6
+          ],
+          [
+            8,
+            6
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          8
+        ]
+      ],
+      "spaces": [
+        "shed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            8
+          ],
+          [
+            3,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "spaces": [
+        "porch",
+        "shed"
+      ],
+      "material": "stone",
+      "openings": [
+        "porch/shed"
+      ]
+    },
+    {
+      "line": [
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ]
+      ],
+      "spaces": [
+        "shed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            4,
+            8
+          ],
+          [
+            5,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          2,
+          11
+        ],
+        [
+          5,
+          11
+        ]
+      ],
+      "spaces": [
+        "shed"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            2,
+            11
+          ],
+          [
+            5,
+            11
+          ]
+        ]
+      ]
+    },
+    {
+      "circle": {
+        "center": [
+          18,
+          5
+        ],
+        "radius": 3
+      },
+      "spaces": [
+        "study"
+      ],
+      "material": "stone",
+      "openings": [
+        "balcony_door"
+      ],
+      "gaps": [
+        [
+          [
+            17.5,
+            2.042
+          ],
+          [
+            18.5,
+            2.042
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "pantry_door",
+      "from": "hall",
+      "to": "kitchen",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          3
+        ]
+      ],
+      "width": 1,
+      "level": "ground"
+    },
+    {
+      "id": "spiral",
+      "from": "hall",
+      "to": "study",
+      "type": "stairs",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        6,
+        1,
+        7,
+        2
+      ],
+      "level": "ground"
+    },
+    {
+      "id": "hatch",
+      "from": "kitchen",
+      "to": "vault",
+      "type": "trapdoor",
+      "secret": false,
+      "locked": false,
+      "visibility": "dm",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        10,
+        3,
+        11,
+        4
+      ],
+      "level": "ground"
+    },
+    {
+      "id": "porch/hall",
+      "from": "porch",
+      "to": "hall",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "width": 1,
+      "level": "ground"
+    },
+    {
+      "id": "porch/shed",
+      "from": "porch",
+      "to": "shed",
+      "type": "open",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": true,
+      "segment": [
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "width": 1,
+      "level": "ground"
+    },
+    {
+      "id": "spiral",
+      "from": "study",
+      "to": "hall",
+      "type": "stairs",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        16,
+        5,
+        17,
+        6
+      ],
+      "level": "upper",
+      "arrival": true
+    },
+    {
+      "id": "balcony_door",
+      "from": "study",
+      "to": "balcony",
+      "type": "door",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          17.5,
+          2.042
+        ],
+        [
+          18.5,
+          2.042
+        ]
+      ],
+      "far": [
+        [
+          17.5,
+          2
+        ],
+        [
+          18.5,
+          2
+        ]
+      ],
+      "width": 1,
+      "stub": [
+        [
+          17.5,
+          2
+        ],
+        [
+          18.5,
+          2
+        ],
+        [
+          18.5,
+          2.042
+        ],
+        [
+          17.5,
+          2.042
+        ]
+      ],
+      "level": "upper"
+    },
+    {
+      "id": "hatch",
+      "from": "vault",
+      "to": "kitchen",
+      "type": "trapdoor",
+      "secret": false,
+      "locked": false,
+      "visibility": "dm",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        24,
+        0,
+        25,
+        1
+      ],
+      "level": "cellar",
+      "arrival": true
+    }
+  ],
+  "elements": [
+    {
+      "id": "brazier",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "brazier",
+      "category": "lighting",
+      "label": "Brazier",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "hall",
+      "footprint": [
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "bbox": [
+        1,
+        1,
+        2,
+        2
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 4,
+      "level": "ground"
+    },
+    {
+      "id": "wizard",
+      "class": "entity",
+      "type": "npc",
+      "category": "creatures",
+      "label": "NPC",
+      "type_label": "npc",
+      "glyph": "N",
+      "layer": "entities",
+      "space": "study",
+      "footprint": [
+        [
+          18,
+          5
+        ],
+        [
+          19,
+          5
+        ],
+        [
+          19,
+          6
+        ],
+        [
+          18,
+          6
+        ]
+      ],
+      "bbox": [
+        18,
+        5,
+        19,
+        6
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false,
+      "level": "upper"
+    }
+  ],
+  "notes": [
+    {
+      "id": "warning",
+      "number": 1,
+      "target": "vault",
+      "anchor": [
+        24.5,
+        0.5
+      ],
+      "text": "The vault floods at high tide.",
+      "visibility": "dm",
+      "level": "cellar"
+    },
+    {
+      "id": "general",
+      "number": 2,
+      "text": "Every floor is 10 ft high.",
+      "visibility": "public"
+    }
+  ],
+  "reach": {
+    "entrance": "hall",
+    "links": [
+      [
+        "hall",
+        "kitchen",
+        "pantry_door"
+      ],
+      [
+        "hall",
+        "study",
+        "spiral"
+      ],
+      [
+        "kitchen",
+        "vault",
+        "hatch"
+      ],
+      [
+        "porch",
+        "hall",
+        "porch/hall"
+      ],
+      [
+        "porch",
+        "shed",
+        "porch/shed"
+      ],
+      [
+        "study",
+        "balcony",
+        "balcony_door"
+      ]
+    ]
+  }
+}
