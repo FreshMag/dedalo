@@ -14,10 +14,10 @@ name: Release
 # semantic-release then sets the version in Cargo.toml, Cargo.lock and
 # CHANGELOG.md, commits that as `chore(release): X.Y.Z [skip ci]`, tags it
 # vX.Y.Z and opens a draft GitHub release with notes from the commits. The
-# binaries for four targets are built from the tag and attached, with
-# SHA-256 checksums, build-provenance attestations and the install scripts,
-# and only then is the release published. Last, the site is deployed to the
-# root of GitHub Pages.
+# binaries for four targets and the Obsidian plugin are built from the tag
+# and attached, with SHA-256 checksums, build-provenance attestations and the
+# install scripts, and only then is the release published. Last, the site
+# is deployed to the root of GitHub Pages.
 #
 # Binaries are not code-signed, by the decision recorded under spec 19.2.
 #
@@ -160,8 +160,33 @@ jobs:
           name: ${{ env.ASSET }}
           path: ${{ env.ASSET }}
 
+  obsidian:
+    needs: version
+    if: needs.version.outputs.tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+      - name: Install the pinned toolchain
+        run: rustup show
+      - name: Build the core module and the plugin
+        # main.js, manifest.json and styles.css are attached on their own
+        # too, the files Obsidian plugin installers download from a release.
+        run: |
+          cargo build -p dedalo-wasm --target wasm32-unknown-unknown --profile wasm --locked
+          python3 integrations/obsidian/build.py --out obsidian --zip dedalo-obsidian.zip
+          mv dedalo-obsidian.zip obsidian/
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: obsidian/dedalo-obsidian.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: obsidian
+          path: obsidian/*
+
   publish:
-    needs: [version, build]
+    needs: [version, build, obsidian]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -181,7 +206,7 @@ jobs:
           gh release upload "$TAG" dist/* --clobber
           {
             gh release view "$TAG" --json body --jq .body
-            printf '\n---\n\nInstall with `curl -fsSL https://github.com/%s/releases/latest/download/install.sh | sh`, or on Windows `irm https://github.com/%s/releases/latest/download/install.ps1 | iex`. The editor is at https://freshmag.github.io/dedalo/.\n\nBinaries are not code-signed; verify them with SHA256SUMS or `gh attestation verify <file> --repo %s`. Language, output and plugin API changes are listed in CHANGELOG.md.\n' "$GITHUB_REPOSITORY" "$GITHUB_REPOSITORY" "$GITHUB_REPOSITORY"
+            printf '\n---\n\nInstall with `curl -fsSL https://github.com/%s/releases/latest/download/install.sh | sh`, or on Windows `irm https://github.com/%s/releases/latest/download/install.ps1 | iex`. The editor is at https://freshmag.github.io/dedalo/.\n\nThe Obsidian plugin draws ```dedalo code blocks in notes: unzip `dedalo-obsidian.zip` into the `.obsidian/plugins` folder of a vault and enable Dedalo under Community plugins.\n\nBinaries are not code-signed; verify them with SHA256SUMS or `gh attestation verify <file> --repo %s`. Language, output and plugin API changes are listed in CHANGELOG.md.\n' "$GITHUB_REPOSITORY" "$GITHUB_REPOSITORY" "$GITHUB_REPOSITORY"
           } > notes.md
           gh release edit "$TAG" --notes-file notes.md --draft=false --latest
 

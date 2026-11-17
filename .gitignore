@@ -13,3 +13,5 @@
 /fuzz/corpus
 /fuzz/artifacts
 /fuzz/Cargo.lock
+/integrations/obsidian/dist
+dedalo-obsidian*.zip

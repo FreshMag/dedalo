@@ -5,6 +5,23 @@ Each release lists language changes, output changes and plugin API changes
 
 ## Unreleased
 
+### Agents and tools
+
+- Dungeons in Markdown notes: every command that reads a file also takes a
+  Markdown note and works on its ```` ```dedalo ```` code blocks, chosen with
+  `--block N`. Diagnostics give the note's line numbers, and `fmt`,
+  `validate --fix` and `edit` rewrite only the block. Words after `dedalo`
+  are render options, such as `player` or `level=upper`.
+- The MCP tools take a note as `path`, with `block`; `dedalo_write` adds a
+  block to a note or replaces one, keeping the rest of the note.
+- Guide topic `notes`, also in the agent skill.
+- An Obsidian plugin draws ```` ```dedalo ```` blocks as maps, with an
+  audience switch, a level picker, a large zoomable view, PNG and SVG
+  export, problems with line numbers, Dedalo plugin packages from the vault,
+  and English and Italian. Releases attach it as `dedalo-obsidian.zip`.
+- The web module's render answer includes the dungeon's levels, the export
+  and the audience drawn.
+
 ## 0.1.0 (2026-11-17)
 
 ### Language

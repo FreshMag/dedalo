@@ -6,6 +6,7 @@
   matching entries of Cargo.lock.
 - CHANGELOG.md: the notes under "Unreleased" become the notes of this
   release, and a new empty "Unreleased" section is opened above them.
+- The Obsidian plugin's manifest, which ships with every release.
 
 The reference plugins keep their own versions; they are released with their
 packages, not with the binary.
@@ -36,6 +37,13 @@ def main():
     cargo.write_text(text[: section.start(1)] + body + text[section.end(1) :], encoding="utf-8", newline="\n")
     # Only the workspace's own crates change in the lockfile.
     subprocess.run(["cargo", "update", "--workspace"], cwd=ROOT, check=True)
+
+    manifest = ROOT / "integrations/obsidian/manifest.json"
+    text = manifest.read_text(encoding="utf-8")
+    text, count = re.subn(r'"version": "[^"]*"', f'"version": "{version}"', text, count=1)
+    if count != 1:
+        sys.exit("the Obsidian manifest has no version")
+    manifest.write_text(text, encoding="utf-8", newline="\n")
 
     changelog = ROOT / "CHANGELOG.md"
     text = changelog.read_text(encoding="utf-8")

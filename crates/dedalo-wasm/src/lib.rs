@@ -330,6 +330,13 @@ pub fn handle(request: &str) -> String {
             }
             spec.toggles.extend(toggles);
             spec.host_png = host_png.as_deref().and_then(dedalo_plugin::base64::decode);
+            // The levels, so a host can offer them without compiling again.
+            let levels: Vec<Value> = compiled
+                .document
+                .iter()
+                .flat_map(|d| &d.dungeon.levels)
+                .map(|l| json!({ "id": l.id, "name": l.name }))
+                .collect();
             match dedalo_core::render(&compiled, &spec, &registry()) {
                 Ok(rendered) => json!({
                     "ok": !report.has_errors(),
@@ -337,6 +344,9 @@ pub fn handle(request: &str) -> String {
                     "output": String::from_utf8_lossy(&rendered.bytes),
                     "media_type": rendered.media_type,
                     "extension": rendered.extension,
+                    "levels": levels,
+                    "export": spec.name,
+                    "preset": spec.preset.as_str(),
                 }),
                 Err(d) => json!({ "ok": false, "report": report, "error": d.message }),
             }

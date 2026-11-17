@@ -1,0 +1,163 @@
+/* Dedalo maps in notes. Maps are white paper whatever the theme; the
+   "Inverted" setting turns them dark in dark themes. */
+
+.dedalo-block {
+  --dedalo-max-height: 640px;
+  margin: 0.5em 0;
+}
+
+.dedalo-frame {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m, 8px);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.dedalo-frame img {
+  display: block;
+  max-width: 100%;
+  max-height: var(--dedalo-max-height);
+  height: auto;
+  object-fit: contain;
+}
+
+.theme-dark .dedalo-block.dedalo-invert .dedalo-frame {
+  background: #1e1e1e;
+}
+
+.theme-dark .dedalo-block.dedalo-invert .dedalo-frame img,
+.theme-dark .dedalo-modal.dedalo-invert img {
+  filter: invert(0.9) hue-rotate(180deg);
+}
+
+.dedalo-block.dedalo-stale .dedalo-frame img {
+  opacity: 0.55;
+}
+
+.dedalo-toolbar {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 120ms ease-in-out;
+}
+
+.dedalo-frame:hover .dedalo-toolbar,
+.dedalo-frame:focus-within .dedalo-toolbar,
+.dedalo-toolbar.is-pinned,
+.is-mobile .dedalo-toolbar {
+  opacity: 1;
+}
+
+.dedalo-toolbar button,
+.dedalo-toolbar select {
+  height: 26px;
+  padding: 0 8px;
+  font-size: var(--font-ui-smaller);
+  box-shadow: var(--shadow-s);
+}
+
+.dedalo-toolbar button.dedalo-icon {
+  padding: 0 5px;
+}
+
+.dedalo-badge {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  padding: 1px 8px;
+  border-radius: var(--radius-s, 4px);
+  font-size: var(--font-ui-smaller);
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  pointer-events: none;
+}
+
+.dedalo-problems {
+  margin: 0.4em 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-ui-small);
+}
+
+.dedalo-problems li {
+  padding: 4px 8px;
+  border-left: 3px solid var(--text-error);
+  background: var(--background-secondary);
+  margin-bottom: 2px;
+}
+
+.dedalo-problems li.is-warning {
+  border-left-color: var(--text-warning);
+}
+
+.dedalo-problems .dedalo-line {
+  font-family: var(--font-monospace);
+  color: var(--text-muted);
+  margin-right: 0.5em;
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+
+.dedalo-problems .dedalo-help {
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.dedalo-message {
+  padding: 1em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.dedalo-modal {
+  width: 92vw;
+  height: 88vh;
+  max-width: none;
+}
+
+.dedalo-modal .modal-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dedalo-viewer {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: var(--radius-m, 8px);
+  cursor: grab;
+  touch-action: none;
+}
+
+.dedalo-modal.dedalo-invert .dedalo-viewer {
+  background: #1e1e1e;
+}
+
+.dedalo-viewer.is-dragging {
+  cursor: grabbing;
+}
+
+.dedalo-viewer img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.dedalo-viewer-hint {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  margin-top: 6px;
+}
