@@ -84,6 +84,8 @@ Each release lists language changes, output changes and plugin API changes
 ### Project
 
 - The licence is Apache-2.0.
+- Releases are automatic: semantic release on `main` picks the version from
+  Conventional Commits, tags it and publishes the binaries.
 
 ## 0.0.1
 

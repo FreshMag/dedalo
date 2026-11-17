@@ -1,8 +1,9 @@
 name: Pages
 
 # Publishes the static site to the `gh-pages` branch (spec 14.3): the `main`
-# branch deploys to /next/, tagged releases deploy to the site root. Schemas
-# are served under /schema/ at versioned URLs.
+# branch deploys to /next/, and the release workflow calls this one to deploy
+# each release to the site root. Schemas are served under /schema/ at
+# versioned URLs.
 #
 # In the repository settings, Pages must be set to serve the `gh-pages`
 # branch. The site is then at https://freshmag.github.io/dedalo/next/.
@@ -10,8 +11,17 @@ name: Pages
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: The tag or commit to publish
+        type: string
+        required: true
+      release:
+        description: Deploy to the site root instead of /next/
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -26,6 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 0
       - name: Install the pinned toolchain
         run: rustup show
@@ -67,7 +78,7 @@ jobs:
             git -C published rm -rf --quiet .
           fi
           touch published/.nojekyll
-          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+          if [ "${{ inputs.release }}" = "true" ]; then
             # A release replaces the root and keeps /next/.
             find published -mindepth 1 -maxdepth 1 ! -name .git ! -name next ! -name .nojekyll -exec rm -rf {} +
             cp -r site/. published/
