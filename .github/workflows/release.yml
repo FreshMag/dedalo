@@ -21,6 +21,10 @@ name: Release
 #
 # Binaries are not code-signed, by the decision recorded under spec 19.2.
 #
+# main is protected: changes arrive through pull requests that pass CI. The
+# release commit and tag are pushed with the write deploy key stored as the
+# RELEASE_DEPLOY_KEY secret, the one actor the ruleset lets push directly.
+#
 # Run by hand with a tag, for example v0.1.0, the workflow skips semantic
 # release and builds, attaches and publishes that existing draft release.
 
@@ -61,6 +65,9 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          # Pushes go through the deploy key, which the ruleset protecting
+          # main lets through; GITHUB_TOKEN cannot be exempted from it.
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
       - name: Install the pinned toolchain
         run: rustup show
       - uses: actions/setup-node@v4

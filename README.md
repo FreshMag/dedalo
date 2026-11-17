@@ -95,9 +95,16 @@ release decide whether there is one and what its version is, from their
 
 The release workflow then sets the version in `Cargo.toml`, `Cargo.lock` and
 `CHANGELOG.md` (the `Unreleased` notes become the release's), commits and
-tags it, builds the binaries for five targets, attaches them to the GitHub
+tags it, builds the binaries for four targets, attaches them to the GitHub
 release with checksums and provenance attestations, and deploys the site.
 With squash merges, the pull request's title is the commit that counts.
+
+`main` is protected: changes reach it through pull requests whose CI checks
+pass, and it cannot be deleted or force-pushed. The release workflow pushes
+its version commit and tag with a write deploy key, stored as the
+`RELEASE_DEPLOY_KEY` secret; that key is the only actor allowed to push to
+`main` directly. To build and publish an existing tag again, run the Release
+workflow by hand with that tag.
 
 ## Building and testing
 
