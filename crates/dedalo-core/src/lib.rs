@@ -5,6 +5,7 @@
 //! disagree. Every function is pure: no I/O, no clock, no ambient randomness.
 
 pub mod assist;
+pub mod markdown;
 pub mod plugins;
 
 use dedalo_model::diag::Span;

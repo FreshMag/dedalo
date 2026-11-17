@@ -10,6 +10,7 @@
 use std::io::{BufRead, Read, Write};
 use std::path::{Component, Path, PathBuf};
 
+use dedalo_core::markdown;
 use dedalo_core::model::ops::{Batch, Op};
 use dedalo_core::model::{Preset, Report};
 use dedalo_core::{ExportSpec, Input, Registry};
@@ -19,7 +20,7 @@ use crate::guide;
 
 /// Revisions this server answers, newest first.
 const VERSIONS: &[&str] = &["2026-07-28", "2025-11-25", "2025-06-18", "2025-03-26"];
-const INSTRUCTIONS: &str = "Dedalo compiles a text description of a tabletop-RPG dungeon into a map. Read the `quickstart` guide topic once, then write a file, validate it, apply the fixes the diagnostics carry, inspect the text map, render, and continue with small edit operations addressed by element ID.";
+const INSTRUCTIONS: &str = "Dedalo compiles a text description of a tabletop-RPG dungeon into a map. Read the `quickstart` guide topic once, then write a file, validate it, apply the fixes the diagnostics carry, inspect the text map, render, and continue with small edit operations addressed by element ID. A path may also be a Markdown note: the dungeon is then a ```dedalo code block of the note, chosen with `block` when the note has several, and line numbers are the note's.";
 
 pub struct Server {
     root: PathBuf,
@@ -37,6 +38,21 @@ fn text_result(summary: String, structured: Value) -> Value {
 
 fn str_arg<'a>(args: &'a Value, name: &str) -> Option<&'a str> {
     args.get(name).and_then(Value::as_str)
+}
+
+/// Text to compile, the file it came from, and the note and block when the
+/// file is a Markdown note.
+type Loaded = (String, Option<PathBuf>, Option<(String, markdown::Block)>);
+
+fn block_arg(args: &Value) -> Result<Option<usize>, ToolError> {
+    match args.get("block") {
+        None | Some(Value::Null) => Ok(None),
+        Some(v) => v
+            .as_u64()
+            .filter(|n| *n >= 1)
+            .map(|n| Some(n as usize))
+            .ok_or_else(|| ToolError("`block` counts from 1".to_string())),
+    }
 }
 
 fn summary_of(report: &Report) -> String {
@@ -94,7 +110,8 @@ fn base64(bytes: &[u8]) -> String {
 
 fn tools() -> Value {
     let source_or_path = json!({
-        "path": { "type": "string", "description": "A .dedalo file, relative to the server's root" },
+        "path": { "type": "string", "description": "A .dedalo file or a Markdown note, relative to the server's root" },
+        "block": { "type": "integer", "minimum": 1, "description": "With a Markdown note, its ```dedalo code block to use, counted from 1; needed when the note has more than one" },
         "source": { "type": "string", "description": "DSL text, instead of a path" }
     });
     let with = |extra: Value| {
@@ -133,8 +150,10 @@ fn tools() -> Value {
         {
             "name": "dedalo_write",
             "title": "Write a dungeon file",
-            "description": "Validate DSL text, then create or replace the file. The file is written even when there are errors, so they can be fixed with dedalo_edit; the diagnostics and the new content hash are returned.",
-            "inputSchema": { "type": "object", "properties": source_or_path, "required": ["path", "source"] },
+            "description": "Validate DSL text, then create or replace the file. The file is written even when there are errors, so they can be fixed with dedalo_edit; the diagnostics and the new content hash are returned. With a Markdown note, only the ```dedalo block changes: the one numbered `block`, else the only one, else a new block is added at the end of the note (created if missing); `fence` sets the options of a new block, such as `player`.",
+            "inputSchema": { "type": "object", "properties": with(json!({
+                "fence": { "type": "string", "description": "Options after ```dedalo for a new block of a note, such as `player level=ground`" }
+            })), "required": ["path", "source"] },
             "annotations": { "readOnlyHint": false, "destructiveHint": true, "idempotentHint": true, "openWorldHint": false }
         },
         {
@@ -143,6 +162,7 @@ fn tools() -> Value {
             "description": "Apply edit operations in order, atomically: add (a DSL fragment as `source`, or `kind`, `id`, `set`), update (`set` and `unset` dotted paths such as `placement.offset`), remove (`cascade` to take referrers too), move (`to`: room and position, or layout fields), connect. The file is written only if no new error appears. Returns status, diagnostics, a unified diff, the changed IDs and the new hash. Pass `base_hash` to refuse the edit if the file changed.",
             "inputSchema": { "type": "object", "properties": {
                 "path": { "type": "string" },
+                "block": { "type": "integer", "minimum": 1, "description": "With a Markdown note, its ```dedalo code block, counted from 1" },
                 "ops": { "type": "array", "items": { "type": "object" }, "description": "Edit operations; `dedalo schema ops` describes them" },
                 "dry_run": { "type": "boolean", "default": false },
                 "base_hash": { "type": "string" }
@@ -217,13 +237,25 @@ impl Server {
     }
 
     fn source(&self, args: &Value) -> Result<(String, Option<PathBuf>), ToolError> {
+        let (text, full, _) = self.load(args)?;
+        Ok((text, full))
+    }
+
+    /// The text to compile and, for a block of a note, the note and block.
+    /// A note's text is masked: the note with every other line emptied.
+    fn load(&self, args: &Value) -> Result<Loaded, ToolError> {
         match (str_arg(args, "source"), str_arg(args, "path")) {
-            (Some(text), _) => Ok((text.to_string(), None)),
+            (Some(text), _) => Ok((text.to_string(), None, None)),
             (None, Some(path)) => {
                 let full = self.resolve(path)?;
                 let text = std::fs::read_to_string(&full)
                     .map_err(|e| ToolError(format!("cannot read `{path}`: {e}")))?;
-                Ok((text, Some(full)))
+                if !markdown::is_markdown(&full) {
+                    return Ok((text, Some(full), None));
+                }
+                let block = markdown::select(&text, block_arg(args)?)
+                    .map_err(|e| ToolError(format!("{path}: {e}; pass `block`")))?;
+                Ok((block.masked(&text), Some(full), Some((text, block))))
             }
             (None, None) => Err(ToolError("pass `path` or `source`".to_string())),
         }
@@ -246,8 +278,35 @@ impl Server {
                 Ok(json!({ "content": [{ "type": "text", "text": text }], "isError": false }))
             }
             "dedalo_validate" => {
-                let (text, _) = self.source(args)?;
-                let report = self.compile(&text).report();
+                let whole_note = str_arg(args, "path")
+                    .filter(|p| {
+                        str_arg(args, "source").is_none() && markdown::is_markdown(Path::new(p))
+                    })
+                    .filter(|_| args.get("block").is_none_or(Value::is_null));
+                let report = match whole_note {
+                    // Every block of the note; line numbers tell them apart.
+                    Some(path) => {
+                        let full = self.resolve(path)?;
+                        let text = std::fs::read_to_string(&full)
+                            .map_err(|e| ToolError(format!("cannot read `{path}`: {e}")))?;
+                        let blocks = markdown::blocks(&text);
+                        if blocks.is_empty() {
+                            return Err(ToolError(format!(
+                                "{path}: the note has no ```dedalo code block"
+                            )));
+                        }
+                        Report::new(
+                            blocks
+                                .iter()
+                                .flat_map(|b| self.compile(&b.masked(&text)).diagnostics)
+                                .collect(),
+                        )
+                    }
+                    None => {
+                        let (text, _) = self.source(args)?;
+                        self.compile(&text).report()
+                    }
+                };
                 Ok(text_result(
                     summary_of(&report),
                     serde_json::to_value(&report).unwrap_or_default(),
@@ -316,8 +375,38 @@ impl Server {
                         ToolError(format!("cannot create the folder of `{path}`: {e}"))
                     })?;
                 }
-                std::fs::write(&full, text)
+                let mut checked = text.to_string();
+                let bytes = if markdown::is_markdown(&full) {
+                    // Only the dungeon's block of the note changes.
+                    let note = std::fs::read_to_string(&full).unwrap_or_default();
+                    let count = markdown::blocks(&note).len();
+                    let chosen = block_arg(args)?;
+                    let next = match (chosen, count) {
+                        (Some(_), _) | (None, 1) => {
+                            let block = markdown::select(&note, chosen)
+                                .map_err(|e| ToolError(format!("{path}: {e}")))?;
+                            markdown::replace(&note, &block, text)
+                        }
+                        (None, 0) => {
+                            markdown::append(&note, text, str_arg(args, "fence").unwrap_or(""))
+                        }
+                        (None, n) => {
+                            return Err(ToolError(format!(
+                                "{path}: the note has {n} ```dedalo blocks; pass `block` to replace one"
+                            )));
+                        }
+                    };
+                    let index = chosen.unwrap_or(count.max(1));
+                    if let Ok(block) = markdown::select(&next, Some(index)) {
+                        checked = block.masked(&next);
+                    }
+                    next
+                } else {
+                    text.to_string()
+                };
+                std::fs::write(&full, &bytes)
                     .map_err(|e| ToolError(format!("cannot write `{path}`: {e}")))?;
+                let text = checked.as_str();
                 let report = self.compile(text).report();
                 let hash = dedalo_core::content_hash(text);
                 let mut value = serde_json::to_value(&report).unwrap_or_default();
@@ -331,9 +420,9 @@ impl Server {
             "dedalo_edit" => {
                 let path =
                     str_arg(args, "path").ok_or_else(|| ToolError("pass `path`".to_string()))?;
+                let (text, _, note) =
+                    self.load(&json!({ "path": path, "block": args.get("block") }))?;
                 let full = self.resolve(path)?;
-                let text = std::fs::read_to_string(&full)
-                    .map_err(|e| ToolError(format!("cannot read `{path}`: {e}")))?;
                 let ops: Vec<Op> = serde_json::from_value(
                     args.get("ops").cloned().unwrap_or(json!([])),
                 )
@@ -349,7 +438,11 @@ impl Server {
                     .unwrap_or(false);
                 let written = result.applied && !dry && result.source != text;
                 if written {
-                    std::fs::write(&full, &result.source)
+                    let bytes = match &note {
+                        Some((note, block)) => markdown::replace(note, block, &result.source),
+                        None => result.source.clone(),
+                    };
+                    std::fs::write(&full, bytes)
                         .map_err(|e| ToolError(format!("cannot write `{path}`: {e}")))?;
                 }
                 let mut value = serde_json::to_value(&result).unwrap_or_default();
@@ -380,7 +473,7 @@ impl Server {
     }
 
     fn render(&self, args: &Value) -> ToolResult {
-        let (text, _) = self.source(args)?;
+        let (text, _, note) = self.load(args)?;
         let compiled = self.compile(&text);
         let report = compiled.report();
         if report.has_errors() {
@@ -389,8 +482,19 @@ impl Server {
                 summary_of(&report)
             )));
         }
-        let mut spec = dedalo_core::export_spec(&compiled, str_arg(args, "export"))
-            .map_err(|d| ToolError(d.message))?;
+        let block = note.as_ref().map(|(_, b)| b);
+        let export = str_arg(args, "export").or_else(|| block.and_then(|b| b.option("export")));
+        let mut spec =
+            dedalo_core::export_spec(&compiled, export).map_err(|d| ToolError(d.message))?;
+        if let Some(block) = block {
+            // The fence's options, which the arguments below override.
+            let levels: Vec<&str> = compiled
+                .document
+                .iter()
+                .flat_map(|d| d.dungeon.levels.iter().map(|l| l.id.as_str()))
+                .collect();
+            block.apply(&mut spec, &levels).map_err(ToolError)?;
+        }
         if let Some(p) = str_arg(args, "preset") {
             spec.preset =
                 Preset::parse(p).ok_or_else(|| ToolError(format!("`{p}` is not a preset")))?;
@@ -805,6 +909,66 @@ mod tests {
             .handle(&json!({ "jsonrpc": "2.0", "id": 3, "method": "tools/list" }))
             .unwrap();
         assert_eq!(tools["result"]["tools"].as_array().unwrap().len(), 6);
+        std::fs::remove_dir_all(dir).ok();
+    }
+
+    fn call(s: &Server, name: &str, args: Value) -> Value {
+        s.call_tool(name, &args)
+            .unwrap_or_else(|e| panic!("{name}: {}", e.0))
+    }
+
+    #[test]
+    fn dungeons_live_in_markdown_notes() {
+        let (s, dir) = server("markdown");
+        let dungeon =
+            "dungeon \"d\" {\n    room \"a\" {\n        shape = rectangle(4, 4)\n    }\n}\n";
+        // A new note gets a block; the prose of an existing one is kept.
+        call(
+            &s,
+            "dedalo_write",
+            json!({ "path": "Maps/Crypt.md", "source": dungeon, "fence": "player" }),
+        );
+        let note = std::fs::read_to_string(dir.join("Maps/Crypt.md")).unwrap();
+        assert_eq!(note, format!("```dedalo player\n{dungeon}```\n"));
+        std::fs::write(
+            dir.join("Maps/Crypt.md"),
+            format!("# Crypt\n\nIntro.\n\n{note}\nOutro.\n"),
+        )
+        .unwrap();
+        let broken = dungeon.replace("rectangle(4, 4)", "rectangle(4, 4) colour = red");
+        let written = call(
+            &s,
+            "dedalo_write",
+            json!({ "path": "Maps/Crypt.md", "source": broken }),
+        );
+        // The error is reported on the note's own line.
+        let line = &written["structuredContent"]["diagnostics"][0]["span"]["start"][0];
+        assert_eq!(line, 8, "{written}");
+        let note = std::fs::read_to_string(dir.join("Maps/Crypt.md")).unwrap();
+        assert!(note.starts_with("# Crypt\n\nIntro.\n\n```dedalo player\n"));
+        assert!(note.ends_with("```\n\nOutro.\n"));
+        call(
+            &s,
+            "dedalo_write",
+            json!({ "path": "Maps/Crypt.md", "source": dungeon }),
+        );
+        let checked = call(&s, "dedalo_validate", json!({ "path": "Maps/Crypt.md" }));
+        assert_eq!(checked["structuredContent"]["status"], "ok", "{checked}");
+        let edited = call(
+            &s,
+            "dedalo_edit",
+            json!({ "path": "Maps/Crypt.md", "ops": [{ "op": "update", "id": "a", "set": { "name": "Hall" } }] }),
+        );
+        assert_eq!(edited["structuredContent"]["written"], true, "{edited}");
+        let note = std::fs::read_to_string(dir.join("Maps/Crypt.md")).unwrap();
+        assert!(note.contains("name = \"Hall\""), "{note}");
+        assert!(note.ends_with("```\n\nOutro.\n"), "{note}");
+        let map = call(
+            &s,
+            "dedalo_render",
+            json!({ "path": "Maps/Crypt.md", "format": "txt" }),
+        );
+        assert!(!map["content"][0]["text"].as_str().unwrap().is_empty());
         std::fs::remove_dir_all(dir).ok();
     }
 }
