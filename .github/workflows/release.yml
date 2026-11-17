@@ -14,12 +14,15 @@ name: Release
 # semantic-release then sets the version in Cargo.toml, Cargo.lock and
 # CHANGELOG.md, commits that as `chore(release): X.Y.Z [skip ci]`, tags it
 # vX.Y.Z and opens a draft GitHub release with notes from the commits. The
-# binaries for five targets are built from the tag and attached, with
+# binaries for four targets are built from the tag and attached, with
 # SHA-256 checksums, build-provenance attestations and the install scripts,
 # and only then is the release published. Last, the site is deployed to the
 # root of GitHub Pages.
 #
 # Binaries are not code-signed, by the decision recorded under spec 19.2.
+#
+# Run by hand with a tag, for example v0.1.0, the workflow skips semantic
+# release and builds, attaches and publishes that existing draft release.
 
 on:
   workflow_run:
@@ -27,6 +30,11 @@ on:
     branches: [main]
     types: [completed]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: An existing tag to build and publish, such as v0.1.0. Leave empty to run semantic release.
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -47,7 +55,7 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.release.outputs.tag }}
+      tag: ${{ inputs.tag || steps.release.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,7 +66,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Check the tag given by hand
+        if: inputs.tag != ''
+        env:
+          TAG: ${{ inputs.tag }}
+        run: git rev-parse --verify --quiet "refs/tags/$TAG" || { echo "no tag $TAG" >&2; exit 1; }
       - name: Start from 0.0.1
+        if: inputs.tag == ''
         # Without a tag semantic-release would begin at 1.0.0. The first
         # commit is the 0.0.1 of the changelog.
         run: |
@@ -68,6 +82,7 @@ jobs:
           fi
       - name: Release
         id: release
+        if: inputs.tag == ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -99,7 +114,6 @@ jobs:
           - { os: ubuntu-latest, target: x86_64-unknown-linux-musl, archive: tar.gz }
           - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, archive: tar.gz }
           - { os: macos-latest, target: aarch64-apple-darwin, archive: tar.gz }
-          - { os: macos-13, target: x86_64-apple-darwin, archive: tar.gz }
           - { os: windows-latest, target: x86_64-pc-windows-msvc, archive: zip }
     steps:
       - uses: actions/checkout@v4

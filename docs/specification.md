@@ -1159,7 +1159,7 @@ One tagged commit produces everything: binaries on GitHub Releases, the website 
 | Target | Notes |
 | --- | --- |
 | Linux x86-64 and arm64 | Statically linked |
-| macOS arm64 and x86-64 |  |
+| macOS arm64 | Intel Macs build from source with `cargo install dedalo-cli` |
 | Windows x86-64 | arm64 if demand appears |
 
 | Channel | From |

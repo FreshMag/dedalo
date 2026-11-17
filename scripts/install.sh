@@ -11,7 +11,6 @@ case "$(uname -s)-$(uname -m)" in
   Linux-x86_64) target=x86_64-unknown-linux-musl ;;
   Linux-aarch64 | Linux-arm64) target=aarch64-unknown-linux-musl ;;
   Darwin-arm64) target=aarch64-apple-darwin ;;
-  Darwin-x86_64) target=x86_64-apple-darwin ;;
   *) echo "no prebuilt dedalo for $(uname -s) $(uname -m); use: cargo install dedalo-cli" >&2; exit 1 ;;
 esac
 base="https://github.com/$repo/releases/latest/download"
