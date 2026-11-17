@@ -5,6 +5,8 @@ Each release lists language changes, output changes and plugin API changes
 
 ## Unreleased
 
+## 0.1.0 (2026-11-17)
+
 ### Language
 
 - `template` blocks and `using "name"` on rooms, corridors, connections,
