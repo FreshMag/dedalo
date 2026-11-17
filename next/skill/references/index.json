@@ -17,5 +17,6 @@
   "catalog/trap.md",
   "examples/forgotten_crypt.dedalo",
   "examples/four_shapes.dedalo",
-  "examples/rotated.dedalo"
+  "examples/rotated.dedalo",
+  "examples/levels_tower.dedalo"
 ]

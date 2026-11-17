@@ -144,10 +144,18 @@ export async function loadCore(source) {
   return { call, loadPlugin };
 }
 
-/** The files of a plugin package named by its manifest, fetched from a folder URL. */
-export async function fetchPackage(baseUrl, readBytes = null) {
+/**
+ * The files of a plugin package, fetched from a folder URL: those `listed`
+ * (the plugin index lists every file of a package), else those the
+ * manifest names.
+ */
+export async function fetchPackage(baseUrl, readBytes = null, listed = null) {
   const get = readBytes || (async (path) => new Uint8Array(await (await fetch(new URL(path, baseUrl))).arrayBuffer()));
   const files = new Map();
+  if (listed) {
+    for (const path of listed) files.set(path, await get(path));
+    return files;
+  }
   const manifestBytes = await get("dedalo-plugin.toml");
   files.set("dedalo-plugin.toml", manifestBytes);
   const manifest = decoder.decode(manifestBytes);

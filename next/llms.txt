@@ -71,7 +71,8 @@ dungeon "crypt" {
 
 - `dedalo catalog` lists element types and subtypes.
 - `dedalo explain CODE` describes a diagnostic code with a worked fix.
-- `dedalo guide examples/forgotten_crypt` prints a complete example.
+- `dedalo guide examples/forgotten_crypt` prints a complete example;
+  `examples/levels_tower` shows a dungeon on several levels.
 - `dedalo schema document` prints the JSON Schema of the document model;
   `dedalo convert FILE --to json` switches between the two spellings.
 
@@ -134,8 +135,9 @@ Escapes in strings: `\n`, `\t`, `\"`, `\\`, `\uXXXX`. The sequences `${` and
 
 | Block | Label | Inside | Purpose |
 | --- | --- | --- | --- |
-| `room` | ID | `dungeon` | A space with a `shape` |
-| `corridor` | ID | `dungeon` | Joins two spaces: `connects = ["a", "b"]` |
+| `level` | ID | `dungeon` | One floor of a multi-level dungeon: a `name`, rooms and corridors |
+| `room` | ID | `dungeon`, `level` | A space with a `shape` |
+| `corridor` | ID | `dungeon`, `level` | Joins two spaces: `connects = ["a", "b"]` |
 | `connection` | ID | `dungeon` | A door or passage: `from`, `to`, `type` |
 | `feature` | ID | `dungeon`, `room`, `corridor` | Fixed element: furniture, trap, light, terrain |
 | `entity` | ID | `dungeon`, `room`, `corridor` | Creature, NPC or item |
@@ -158,7 +160,8 @@ feature cannot share an ID. References may point forward.
 `locked_door` and `secret_door` are accepted and mean `door` with
 `properties { locked = true }` or `secret = true`. A secret door is hidden
 from players. Stairs, ladders and trapdoors take a `position` inside `from`
-and may omit `to`.
+and may omit `to`. With a `to`, `to_position` is the cell in that room where
+they arrive, drawn as a second marker.
 
 ```hcl
 connection "vault_door" {
@@ -168,6 +171,51 @@ connection "vault_door" {
     placement { wall = north, offset = 3, width = 2 }
 }
 ```
+
+## Levels
+
+A dungeon on several floors groups its rooms and corridors in `level`
+blocks. Each level is laid out on its own: placement, corridors and doors
+stay inside one level, and only stairs, ladders and trapdoors join two. A
+dungeon with levels keeps every room and corridor in one of them;
+connections, notes and exports stay in the `dungeon` block.
+
+```hcl
+dungeon "tower" {
+    level "ground" {
+        name = "Ground floor"
+
+        room "hall" {
+            shape = rectangle(8, 6)
+        }
+    }
+
+    level "upper" {
+        name = "Upper floor"
+
+        room "study" {
+            shape = circle(3)
+        }
+    }
+
+    connection "spiral" {
+        from = "hall"
+        to = "study"
+        type = stairs
+        position = [6, 1]
+        to_position = [1, 3]
+    }
+
+    export "upstairs" {
+        preset = player
+        level = "upper"
+    }
+}
+```
+
+A map shows every level side by side, each under its name. An export with
+`level`, or `dedalo render --level upper`, draws one. A level with nothing
+an audience may see is left out of that audience's map, name included.
 
 ## Visibility
 
@@ -183,6 +231,7 @@ export "players" {
     format = png             # svg, png, pdf or txt
     cell_px = 70
     rotation = 90
+    level = "upper"          # one level of a multi-level dungeon
     revealed = ["pit_found"]
     include = ["vault_door"] # shown although secret
     visibility { grid = false }
@@ -191,6 +240,29 @@ export "players" {
 
 `dedalo render FILE --all` writes every export. A PDF export with
 `scale = tabletop` prints one cell per inch, tiled across `page`-sized sheets.
+
+## Language
+
+The words a map prints by itself are English or Italian: the legend labels
+of the built-in types, the headings `Legend` and `Notes`, and the scale
+line. Names, notes and custom labels are yours and are never translated.
+
+```hcl
+dungeon "cantina" {
+    render {
+        language = it        # en (default) or it
+    }
+
+    room "cantina" {
+        name = "Cantina"
+        shape = rectangle(6, 4)
+    }
+}
+```
+
+`render` inside an `export` overrides it for that export, and
+`dedalo render --lang it` for one command. A legend `entry` block still
+replaces any single label.
 
 ## Templates
 
@@ -254,8 +326,10 @@ dungeon "sketch" {
 }
 ```
 
-`dedalo plugin add PATH` installs a plugin package and records it in
-`dedalo.lock`; `--plugin PATH` loads one for a single command.
+`dedalo plugin add SOURCE` installs a plugin package and records it in
+`dedalo.lock`. The source is a package folder, a zipped `.dedalopkg` file,
+or the address of one; `--sha256 HASH` refuses a package with another hash.
+`--plugin PATH` loads a folder or a `.dedalopkg` for a single command.
 
 # Dedalo layout
 
@@ -274,9 +348,9 @@ are openings cut where two rooms touch.
 | `l_shape(width, height, cutout)` | Rectangle with its north-east corner cut away; `cutout` is a side or `[width, height]` |
 | `polygon([[x, y], ...])` | Simple polygon, any winding, edges of any direction |
 
-Doors on polygons go on horizontal and vertical edges; `placement { edge = 3 }`
-picks an edge by index. Circles and ellipses take doors at their four compass
-points.
+Doors go on any edge of a polygon, slanted ones included. Circles and
+ellipses take doors at their four compass points, or anywhere with a
+`bearing`. See Doors below.
 
 `rotation = 90` turns a room clockwise in quarter turns; its contents and
 wall names turn with it.
@@ -313,6 +387,43 @@ side of `from`; `offset` counts cells from the west end of a north or south
 wall, or the north end of an east or west wall. Without `offset` the door is
 centred on the shared part. Walls up to `settings.max_stub` cells apart
 (default 2) get a short stub passage automatically.
+
+On a polygon, `wall` picks the edges that face that way, and
+`placement { edge = 3 }` picks one edge by its index, counted from the first
+vertex. A door on a slanted edge needs the other room to share that edge.
+Its `offset` and `width` are measured along the edge, from its west end, or
+from its north end when the edge is steeper than 45 degrees.
+
+On a circle or an ellipse, `placement { bearing = 70 }` puts the door at the
+point of the wall 70 degrees clockwise from north; 0 is north and 90 is
+east. The bearing turns with the room when the room is rotated. The passage
+runs straight out of the nearest compass side, so the other room must face
+that part of the wall; when it does not, the error gives the bearings that
+work.
+
+```hcl
+dungeon "rotunda" {
+    room "hub" {
+        shape = circle(4)
+    }
+
+    room "east" {
+        shape = rectangle(3, 6)
+        layout { east_of = "hub" }
+    }
+
+    connection "side_door" {
+        from = "hub"
+        to = "east"
+        type = door
+        placement { bearing = 70 }
+    }
+}
+```
+
+With levels, each level has its own plane: `position` and corridor `path`
+points are counted on the level's own map, and the first room of each level
+is placed at `[0, 0]`.
 
 ## Corridors
 

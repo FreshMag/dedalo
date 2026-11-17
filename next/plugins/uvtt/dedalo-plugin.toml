@@ -4,7 +4,7 @@ name = "Universal VTT export"
 version = "0.3.0"
 api = 1
 dedalo = ">=0.2"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 description = "Exports a map as a Universal VTT file (.dd2vtt): the image with its walls, doors and lights."
 
 [wasm]

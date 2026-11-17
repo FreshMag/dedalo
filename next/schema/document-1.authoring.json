@@ -1,4 +1,5 @@
 {
+  "$id": "https://freshmag.github.io/dedalo/next/schema/document-1.authoring.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "A whole `.dedalo` file.",
@@ -165,6 +166,19 @@
               "to": {
                 "type": [
                   "string",
+                  "null"
+                ]
+              },
+              "to_position": {
+                "description": "Stairs, ladders and trapdoors: the cell inside `to` where they\narrive, drawn as a second marker.",
+                "items": {
+                  "description": "A number with at most three decimals.",
+                  "type": "number"
+                },
+                "maxItems": 2,
+                "minItems": 2,
+                "type": [
+                  "array",
                   "null"
                 ]
               },
@@ -546,6 +560,13 @@
                   }
                 ]
               },
+              "level": {
+                "description": "The one level to draw. Absent: every level, side by side.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "name": {
                 "description": "`default` when the block has no label.",
                 "type": "string"
@@ -600,6 +621,22 @@
                   {
                     "additionalProperties": false,
                     "properties": {
+                      "language": {
+                        "anyOf": [
+                          {
+                            "description": "The language of the words a map prints by itself: legend labels of\nthe built-in types, panel headings and the scale line.",
+                            "enum": [
+                              "en",
+                              "it"
+                            ],
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "description": "The language of default labels: `en` (default) or `it`."
+                      },
                       "plugins": {
                         "additionalProperties": {
                           "additionalProperties": {
@@ -816,6 +853,29 @@
             }
           ]
         },
+        "levels": {
+          "description": "The floors of a multi-level dungeon, in declaration order. Empty for\na dungeon on one level.",
+          "items": {
+            "additionalProperties": false,
+            "description": "One floor of a multi-level dungeon. Each level is laid out on its own\nplane; stairs, ladders and trapdoors join them.",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
         "name": {
           "type": [
             "string",
@@ -894,6 +954,22 @@
             {
               "additionalProperties": false,
               "properties": {
+                "language": {
+                  "anyOf": [
+                    {
+                      "description": "The language of the words a map prints by itself: legend labels of\nthe built-in types, panel headings and the scale line.",
+                      "enum": [
+                        "en",
+                        "it"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The language of default labels: `en` (default) or `it`."
+                },
                 "plugins": {
                   "additionalProperties": {
                     "additionalProperties": {
@@ -1335,6 +1411,13 @@
                 "description": "Corridors only: the gap it asks for between the rooms it joins.",
                 "type": [
                   "number",
+                  "null"
+                ]
+              },
+              "level": {
+                "description": "The level the space is on, in a dungeon with levels.",
+                "type": [
+                  "string",
                   "null"
                 ]
               },

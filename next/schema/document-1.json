@@ -144,6 +144,19 @@
             "null"
           ]
         },
+        "to_position": {
+          "description": "Stairs, ladders and trapdoors: the cell inside `to` where they\narrive, drawn as a second marker.",
+          "items": {
+            "description": "A number with at most three decimals.",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
         "type": {
           "type": "string"
         },
@@ -267,6 +280,13 @@
               "type": "null"
             }
           ]
+        },
+        "levels": {
+          "description": "The floors of a multi-level dungeon, in declaration order. Empty for\na dungeon on one level.",
+          "items": {
+            "$ref": "#/$defs/Level"
+          },
+          "type": "array"
         },
         "name": {
           "type": [
@@ -548,6 +568,13 @@
             }
           ]
         },
+        "level": {
+          "description": "The one level to draw. Absent: every level, side by side.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "name": {
           "description": "`default` when the block has no label.",
           "type": "string"
@@ -696,6 +723,14 @@
         }
       },
       "type": "object"
+    },
+    "Language": {
+      "description": "The language of the words a map prints by itself: legend labels of\nthe built-in types, panel headings and the scale line.",
+      "enum": [
+        "en",
+        "it"
+      ],
+      "type": "string"
     },
     "Layout": {
       "additionalProperties": false,
@@ -850,6 +885,28 @@
       ],
       "type": "string"
     },
+    "Level": {
+      "additionalProperties": false,
+      "description": "One floor of a multi-level dungeon. Each level is laid out on its own\nplane; stairs, ladders and trapdoors join them.",
+      "properties": {
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
     "Note": {
       "additionalProperties": false,
       "description": "An annotation, optionally attached to an element or positioned.",
@@ -957,6 +1014,17 @@
     "RenderOptions": {
       "additionalProperties": false,
       "properties": {
+        "language": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Language"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The language of default labels: `en` (default) or `it`."
+        },
         "plugins": {
           "additionalProperties": {
             "additionalProperties": {
@@ -1105,6 +1173,13 @@
             "null"
           ]
         },
+        "level": {
+          "description": "The level the space is on, in a dungeon with levels.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "name": {
           "type": [
             "string",
@@ -1217,6 +1292,7 @@
       "type": "string"
     }
   },
+  "$id": "https://freshmag.github.io/dedalo/next/schema/document-1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "A whole `.dedalo` file.",

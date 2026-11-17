@@ -4,7 +4,7 @@ name = "Hand-drawn style"
 version = "1.2.0"
 api = 1
 dedalo = ">=0.2"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 description = "Wobbly ink lines, sketched doors and a parchment theme."
 
 [wasm]

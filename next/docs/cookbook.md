@@ -147,9 +147,116 @@ dungeon "plain" {
 }
 ```
 
+## A tower on several levels
+
+Rooms go in `level` blocks; stairs join them. `to_position` marks where the
+stairs arrive.
+
+```hcl
+dungeon "watchtower" {
+    name = "The Watchtower"
+
+    level "ground" {
+        name = "Ground floor"
+
+        room "guardroom" {
+            name = "Guardroom"
+            shape = rectangle(6, 5)
+        }
+    }
+
+    level "top" {
+        name = "Lookout"
+
+        room "lookout" {
+            name = "Lookout"
+            shape = circle(3)
+        }
+    }
+
+    connection "ladder" {
+        from = "guardroom"
+        to = "lookout"
+        type = ladder
+        position = [4, 1]
+        to_position = [3, 3]
+    }
+
+    export "top_only" {
+        preset = player
+        level = "top"
+    }
+}
+```
+
+`dedalo render watchtower.dedalo` draws both levels side by side;
+`--level top` or the `top_only` export draws one.
+
+## A door on a slanted wall
+
+Two polygons that share a slanted edge take a door on it. `offset` is
+measured along the edge.
+
+```hcl
+dungeon "bastion" {
+    room "yard" {
+        shape = polygon([[0, 0], [6, 0], [10, 4], [10, 8], [0, 8]])
+        layout { position = [0, 0] }
+    }
+
+    room "turret" {
+        shape = polygon([[0, 0], [6, 0], [6, 6], [4, 4]])
+        layout { position = [6, 0] }
+    }
+
+    connection "postern" {
+        from = "yard"
+        to = "turret"
+        type = door
+        placement { offset = 2 }
+    }
+}
+```
+
+## A map in Italian
+
+`language = it` translates the legend labels of the built-in types, the
+`Legend` and `Notes` headings and the scale line. A legend entry still
+overrides one label.
+
+```hcl
+dungeon "cripta" {
+    render {
+        language = it
+    }
+
+    legend {
+        entry "trap" {
+            label = "Insidia"
+        }
+    }
+
+    room "ingresso" {
+        name = "Ingresso"
+        shape = rectangle(6, 4)
+
+        feature "piastra" {
+            type = trap
+            position = [2, 2]
+        }
+
+        feature "torcia" {
+            type = lighting
+            subtype = torch
+            placement { wall = north }
+        }
+    }
+}
+```
+
 ## A legend in another language
 
-Legend entries override labels, which is how a map is localised.
+For any other language, legend entries override the labels one by one.
 
 ```hcl
 dungeon "cripta" {
