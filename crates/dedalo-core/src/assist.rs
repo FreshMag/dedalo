@@ -45,6 +45,11 @@ const BLOCKS: &[(&str, &str, bool)] = &[
     ),
     ("dungeon", "The dungeon. A file holds exactly one.", true),
     (
+        "level",
+        "One floor of a multi-level dungeon: a name, rooms and corridors. Stairs, ladders and trapdoors join levels.",
+        true,
+    ),
+    (
         "grid",
         "Scale label (`unit = \"5ft\"`) and grid type.",
         false,
@@ -202,7 +207,18 @@ const ATTRS: &[(&str, &str)] = &[
         "Layout: `absolute`, `relative` or `automatic`. Legend: `automatic`, `custom` or `none`.",
     ),
     ("wall", "`north`, `south`, `east` or `west`."),
-    ("edge", "Polygon edge by index, from the first vertex."),
+    (
+        "edge",
+        "Polygon edge by index, from the first vertex. Slanted edges take doors too.",
+    ),
+    (
+        "bearing",
+        "Point on a round wall, in degrees clockwise from north; it turns with the room.",
+    ),
+    (
+        "to_position",
+        "Where stairs, a ladder or a trapdoor arrive: a cell in the `to` room, drawn as a second marker.",
+    ),
     ("anchor", "`center` or a compass point of the room."),
     ("preset", "`dm`, `player` or `clean`."),
     ("format", "`svg`, `png`, `pdf` or `txt`."),
@@ -237,6 +253,7 @@ fn block_names(parent: &str, grand: &str) -> &'static [&'static str] {
             "render",
             "legend",
             "properties",
+            "level",
             "room",
             "corridor",
             "connection",
@@ -245,6 +262,7 @@ fn block_names(parent: &str, grand: &str) -> &'static [&'static str] {
             "note",
             "export",
         ],
+        "level" => &["room", "corridor"],
         "room" => &["layout", "properties", "feature", "entity", "note"],
         "corridor" => &["properties", "feature", "entity", "note"],
         "connection" | "feature" | "entity" => &["placement", "properties", "note"],
@@ -258,10 +276,10 @@ fn block_names(parent: &str, grand: &str) -> &'static [&'static str] {
 fn attr_names(parent: &str, grand: &str) -> &'static [&'static str] {
     match parent {
         "dedalo" => &["version"],
-        "dungeon" => &["name"],
+        "dungeon" | "level" => &["name"],
         "grid" => &["unit", "type"],
         "settings" => &["default_wall", "default_floor", "seed", "max_stub"],
-        "render" => &["theme", "title", "text", "room_ids"],
+        "render" => &["theme", "title", "text", "room_ids", "language"],
         "legend" => &["mode", "position", "title"],
         "entry" => &["label"],
         "room" => &[
@@ -290,6 +308,7 @@ fn attr_names(parent: &str, grand: &str) -> &'static [&'static str] {
             "name",
             "secret",
             "position",
+            "to_position",
             "visibility",
             "reveal_when",
             "tags",
@@ -322,13 +341,14 @@ fn attr_names(parent: &str, grand: &str) -> &'static [&'static str] {
             "direction",
             "mode",
         ],
-        "placement" if grand == "connection" => &["wall", "offset", "width", "edge"],
+        "placement" if grand == "connection" => &["wall", "offset", "width", "edge", "bearing"],
         "placement" => &["wall", "offset", "anchor"],
         "export" => &[
             "preset",
             "format",
             "cell_px",
             "rotation",
+            "level",
             "revealed",
             "include",
             "exclude",
@@ -345,6 +365,7 @@ fn attr_names(parent: &str, grand: &str) -> &'static [&'static str] {
 
 fn snippet(keyword: &str) -> String {
     match keyword {
+        "level" => "level \"new_level\" {\n    name = \"\"\n}".to_string(),
         "room" => "room \"new_room\" {\n    shape = rectangle(6, 4)\n\n    layout {\n        east_of = \"\"\n    }\n}".to_string(),
         "corridor" => "corridor \"new_corridor\" {\n    connects = [\"\", \"\"]\n}".to_string(),
         "connection" => "connection \"new_door\" {\n    from = \"\"\n    to = \"\"\n    type = door\n}".to_string(),
@@ -405,6 +426,7 @@ fn attr_value(block: &Block, name: &str) -> Option<String> {
 struct Ids {
     spaces: Vec<(String, String)>,
     features: Vec<(String, String)>,
+    levels: Vec<(String, String)>,
     all: Vec<(String, String)>,
 }
 
@@ -412,10 +434,21 @@ fn ids(doc: Option<&Document>) -> Ids {
     let mut ids = Ids {
         spaces: Vec::new(),
         features: Vec::new(),
+        levels: Vec::new(),
         all: Vec::new(),
     };
     let Some(doc) = doc else { return ids };
     let d = &doc.dungeon;
+    ids.levels = d
+        .levels
+        .iter()
+        .map(|l| {
+            (
+                l.id.clone(),
+                l.name.clone().unwrap_or_else(|| "level".to_string()),
+            )
+        })
+        .collect();
     for s in &d.spaces {
         let entry = (
             s.id.clone(),
@@ -609,6 +642,7 @@ pub fn complete(source: &str, offset: usize, reg: &Registry) -> Completions {
                 ("legend", "mode") => values(LegendMode::NAMES, "legend mode"),
                 ("legend", "position") => values(LegendPosition::NAMES, "legend position"),
                 ("render", "text") => values(TextMode::NAMES, "text mode"),
+                ("render", "language") => values(Language::NAMES, "language"),
                 ("render", "theme") => values(
                     &reg.themes.keys().map(String::as_str).collect::<Vec<_>>(),
                     "theme",
@@ -621,6 +655,7 @@ pub fn complete(source: &str, offset: usize, reg: &Registry) -> Completions {
                     "from" | "to" | "connects" | "adjacent_to" | "north_of" | "south_of"
                     | "east_of" | "west_of" | "room" | "corridor",
                 ) => refs(&ids.spaces),
+                ("export", "level") => refs(&ids.levels),
                 (_, "contained_in") => refs(&ids.features),
                 (_, "target" | "include" | "exclude") => refs(&ids.all),
                 _ => Vec::new(),
@@ -824,20 +859,37 @@ pub fn outline(source: &str, reg: &Registry) -> Vec<BTreeMap<&'static str, serde
     };
     let d = &doc.dungeon;
     let mut out = Vec::new();
-    for s in &d.spaces {
-        out.push(entry(
-            s.kind.as_str(),
-            &s.id,
-            s.name.clone().unwrap_or_default(),
-            0,
-        ));
-        for e in &s.elements {
+    // With levels, each level is listed with its spaces under it.
+    let mut groups: Vec<(Option<&Level>, u8)> = d.levels.iter().map(|l| (Some(l), 1)).collect();
+    groups.push((None, 0));
+    for (level, depth) in groups {
+        if let Some(level) = level {
             out.push(entry(
-                e.class.as_str(),
-                &e.id,
-                e.subtype.clone().unwrap_or(e.ty.clone()),
-                1,
+                "level",
+                &level.id,
+                level.name.clone().unwrap_or_default(),
+                0,
             ));
+        }
+        let here = |s: &&Space| match level {
+            Some(level) => s.level.as_ref() == Some(&level.id),
+            None => !d.levels.iter().any(|l| s.level.as_ref() == Some(&l.id)),
+        };
+        for s in d.spaces.iter().filter(here) {
+            out.push(entry(
+                s.kind.as_str(),
+                &s.id,
+                s.name.clone().unwrap_or_default(),
+                depth,
+            ));
+            for e in &s.elements {
+                out.push(entry(
+                    e.class.as_str(),
+                    &e.id,
+                    e.subtype.clone().unwrap_or(e.ty.clone()),
+                    depth + 1,
+                ));
+            }
         }
     }
     for c in &d.connections {

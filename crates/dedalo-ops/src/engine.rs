@@ -18,6 +18,7 @@ use crate::value::to_dsl;
 
 /// The block keywords whose label is an element ID.
 pub const ELEMENT_KEYWORDS: &[&str] = &[
+    "level",
     "room",
     "corridor",
     "connection",
@@ -32,6 +33,7 @@ const ORDER: &[&str] = &[
     "render",
     "legend",
     "properties",
+    "level",
     "room",
     "corridor",
     "feature",
@@ -693,7 +695,8 @@ impl Editor<'_> {
                 let pk = block.keyword_text();
                 let allowed = match keyword.as_str() {
                     "feature" | "entity" => matches!(pk.as_str(), "room" | "corridor" | "dungeon"),
-                    "note" => true,
+                    "note" => pk != "level",
+                    "room" | "corridor" => matches!(pk.as_str(), "level" | "dungeon"),
                     _ => pk == "dungeon",
                 };
                 if !allowed {
@@ -707,6 +710,25 @@ impl Editor<'_> {
             None => dungeon(&root)
                 .ok_or_else(|| fail(Code::InvalidValue, "The file has no `dungeon` block."))?,
         };
+        if matches!(keyword.as_str(), "room" | "corridor") && target.keyword_text() == "dungeon" {
+            // A dungeon with levels keeps every space inside one.
+            let levels: Vec<String> = items(&target)
+                .into_iter()
+                .filter_map(|i| match i {
+                    Item::Block(b) if b.keyword_text() == "level" => label(&b),
+                    _ => None,
+                })
+                .collect();
+            if !levels.is_empty() {
+                return Err(fail(
+                    Code::InvalidValue,
+                    format!(
+                        "This dungeon has levels, so the new {keyword} `{new_id}` must go on one of them. Set `parent` to a level ID: {}.",
+                        levels.join(", ")
+                    ),
+                ));
+            }
+        }
         let edit = if target.keyword_text() == "dungeon" {
             self.insert_in_dungeon(&target, &keyword, &text)?
         } else {

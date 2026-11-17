@@ -57,8 +57,9 @@ Escapes in strings: `\n`, `\t`, `\"`, `\\`, `\uXXXX`. The sequences `${` and
 
 | Block | Label | Inside | Purpose |
 | --- | --- | --- | --- |
-| `room` | ID | `dungeon` | A space with a `shape` |
-| `corridor` | ID | `dungeon` | Joins two spaces: `connects = ["a", "b"]` |
+| `level` | ID | `dungeon` | One floor of a multi-level dungeon: a `name`, rooms and corridors |
+| `room` | ID | `dungeon`, `level` | A space with a `shape` |
+| `corridor` | ID | `dungeon`, `level` | Joins two spaces: `connects = ["a", "b"]` |
 | `connection` | ID | `dungeon` | A door or passage: `from`, `to`, `type` |
 | `feature` | ID | `dungeon`, `room`, `corridor` | Fixed element: furniture, trap, light, terrain |
 | `entity` | ID | `dungeon`, `room`, `corridor` | Creature, NPC or item |
@@ -81,7 +82,8 @@ feature cannot share an ID. References may point forward.
 `locked_door` and `secret_door` are accepted and mean `door` with
 `properties { locked = true }` or `secret = true`. A secret door is hidden
 from players. Stairs, ladders and trapdoors take a `position` inside `from`
-and may omit `to`.
+and may omit `to`. With a `to`, `to_position` is the cell in that room where
+they arrive, drawn as a second marker.
 
 ```hcl
 connection "vault_door" {
@@ -91,6 +93,51 @@ connection "vault_door" {
     placement { wall = north, offset = 3, width = 2 }
 }
 ```
+
+## Levels
+
+A dungeon on several floors groups its rooms and corridors in `level`
+blocks. Each level is laid out on its own: placement, corridors and doors
+stay inside one level, and only stairs, ladders and trapdoors join two. A
+dungeon with levels keeps every room and corridor in one of them;
+connections, notes and exports stay in the `dungeon` block.
+
+```hcl
+dungeon "tower" {
+    level "ground" {
+        name = "Ground floor"
+
+        room "hall" {
+            shape = rectangle(8, 6)
+        }
+    }
+
+    level "upper" {
+        name = "Upper floor"
+
+        room "study" {
+            shape = circle(3)
+        }
+    }
+
+    connection "spiral" {
+        from = "hall"
+        to = "study"
+        type = stairs
+        position = [6, 1]
+        to_position = [1, 3]
+    }
+
+    export "upstairs" {
+        preset = player
+        level = "upper"
+    }
+}
+```
+
+A map shows every level side by side, each under its name. An export with
+`level`, or `dedalo render --level upper`, draws one. A level with nothing
+an audience may see is left out of that audience's map, name included.
 
 ## Visibility
 
@@ -106,6 +153,7 @@ export "players" {
     format = png             # svg, png, pdf or txt
     cell_px = 70
     rotation = 90
+    level = "upper"          # one level of a multi-level dungeon
     revealed = ["pit_found"]
     include = ["vault_door"] # shown although secret
     visibility { grid = false }
@@ -114,6 +162,29 @@ export "players" {
 
 `dedalo render FILE --all` writes every export. A PDF export with
 `scale = tabletop` prints one cell per inch, tiled across `page`-sized sheets.
+
+## Language
+
+The words a map prints by itself are English or Italian: the legend labels
+of the built-in types, the headings `Legend` and `Notes`, and the scale
+line. Names, notes and custom labels are yours and are never translated.
+
+```hcl
+dungeon "cantina" {
+    render {
+        language = it        # en (default) or it
+    }
+
+    room "cantina" {
+        name = "Cantina"
+        shape = rectangle(6, 4)
+    }
+}
+```
+
+`render` inside an `export` overrides it for that export, and
+`dedalo render --lang it` for one command. A legend `entry` block still
+replaces any single label.
 
 ## Templates
 
@@ -177,5 +248,7 @@ dungeon "sketch" {
 }
 ```
 
-`dedalo plugin add PATH` installs a plugin package and records it in
-`dedalo.lock`; `--plugin PATH` loads one for a single command.
+`dedalo plugin add SOURCE` installs a plugin package and records it in
+`dedalo.lock`. The source is a package folder, a zipped `.dedalopkg` file,
+or the address of one; `--sha256 HASH` refuses a package with another hash.
+`--plugin PATH` loads a folder or a `.dedalopkg` for a single command.

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Installs the latest dedalo binary for this machine into ~/.local/bin.
 #
-#     curl -fsSL https://github.com/OWNER/dedalo/releases/latest/download/install.sh | sh
+#     curl -fsSL https://github.com/FreshMag/dedalo/releases/latest/download/install.sh | sh
 #
 # DEDALO_REPO (owner/name) and DEDALO_INSTALL_DIR change the defaults.
 set -eu

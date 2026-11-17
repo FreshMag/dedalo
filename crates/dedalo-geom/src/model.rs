@@ -27,12 +27,25 @@ pub struct Resolved {
     pub seed: u64,
     /// Bounding box of everything that resolved.
     pub bounds: Rect,
+    /// The floors of a multi-level dungeon, laid out side by side on the
+    /// map. Empty for a dungeon on one level.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub levels: Vec<RLevel>,
     pub spaces: Vec<RSpace>,
     pub walls: Vec<Wall>,
     pub openings: Vec<Opening>,
     pub elements: Vec<RElement>,
     pub notes: Vec<RNote>,
     pub reach: Reach,
+}
+
+/// One floor of a multi-level dungeon and the part of the map it takes.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct RLevel {
+    pub id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    pub bounds: Rect,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize)]
@@ -108,7 +121,7 @@ pub struct RSpace {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circle: Option<Circle>,
     pub bbox: Rect,
-    /// Always `default` before multi-level support.
+    /// The level the space is on; `default` in a dungeon without levels.
     pub level: String,
     pub visibility: Visibility,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -178,6 +191,13 @@ pub struct Opening {
     pub cell: Option<Rect>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// The level it is drawn on, in a dungeon with levels.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// True for the far end of stairs, a ladder or a trapdoor: the marker
+    /// in the room they lead to, where `from` is that room.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub arrival: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -228,6 +248,9 @@ pub struct RElement {
     pub properties: Props,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub tags: Vec<String>,
+    /// The level it is drawn on, in a dungeon with levels.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -244,6 +267,57 @@ pub struct RNote {
     pub visibility: Visibility,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reveal_when: Option<String>,
+    /// The level of its marker, in a dungeon with levels. A note with no
+    /// place belongs to every level.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+}
+
+impl Pt {
+    fn shift(&mut self, by: Pt) {
+        *self = self.plus(by);
+    }
+}
+
+impl Rect {
+    fn shift(&mut self, by: Pt) {
+        self.x0 += by.x;
+        self.x1 += by.x;
+        self.y0 += by.y;
+        self.y1 += by.y;
+    }
+}
+
+impl Resolved {
+    /// Moves everything by `by`. Walls are derived again by the caller.
+    pub(crate) fn shift(&mut self, by: Pt) {
+        self.bounds.shift(by);
+        for s in &mut self.spaces {
+            s.polygon.iter_mut().for_each(|p| p.shift(by));
+            s.bbox.shift(by);
+            if let Some(c) = &mut s.circle {
+                c.center.shift(by);
+            }
+        }
+        for o in &mut self.openings {
+            for seg in [&mut o.segment, &mut o.far].into_iter().flatten() {
+                seg.iter_mut().for_each(|p| p.shift(by));
+            }
+            o.stub.iter_mut().flatten().for_each(|p| p.shift(by));
+            if let Some(cell) = &mut o.cell {
+                cell.shift(by);
+            }
+        }
+        for e in &mut self.elements {
+            e.footprint.iter_mut().for_each(|p| p.shift(by));
+            e.bbox.shift(by);
+        }
+        for n in &mut self.notes {
+            if let Some(a) = &mut n.anchor {
+                a.shift(by);
+            }
+        }
+    }
 }
 
 /// The reachability graph of spaces (spec 7.9).

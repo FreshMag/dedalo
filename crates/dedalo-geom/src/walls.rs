@@ -81,6 +81,23 @@ pub fn derive_walls(spaces: &[RSpace], openings: &[Opening]) -> Vec<Wall> {
                 line.cuts.push((ta.min(tb), ta.max(tb), o.id.clone()));
                 line.points.insert(ta, a);
                 line.points.insert(tb, b);
+                continue;
+            }
+            // The ends of an opening on a slanted wall are rounded to the
+            // lattice, so they may lie a fraction off the wall's line.
+            let near = |key: &LineKey, p: Pt| {
+                let (dx, dy) = (key.0 as i128, key.1 as i128);
+                let off = dx * p.y as i128 - dy * p.x as i128 - key.2;
+                off * off <= dx * dx + dy * dy
+            };
+            let slanted = lines
+                .iter_mut()
+                .find(|(key, _)| key.0 != 0 && key.1 != 0 && near(key, a) && near(key, b));
+            if let Some((key, line)) = slanted {
+                let (ta, tb) = (key.0 * a.x + key.1 * a.y, key.0 * b.x + key.1 * b.y);
+                line.cuts.push((ta.min(tb), ta.max(tb), o.id.clone()));
+                line.points.entry(ta).or_insert(a);
+                line.points.entry(tb).or_insert(b);
             }
         }
     }

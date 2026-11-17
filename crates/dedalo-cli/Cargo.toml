@@ -6,7 +6,9 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
-repository = "https://github.com/FreshMag/dedalo"
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
 readme = "../../README.md"
 keywords = ["dungeon", "map", "rpg", "dsl", "mcp"]
 categories = ["command-line-utilities", "games"]

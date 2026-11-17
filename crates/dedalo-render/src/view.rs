@@ -5,11 +5,18 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use dedalo_geom::{Opening, Pt, RElement, RNote, RSpace, Rect, Resolved, Wall, derive_walls};
+use dedalo_geom::{
+    Opening, Pt, RElement, RLevel, RNote, RSpace, Rect, Resolved, Wall, derive_walls,
+};
 use dedalo_model::{
-    Bounds, Direction, Document, Export, Facing, Legend, Preset, Resolution, SpaceKind, Visibility,
+    Bounds, Direction, Document, Export, Facing, Language, Legend, Preset, Resolution, SpaceKind,
+    Visibility,
 };
 use serde::Serialize;
+
+fn is_english(language: &Language) -> bool {
+    *language == Language::En
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -30,6 +37,8 @@ pub struct ExportSpec {
     pub exclude: Vec<String>,
     pub revealed: Vec<String>,
     pub rotation: i64,
+    /// The one level to draw. Absent: every level, side by side.
+    pub level: Option<String>,
     pub format: String,
     pub cell_px: u32,
     pub bounds: Bounds,
@@ -42,6 +51,8 @@ pub struct ExportSpec {
     pub theme: Option<String>,
     pub title: Option<bool>,
     pub room_ids: bool,
+    /// The language of default labels.
+    pub language: Language,
     /// Keep text selectable instead of drawing it as outlines.
     pub live_text: bool,
     /// The plugins the document requires, in header order.
@@ -64,6 +75,7 @@ impl ExportSpec {
             exclude: Vec::new(),
             revealed: Vec::new(),
             rotation: 0,
+            level: None,
             format: "svg".to_string(),
             cell_px: 64,
             bounds: Bounds::Visible,
@@ -74,6 +86,7 @@ impl ExportSpec {
             theme: None,
             title: None,
             room_ids: false,
+            language: Language::En,
             live_text: false,
             plugins: Vec::new(),
             plugin_options: BTreeMap::new(),
@@ -107,12 +120,14 @@ impl ExportSpec {
                 render.theme = over.theme.clone().or(render.theme);
                 render.title = over.title.or(render.title);
                 render.room_ids = over.room_ids.or(render.room_ids);
+                render.language = over.language.or(render.language);
                 render.text = over.text.or(render.text);
             }
         }
         spec.theme = render.theme;
         spec.title = render.title;
         spec.room_ids = render.room_ids.unwrap_or(false);
+        spec.language = render.language.unwrap_or(Language::En);
         spec.live_text = render.text == Some(dedalo_model::TextMode::Live);
         spec.plugins = doc
             .dedalo
@@ -134,6 +149,7 @@ impl ExportSpec {
             spec.exclude = e.exclude.clone();
             spec.revealed = e.revealed.clone();
             spec.rotation = e.rotation.unwrap_or(0);
+            spec.level = e.level.clone();
             spec.format = e.format.clone().unwrap_or_else(|| "svg".to_string());
             spec.bounds = e.bounds.unwrap_or(Bounds::Visible);
             spec.page = e.page.unwrap_or(dedalo_model::Page::Fit);
@@ -185,8 +201,15 @@ pub struct View {
     pub show_frame: bool,
     pub live_text: bool,
     pub room_ids: bool,
+    /// The language of default labels; English when absent.
+    #[serde(skip_serializing_if = "is_english")]
+    pub language: Language,
     pub legend: Legend,
     pub seed: u64,
+    /// The levels drawn side by side, each with the part of the map it
+    /// takes. Empty for a dungeon on one level and for a single level.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub levels: Vec<RLevel>,
     pub spaces: Vec<RSpace>,
     pub walls: Vec<Wall>,
     pub openings: Vec<Opening>,
@@ -284,16 +307,25 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
         dropped.extend(orphaned);
     }
 
+    // One level of a multi-level dungeon, when the export asks for it. A
+    // name that matches no level leaves the map whole.
+    let chosen = spec
+        .level
+        .as_deref()
+        .filter(|l| model.levels.iter().any(|level| level.id == *l));
+    let on_level = |level: Option<&str>| chosen.is_none() || level.is_none() || level == chosen;
+
     let quarters = spec.rotation / 90;
     let mut spaces: Vec<RSpace> = model
         .spaces
         .iter()
-        .filter(|s| !dropped.contains(s.id.as_str()))
+        .filter(|s| !dropped.contains(s.id.as_str()) && on_level(Some(&s.level)))
         .cloned()
         .collect();
     let mut openings: Vec<Opening> = model
         .openings
         .iter()
+        .filter(|o| on_level(o.level.as_deref()))
         .filter(|o| {
             !dropped.contains(o.from.as_str())
                 && o.to.as_deref().is_none_or(|to| !dropped.contains(to))
@@ -315,6 +347,7 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
     };
     let listed = |e: &RElement| {
         visible_space(&e.space)
+            && on_level(e.level.as_deref())
             && shown(
                 &e.id,
                 e.visibility,
@@ -347,11 +380,17 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
         ) {
             continue;
         }
-        let holder = container
-            .name
-            .clone()
-            .unwrap_or_else(|| container.label.clone());
-        let name = item.name.clone().unwrap_or_else(|| item.label.clone());
+        // Unnamed things go by the label of their type, in the map's language.
+        let label = |e: &RElement| {
+            let key = match &e.subtype {
+                Some(subtype) => format!("{}.{subtype}", e.ty),
+                None => e.ty.clone(),
+            };
+            e.name.clone().unwrap_or_else(|| {
+                crate::locale::word_or(spec.language, &key, &e.label).to_string()
+            })
+        };
+        let (holder, name) = (label(container), label(item));
         match contents.iter_mut().find(|(h, _)| *h == holder) {
             Some((_, items)) => items.push(name),
             None => contents.push((holder, vec![name])),
@@ -371,6 +410,7 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
         .iter()
         .filter(|n| {
             target_visible(&n.target)
+                && on_level(n.level.as_deref())
                 && shown(&n.id, n.visibility, &n.reveal_when, spec.toggle("notes"))
         })
         .cloned()
@@ -417,14 +457,49 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
         .map(|s| s.bbox)
         .chain(stubs)
         .reduce(|a, b| a.union(&b));
-    let bounds = match spec.bounds {
-        Bounds::Full => turn_rect(model.bounds, quarters),
+    let whole = match chosen.and_then(|l| model.levels.iter().find(|level| level.id == l)) {
+        Some(level) => level.bounds,
+        None => model.bounds,
+    };
+    let mut bounds = match spec.bounds {
+        Bounds::Full => turn_rect(whole, quarters),
         Bounds::Visible => drawn.unwrap_or_default(),
     };
     let clean = spec.preset == Preset::Clean;
+    // Each level drawn gets its name above it. A level with nothing to show
+    // is left out, so its name does not betray it.
+    let mut levels: Vec<RLevel> = Vec::new();
+    if chosen.is_none() && !clean {
+        for level in &model.levels {
+            let drawn = spaces
+                .iter()
+                .filter(|s| s.level == level.id)
+                .map(|s| s.bbox)
+                .reduce(|a, b| a.union(&b));
+            if let Some(bounds) = drawn {
+                levels.push(RLevel {
+                    id: level.id.clone(),
+                    name: level.name.clone(),
+                    bounds,
+                });
+            }
+        }
+    }
+    if !levels.is_empty() {
+        // Room for the names above the top row of levels.
+        bounds.y0 -= 1000;
+    }
+    let mut title = model.name.clone().filter(|_| spec.title.unwrap_or(!clean));
+    if let (Some(title), Some(level)) = (
+        &mut title,
+        chosen.and_then(|l| model.levels.iter().find(|level| level.id == l)),
+    ) {
+        *title = format!("{title}, {}", level.name.as_deref().unwrap_or(&level.id));
+    }
     View {
         audience,
-        title: model.name.clone().filter(|_| spec.title.unwrap_or(!clean)),
+        title,
+        levels,
         grid_unit: model.grid_unit.clone(),
         rotation: spec.rotation.rem_euclid(360),
         cell_px: spec.cell_px,
@@ -434,6 +509,7 @@ pub fn build_view(model: &Resolved, spec: &ExportSpec) -> View {
         show_legend: !clean && spec.legend.mode != Some(dedalo_model::LegendMode::None),
         show_frame: !clean,
         room_ids: spec.room_ids,
+        language: spec.language,
         live_text: spec.live_text,
         legend: spec.legend.clone(),
         seed: model.seed,

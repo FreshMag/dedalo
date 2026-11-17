@@ -12,7 +12,7 @@ mod resolve;
 mod shape;
 mod walls;
 
-pub use model::{Circle, Opening, RElement, RNote, RSpace, Reach, Resolved, Wall};
+pub use model::{Circle, Opening, RElement, RLevel, RNote, RSpace, Reach, Resolved, Wall};
 pub use overlap::interiors_intersect;
 pub use prim::{C, CELL, Loc, Pt, Rect, locate, locate_scaled};
 pub use resolve::{ShapeHook, resolve, resolve_with};

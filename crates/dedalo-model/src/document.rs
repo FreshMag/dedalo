@@ -73,6 +73,11 @@ symbols!(
     PrintScale { Fit => "fit", Tabletop => "tabletop" }
 );
 symbols!(TextMode { Outline => "outline", Live => "live" });
+symbols!(
+    /// The language of the words a map prints by itself: legend labels of
+    /// the built-in types, panel headings and the scale line.
+    Language { En => "en", It => "it" }
+);
 symbols!(LegendMode { Automatic => "automatic", Custom => "custom", None => "none" });
 symbols!(LegendPosition { Right => "right", Bottom => "bottom", Left => "left", Top => "top" });
 
@@ -178,6 +183,10 @@ pub struct Dungeon {
     pub legend: Option<Legend>,
     #[serde(default, skip_serializing_if = "is_default")]
     pub properties: Props,
+    /// The floors of a multi-level dungeon, in declaration order. Empty for
+    /// a dungeon on one level.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub levels: Vec<Level>,
     /// Rooms and corridors, in declaration order.
     #[serde(default, skip_serializing_if = "is_default")]
     pub spaces: Vec<Space>,
@@ -219,6 +228,18 @@ pub struct Settings {
     pub max_stub: Option<Num>,
 }
 
+/// One floor of a multi-level dungeon. Each level is laid out on its own
+/// plane; stairs, ladders and trapdoors join them.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct Level {
+    pub id: String,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub comments: Comments,
+}
+
 /// A room or a corridor.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
@@ -227,6 +248,9 @@ pub struct Space {
     pub id: String,
     #[serde(default, skip_serializing_if = "is_default")]
     pub name: Option<String>,
+    /// The level the space is on, in a dungeon with levels.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub level: Option<String>,
     /// Rooms only.
     #[serde(default, skip_serializing_if = "is_default")]
     pub shape: Option<ShapeCall>,
@@ -271,6 +295,7 @@ impl Space {
             kind,
             id,
             name: None,
+            level: None,
             shape: None,
             rotation: None,
             layout: None,
@@ -337,6 +362,10 @@ pub struct Connection {
     /// Stairs, ladders and trapdoors: the cell inside `from`.
     #[serde(default, skip_serializing_if = "is_default")]
     pub position: Option<Point>,
+    /// Stairs, ladders and trapdoors: the cell inside `to` where they
+    /// arrive, drawn as a second marker.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub to_position: Option<Point>,
     #[serde(default, skip_serializing_if = "is_default")]
     pub placement: Option<ConnectionPlacement>,
     #[serde(default, skip_serializing_if = "is_default")]
@@ -486,6 +515,9 @@ pub struct RenderOptions {
     /// Print room IDs instead of names.
     #[serde(default, skip_serializing_if = "is_default")]
     pub room_ids: Option<bool>,
+    /// The language of default labels: `en` (default) or `it`.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub language: Option<Language>,
     /// Options passed to plugins, by plugin ID.
     #[serde(default, skip_serializing_if = "is_default")]
     pub plugins: BTreeMap<String, Props>,
@@ -533,6 +565,9 @@ pub struct Export {
     pub cell_px: Option<i64>,
     #[serde(default, skip_serializing_if = "is_default")]
     pub rotation: Option<i64>,
+    /// The one level to draw. Absent: every level, side by side.
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub level: Option<String>,
     /// Condition tags that reveal `conditional` elements.
     #[serde(default, skip_serializing_if = "is_default")]
     pub revealed: Vec<String>,
@@ -572,5 +607,10 @@ impl Dungeon {
 
     pub fn space(&self, id: &str) -> Option<&Space> {
         self.spaces.iter().find(|s| s.id == id)
+    }
+
+    /// The level a space is on, when the dungeon has levels.
+    pub fn level_of(&self, space: &str) -> Option<&str> {
+        self.space(space)?.level.as_deref()
     }
 }

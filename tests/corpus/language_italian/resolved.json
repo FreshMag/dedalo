@@ -1,0 +1,602 @@
+{
+  "id": "language_italian",
+  "name": "La Cantina",
+  "grid_unit": "1,5 m",
+  "seed": 13294909104591361972,
+  "bounds": [
+    0,
+    0,
+    12,
+    5
+  ],
+  "spaces": [
+    {
+      "id": "cantina",
+      "kind": "room",
+      "name": "Cantina",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "bbox": [
+        0,
+        0,
+        8,
+        5
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    },
+    {
+      "id": "dispensa",
+      "kind": "room",
+      "name": "Dispensa",
+      "polygon": [
+        [
+          8,
+          0
+        ],
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "bbox": [
+        8,
+        0,
+        12,
+        4
+      ],
+      "level": "default",
+      "visibility": "public",
+      "wall": "stone",
+      "floor": "stone"
+    }
+  ],
+  "walls": [
+    {
+      "line": [
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          4
+        ]
+      ],
+      "spaces": [
+        "dispensa"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            12,
+            0
+          ],
+          [
+            12,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "spaces": [
+        "cantina",
+        "dispensa"
+      ],
+      "material": "stone",
+      "openings": [
+        "porta"
+      ],
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            1
+          ]
+        ],
+        [
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          4
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "spaces": [
+        "cantina"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            4
+          ],
+          [
+            8,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "spaces": [
+        "cantina"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "spaces": [
+        "cantina"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          0
+        ],
+        [
+          12,
+          0
+        ]
+      ],
+      "spaces": [
+        "dispensa"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            12,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          8,
+          4
+        ],
+        [
+          12,
+          4
+        ]
+      ],
+      "spaces": [
+        "dispensa"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            8,
+            4
+          ],
+          [
+            12,
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "line": [
+        [
+          0,
+          5
+        ],
+        [
+          8,
+          5
+        ]
+      ],
+      "spaces": [
+        "cantina"
+      ],
+      "material": "stone",
+      "solid": [
+        [
+          [
+            0,
+            5
+          ],
+          [
+            8,
+            5
+          ]
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "porta",
+      "from": "cantina",
+      "to": "dispensa",
+      "type": "door",
+      "secret": false,
+      "locked": true,
+      "visibility": "public",
+      "implicit": false,
+      "segment": [
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          2
+        ]
+      ],
+      "width": 1
+    },
+    {
+      "id": "scala",
+      "from": "dispensa",
+      "type": "stairs",
+      "secret": false,
+      "locked": false,
+      "visibility": "public",
+      "implicit": false,
+      "width": 1,
+      "cell": [
+        10,
+        1,
+        11,
+        2
+      ]
+    }
+  ],
+  "elements": [
+    {
+      "id": "torcia",
+      "class": "feature",
+      "type": "lighting",
+      "subtype": "torch",
+      "category": "lighting",
+      "label": "Torch",
+      "type_label": "light",
+      "glyph": "*",
+      "layer": "features",
+      "space": "cantina",
+      "footprint": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "bbox": [
+        1,
+        0,
+        2,
+        1
+      ],
+      "rotation": 0,
+      "wall": "north",
+      "visibility": "public",
+      "blocking": false,
+      "light_radius": 4
+    },
+    {
+      "id": "botte",
+      "class": "feature",
+      "type": "furniture",
+      "subtype": "crate",
+      "category": "features",
+      "label": "Crate",
+      "type_label": "furniture",
+      "glyph": "f",
+      "layer": "features",
+      "space": "cantina",
+      "footprint": [
+        [
+          6,
+          1
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          6,
+          2
+        ]
+      ],
+      "bbox": [
+        6,
+        1,
+        7,
+        2
+      ],
+      "rotation": 0,
+      "visibility": "public",
+      "blocking": true
+    },
+    {
+      "id": "forziere",
+      "class": "feature",
+      "type": "container",
+      "subtype": "chest",
+      "category": "treasure",
+      "label": "Chest",
+      "type_label": "chest",
+      "glyph": "$",
+      "layer": "features",
+      "space": "cantina",
+      "footprint": [
+        [
+          6,
+          3
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "bbox": [
+        6,
+        3,
+        7,
+        4
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": true
+    },
+    {
+      "id": "fossa",
+      "class": "feature",
+      "type": "trap",
+      "subtype": "pit",
+      "category": "traps",
+      "label": "Pit",
+      "type_label": "trap",
+      "glyph": "T",
+      "layer": "markers",
+      "space": "cantina",
+      "footprint": [
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "bbox": [
+        3,
+        2,
+        4,
+        3
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false
+    },
+    {
+      "id": "chiave",
+      "class": "entity",
+      "type": "item",
+      "subtype": "key",
+      "category": "treasure",
+      "label": "Key",
+      "type_label": "item",
+      "glyph": "i",
+      "layer": "entities",
+      "space": "cantina",
+      "bbox": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false,
+      "contained_in": "forziere"
+    },
+    {
+      "id": "oste",
+      "class": "entity",
+      "type": "npc",
+      "category": "creatures",
+      "label": "NPC",
+      "type_label": "npc",
+      "glyph": "N",
+      "layer": "entities",
+      "space": "cantina",
+      "footprint": [
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "bbox": [
+        1,
+        3,
+        2,
+        4
+      ],
+      "rotation": 0,
+      "visibility": "dm",
+      "blocking": false
+    }
+  ],
+  "notes": [
+    {
+      "id": "avviso",
+      "number": 1,
+      "target": "fossa",
+      "anchor": [
+        4,
+        2
+      ],
+      "text": "La fossa è profonda tre metri.",
+      "visibility": "dm"
+    }
+  ],
+  "reach": {
+    "entrance": "cantina",
+    "links": [
+      [
+        "cantina",
+        "dispensa",
+        "porta"
+      ]
+    ]
+  }
+}

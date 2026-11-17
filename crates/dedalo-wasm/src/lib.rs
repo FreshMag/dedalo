@@ -38,6 +38,12 @@ enum Request {
         format: Option<String>,
         #[serde(default)]
         rotation: Option<i64>,
+        /// One level of a multi-level dungeon.
+        #[serde(default)]
+        level: Option<String>,
+        /// The language of default labels, for a document that sets none.
+        #[serde(default)]
+        language: Option<String>,
         /// Temporary category toggles, such as `{ "grid": false }`.
         #[serde(default)]
         toggles: std::collections::BTreeMap<String, bool>,
@@ -65,6 +71,9 @@ enum Request {
     Outline { source: String },
     /// Load a plugin package: its files, base64-encoded, by path.
     LoadPlugin { files: BTreeMap<String, String> },
+    /// Open a zipped package (`.dedalopkg`, base64) without loading it:
+    /// its files, and the ID, version and hash to show before asking.
+    UnpackPackage { package: String },
     /// The plugins loaded.
     Plugins,
     /// Apply edit operations, such as a diagnostic's fix.
@@ -163,6 +172,25 @@ impl dedalo_plugin::PluginRuntime for BrowserRuntime {
     }
 }
 
+/// Opens a zipped package and describes it. Nothing is registered.
+fn unpack_package(package: &str) -> Result<serde_json::Value, String> {
+    let bytes = dedalo_plugin::base64::decode(package).ok_or("the package is not valid base64")?;
+    let files = dedalo_plugin::package::unpack(&bytes)?;
+    let manifest = files
+        .get(dedalo_plugin::MANIFEST)
+        .ok_or("the package has no dedalo-plugin.toml")?;
+    let manifest = dedalo_plugin::Manifest::parse(&String::from_utf8_lossy(manifest))?;
+    let encoded: BTreeMap<&String, String> = files
+        .iter()
+        .map(|(path, bytes)| (path, dedalo_plugin::base64::encode(bytes)))
+        .collect();
+    Ok(json!({
+        "ok": true,
+        "plugin": { "id": manifest.plugin.id, "version": manifest.plugin.version, "sha256": dedalo_plugin::package_hash(&files) },
+        "files": encoded,
+    }))
+}
+
 /// Loads a plugin package given as files, base64-encoded.
 fn load_plugin(files: BTreeMap<String, String>) -> Result<serde_json::Value, String> {
     let mut decoded = BTreeMap::new();
@@ -238,7 +266,13 @@ pub fn handle(request: &str) -> String {
                 .iter()
                 .flat_map(|d| d.dungeon.exports.iter().map(|e| e.name.as_str()))
                 .collect();
-            json!({ "ok": !compiled.has_errors(), "report": compiled.report(), "exports": exports })
+            let levels: Vec<Value> = compiled
+                .document
+                .iter()
+                .flat_map(|d| &d.dungeon.levels)
+                .map(|l| json!({ "id": l.id, "name": l.name }))
+                .collect();
+            json!({ "ok": !compiled.has_errors(), "report": compiled.report(), "exports": exports, "levels": levels })
         }
         Ok(Request::Render {
             source,
@@ -246,6 +280,8 @@ pub fn handle(request: &str) -> String {
             preset,
             format,
             rotation,
+            level,
+            language,
             toggles,
             host_png,
             force,
@@ -267,6 +303,30 @@ pub fn handle(request: &str) -> String {
             }
             if let Some(rotation) = rotation.filter(|r| [0, 90, 180, 270].contains(r)) {
                 spec.rotation = rotation;
+            }
+            // The page's language applies where the document chose none.
+            let chosen = compiled.document.as_ref().is_some_and(|doc| {
+                let d = &doc.dungeon;
+                let of_export = d
+                    .exports
+                    .iter()
+                    .find(|e| e.name == spec.name)
+                    .and_then(|e| e.render.as_ref())
+                    .and_then(|r| r.language);
+                of_export
+                    .or(d.render.as_ref().and_then(|r| r.language))
+                    .is_some()
+            });
+            if let Some(language) = language
+                .as_deref()
+                .and_then(dedalo_core::model::Language::parse)
+                .filter(|_| !chosen)
+            {
+                spec.language = language;
+            }
+            if level.as_ref().is_some_and(|l| !l.is_empty()) {
+                // A level the dungeon does not have leaves the map whole.
+                spec.level = level;
             }
             spec.toggles.extend(toggles);
             spec.host_png = host_png.as_deref().and_then(dedalo_plugin::base64::decode);
@@ -298,6 +358,10 @@ pub fn handle(request: &str) -> String {
                 (None, _) => json!({ "ok": false, "report": compiled.report() }),
             }
         }
+        Ok(Request::UnpackPackage { package }) => match unpack_package(&package) {
+            Ok(answer) => answer,
+            Err(e) => json!({ "ok": false, "error": e }),
+        },
         Ok(Request::LoadPlugin { files }) => match load_plugin(files) {
             Ok(info) => json!({ "ok": true, "plugin": info }),
             Err(e) => json!({ "ok": false, "error": e }),

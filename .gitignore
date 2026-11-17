@@ -5,6 +5,8 @@
 *.new
 /web/skill
 /web/llms.txt
+/web/*.dedalopkg
+*.dedalopkg
 /plugins/*/*.wasm
 /plugins/index.json
 /fuzz/target

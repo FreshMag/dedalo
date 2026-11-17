@@ -74,6 +74,7 @@ const DUNGEON_BLOCKS: &[&str] = &[
     "render",
     "legend",
     "properties",
+    "level",
     "room",
     "corridor",
     "connection",
@@ -123,6 +124,7 @@ const CONNECTION_ATTRS: &[&str] = &[
     "type",
     "secret",
     "position",
+    "to_position",
     "visibility",
     "reveal_when",
     "tags",
@@ -160,6 +162,7 @@ const EXPORT_ATTRS: &[&str] = &[
     "resolution",
     "cell_px",
     "rotation",
+    "level",
     "revealed",
     "include",
     "exclude",
@@ -168,7 +171,7 @@ const EXPORT_ATTRS: &[&str] = &[
     "orientation",
     "scale",
 ];
-const RENDER_ATTRS: &[&str] = &["theme", "title", "text", "room_ids"];
+const RENDER_ATTRS: &[&str] = &["theme", "title", "text", "room_ids", "language"];
 const LEGEND_ATTRS: &[&str] = &["mode", "position", "title"];
 
 /// The node a block's items belong to, for source-map paths.
@@ -411,9 +414,13 @@ impl Lower<'_> {
 
     fn unknown_block(&mut self, cx: &Cx, b: &Block, parent: &str, known: &[&str]) {
         let keyword = b.keyword_text();
-        let message = if keyword == "template" || keyword == "level" {
+        let message = if keyword == "level" {
             format!(
-                "`{keyword}` blocks are reserved for a later release and are not supported yet."
+                "A `level` block belongs directly inside the `dungeon` block, not inside `{parent}`."
+            )
+        } else if parent == "level" {
+            format!(
+                "A `level` holds rooms and corridors, but found `{keyword}`. Connections, notes and exports go in the `dungeon` block; features and entities go inside their room."
             )
         } else if known.is_empty() {
             format!("`{parent}` does not take nested blocks, but found `{keyword}`.")
@@ -1155,6 +1162,7 @@ impl Lower<'_> {
                             cat.common.properties.get(n).cloned()
                         });
                     }
+                    "level" => self.level(&blk, &mut d),
                     "room" => d.spaces.extend(self.room(&blk)),
                     "corridor" => d.spaces.extend(self.corridor(&blk)),
                     "connection" => d.connections.extend(self.connection(&blk)),
@@ -1205,6 +1213,45 @@ impl Lower<'_> {
         let lines = &self.lines;
         self.map.attach(&mut self.diags, lines);
         Some(d)
+    }
+
+    /// A `level` block: a named floor that holds rooms and corridors.
+    fn level(&mut self, b: &Block, d: &mut Dungeon) {
+        let mut cm = self.node_comments(b);
+        let Some(id) = self.id_label(b, "ground_floor") else {
+            return;
+        };
+        let cx = Cx::node(&id);
+        let mut level = Level {
+            id: id.clone(),
+            ..Level::default()
+        };
+        if let Some(body) = b.body() {
+            for item in self.items(&cx, &body, &mut cm) {
+                match item {
+                    It::Attr(name, a) => match name.as_str() {
+                        "name" => level.name = self.string(&cx, &a),
+                        _ => self.unknown_attr(&cx, &a, "level", &["name"], false),
+                    },
+                    It::Block(keyword, blk) => {
+                        let space = match keyword.as_str() {
+                            "room" => self.room(&blk),
+                            "corridor" => self.corridor(&blk),
+                            _ => {
+                                self.unknown_block(&cx, &blk, "level", &["room", "corridor"]);
+                                None
+                            }
+                        };
+                        d.spaces.extend(space.map(|mut s| {
+                            s.level = Some(id.clone());
+                            s
+                        }));
+                    }
+                }
+            }
+        }
+        level.comments = cm;
+        d.levels.push(level);
     }
 
     /// Gathers the `template` blocks of the file and of the dungeon.
@@ -1396,6 +1443,9 @@ impl Lower<'_> {
                         render.text = self.choice(&inner, &a, TextMode::parse, TextMode::NAMES)
                     }
                     "room_ids" => render.room_ids = self.boolean(&inner, &a),
+                    "language" => {
+                        render.language = self.choice(&inner, &a, Language::parse, Language::NAMES)
+                    }
                     _ => self.unknown_attr(&inner, &a, "render", RENDER_ATTRS, false),
                 },
                 It::Block(keyword, blk) if keyword == "plugin" => {
@@ -1688,6 +1738,7 @@ impl Lower<'_> {
                     },
                     "secret" => c.secret = self.boolean(&cx, &a),
                     "position" => c.position = self.point(&cx, &a),
+                    "to_position" => c.to_position = self.point(&cx, &a),
                     "tags" => c.tags = self.list(&cx, &a, Self::e_word),
                     n => {
                         if !self.visibility_attr(&cx, n, &a, &mut c.visibility, &mut c.reveal_when)
@@ -2063,6 +2114,7 @@ impl Lower<'_> {
                         }
                     }
                     "rotation" => ex.rotation = self.quarter_turn(&cx, &a),
+                    "level" => ex.level = self.reference(&cx, &a),
                     "revealed" => ex.revealed = self.list(&cx, &a, Self::e_word),
                     "include" => ex.include = self.list(&cx, &a, Self::e_ref),
                     "exclude" => ex.exclude = self.list(&cx, &a, Self::e_ref),

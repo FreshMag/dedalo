@@ -67,6 +67,7 @@ dungeon "crypt" {
 
 - `dedalo catalog` lists element types and subtypes.
 - `dedalo explain CODE` describes a diagnostic code with a worked fix.
-- `dedalo guide examples/forgotten_crypt` prints a complete example.
+- `dedalo guide examples/forgotten_crypt` prints a complete example;
+  `examples/levels_tower` shows a dungeon on several levels.
 - `dedalo schema document` prints the JSON Schema of the document model;
   `dedalo convert FILE --to json` switches between the two spellings.

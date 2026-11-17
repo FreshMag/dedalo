@@ -1,0 +1,199 @@
+{
+  "dungeon": {
+    "id": "layout_slanted_door",
+    "spaces": [
+      {
+        "kind": "room",
+        "id": "hub",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                2,
+                0
+              ],
+              [
+                6,
+                0
+              ],
+              [
+                8,
+                2
+              ],
+              [
+                8,
+                6
+              ],
+              [
+                6,
+                8
+              ],
+              [
+                2,
+                8
+              ],
+              [
+                0,
+                6
+              ],
+              [
+                0,
+                2
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "position": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "ne",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                4,
+                4
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                2,
+                2
+              ]
+            ]
+          ]
+        },
+        "rotation": 180,
+        "layout": {
+          "position": [
+            6,
+            0
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "sw",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                2,
+                0
+              ],
+              [
+                4,
+                2
+              ],
+              [
+                4,
+                4
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "position": [
+            -2,
+            6
+          ]
+        }
+      },
+      {
+        "kind": "room",
+        "id": "se",
+        "shape": {
+          "fn": "polygon",
+          "args": [
+            [
+              [
+                2,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                4
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                2
+              ]
+            ]
+          ]
+        },
+        "layout": {
+          "position": [
+            6,
+            6
+          ]
+        }
+      }
+    ],
+    "connections": [
+      {
+        "id": "to_ne",
+        "from": "hub",
+        "to": "ne",
+        "type": "door"
+      },
+      {
+        "id": "to_sw",
+        "from": "sw",
+        "to": "hub",
+        "type": "archway",
+        "placement": {
+          "wall": "north",
+          "offset": 0.5
+        }
+      },
+      {
+        "id": "to_se",
+        "from": "hub",
+        "to": "se",
+        "type": "door",
+        "secret": true,
+        "placement": {
+          "edge": 3,
+          "width": 2
+        }
+      }
+    ],
+    "comments": {
+      "leading": [
+        "# Doors on the slanted edges of an octagon: centred, by wall name with an",
+        "# offset, and a secret one."
+      ]
+    }
+  }
+}

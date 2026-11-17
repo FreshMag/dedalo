@@ -51,17 +51,53 @@ impl Side {
 
     /// How far a chord of width `w` lies inside the tangent of a curve.
     fn sagitta(&self, w: C) -> C {
+        self.along().map_or(0, |r| self.depth(r - w / 2))
+    }
+
+    /// How far the curve lies inside its tangent, `t` along the side.
+    fn depth(&self, t: C) -> C {
         self.curve.map_or(0, |(along, across)| {
-            let (a, b, half) = (along as i128, across as i128, (w / 2) as i128);
-            // On the ellipse x^2/a^2 + y^2/b^2 = 1 the chord at half-width
-            // `half` lies at y = b * sqrt(1 - half^2 / a^2).
-            across - (isqrt(b * b * (a * a - half * half)) / a) as C
+            let (a, b, x) = (along as i128, across as i128, (t - along) as i128);
+            // On the ellipse x^2/a^2 + y^2/b^2 = 1 the point at `x` lies at
+            // y = b * sqrt(1 - x^2 / a^2).
+            across - (isqrt((b * b * (a * a - x * x)).max(0)) / a) as C
         })
     }
 
     /// The radius along the side, for a curved side.
     fn along(&self) -> Option<C> {
         self.curve.map(|c| c.0)
+    }
+}
+
+/// A boundary edge that is neither horizontal nor vertical (spec 7.5).
+#[derive(Clone, Debug)]
+struct Slant {
+    /// The compass direction closest to the outward normal, in the space's
+    /// own frame.
+    name: Direction,
+    /// Start and end on the map. The start is the west end of a mostly
+    /// horizontal edge and the north end of a mostly vertical one, in the
+    /// space's own frame.
+    start: Pt,
+    end: Pt,
+    /// Edge index as the author counted it.
+    index: usize,
+}
+
+impl Slant {
+    fn len(&self) -> f64 {
+        let e = self.end.minus(self.start);
+        libm::sqrt((e.x as f64) * (e.x as f64) + (e.y as f64) * (e.y as f64))
+    }
+
+    /// The point `t` thousandths from the start, rounded to the lattice.
+    fn point(&self, t: C) -> Pt {
+        let (e, len) = (self.end.minus(self.start), self.len());
+        Pt::new(
+            self.start.x + libm::round(e.x as f64 * t as f64 / len) as C,
+            self.start.y + libm::round(e.y as f64 * t as f64 / len) as C,
+        )
     }
 }
 
@@ -93,6 +129,7 @@ struct Geo {
     poly: Vec<Pt>,
     bbox: Rect,
     sides: Vec<Side>,
+    slants: Vec<Slant>,
     circle: Option<Circle>,
     xf: Xf,
 }
@@ -106,6 +143,7 @@ fn make_geo(local: &Local, rot: u8, origin: Pt) -> Geo {
     };
     let poly: Vec<Pt> = local.poly.iter().map(|p| xf.apply(*p)).collect();
     let mut sides = Vec::new();
+    let mut slants = Vec::new();
     let mut side = |name: Direction, a: Pt, b: Pt, index: usize, curve: Option<(C, C)>| {
         sides.push(Side {
             name,
@@ -160,6 +198,30 @@ fn make_geo(local: &Local, rot: u8, origin: Pt) -> Geo {
                 side(Direction::East, a, b, index, None);
             } else if a.x == b.x {
                 side(Direction::West, b, a, index, None);
+            } else {
+                // The outward normal of a clockwise edge is (dy, -dx).
+                let (nx, ny) = (b.y - a.y, a.x - b.x);
+                let (name, (start, end)) = if ny.abs() >= nx.abs() {
+                    let name = if ny < 0 {
+                        Direction::North
+                    } else {
+                        Direction::South
+                    };
+                    (name, if a.x < b.x { (a, b) } else { (b, a) })
+                } else {
+                    let name = if nx > 0 {
+                        Direction::East
+                    } else {
+                        Direction::West
+                    };
+                    (name, if a.y < b.y { (a, b) } else { (b, a) })
+                };
+                slants.push(Slant {
+                    name,
+                    start: xf.apply(start),
+                    end: xf.apply(end),
+                    index,
+                });
             }
         }
     }
@@ -175,6 +237,7 @@ fn make_geo(local: &Local, rot: u8, origin: Pt) -> Geo {
         bbox: Rect::of(&poly),
         poly,
         sides,
+        slants,
         circle,
         xf,
     }
@@ -228,6 +291,9 @@ pub fn resolve(doc: &Document, cat: &Catalog) -> (Resolved, Vec<Diagnostic>) {
 pub type ShapeHook<'a> =
     &'a dyn Fn(&dedalo_model::ShapeCall) -> Option<Result<Vec<[f64; 2]>, String>>;
 
+/// The gap between two levels on the map, in cells.
+const LEVEL_GAP: C = 3 * CELL;
+
 /// Resolves a document with plugin shape functions available.
 pub fn resolve_with(
     doc: &Document,
@@ -235,6 +301,99 @@ pub fn resolve_with(
     shapes: ShapeHook,
 ) -> (Resolved, Vec<Diagnostic>) {
     let d = &doc.dungeon;
+    if d.levels.is_empty() || !dedalo_model::check::geometry_limits(d).is_empty() {
+        let (mut resolved, mut diags) = resolve_plane(d, cat, shapes, None);
+        resolved.reach = reachability(d, &resolved.spaces, &resolved.openings, &mut diags);
+        return (resolved, diags);
+    }
+    // Each level is resolved on its own plane, then the planes are set
+    // side by side on the map, in declaration order.
+    let level_of = |space: &str| d.level_of(space);
+    let space_of = |id: &str| -> Option<&str> {
+        if let Some(s) = d.space(id) {
+            return Some(&s.id);
+        }
+        if let Some((Some(s), _)) = d.elements().find(|(_, e)| e.id == id) {
+            return Some(&s.id);
+        }
+        d.connections
+            .iter()
+            .find(|c| c.id == id)
+            .map(|c| c.from.as_str())
+    };
+    let first = d.levels[0].id.as_str();
+    let (mut all, mut diags): (Option<Resolved>, Vec<Diagnostic>) = (None, Vec::new());
+    let mut levels = Vec::new();
+    let mut cursor: Option<Pt> = None;
+    for level in &d.levels {
+        let here = |space: &str| level_of(space) == Some(level.id.as_str());
+        let mut plane = d.clone();
+        plane.spaces.retain(|s| s.level.as_ref() == Some(&level.id));
+        plane.connections.retain(|c| {
+            let vertical = VERTICAL_TYPES.contains(&c.ty.as_str());
+            let to_here = c.to.as_deref().is_some_and(here);
+            if vertical {
+                here(&c.from) || to_here
+            } else {
+                here(&c.from) && to_here
+            }
+        });
+        // Whatever has no room of its own is placed on the first level.
+        if level.id != first {
+            plane.elements.clear();
+        }
+        plane.notes.retain(|n| {
+            let home = n.target.as_deref().and_then(space_of).and_then(level_of);
+            home.unwrap_or(first) == level.id
+        });
+        let (mut part, part_diags) = resolve_plane(&plane, cat, shapes, Some(&level.id));
+        diags.extend(part_diags);
+        // Whole cells, so that every level stays on the grid.
+        let corner = Pt::new(floor_cell(part.bounds.x0), floor_cell(part.bounds.y0));
+        let at = cursor.unwrap_or(corner);
+        part.shift(at.minus(corner));
+        cursor = Some(Pt::new(ceil_cell(part.bounds.x1) + LEVEL_GAP, at.y));
+        levels.push(RLevel {
+            id: level.id.clone(),
+            name: level.name.clone(),
+            bounds: part.bounds,
+        });
+        all = Some(match all {
+            None => part,
+            Some(mut whole) => {
+                whole.bounds = whole.bounds.union(&part.bounds);
+                whole.spaces.extend(part.spaces);
+                whole.openings.extend(part.openings);
+                whole.elements.extend(part.elements);
+                whole.notes.extend(part.notes);
+                whole
+            }
+        });
+    }
+    let mut resolved = all.expect("a dungeon with levels has one");
+    resolved.levels = levels;
+    // Notes are numbered in declaration order, whatever their level.
+    let order = |id: &str| d.notes.iter().position(|n| n.id == id);
+    resolved.notes.sort_by_key(|n| order(&n.id));
+    for note in &mut resolved.notes {
+        note.number = order(&note.id).map_or(0, |k| k as u32 + 1);
+        if note.anchor.is_none() {
+            note.level = None;
+        }
+    }
+    resolved.walls = derive_walls(&resolved.spaces, &resolved.openings);
+    resolved.reach = reachability(d, &resolved.spaces, &resolved.openings, &mut diags);
+    (resolved, diags)
+}
+
+/// Resolves the spaces of one plane: a dungeon without levels, or one
+/// level of a dungeon with them. Reachability is left to the caller.
+fn resolve_plane(
+    d: &Dungeon,
+    cat: &Catalog,
+    shapes: ShapeHook,
+    level: Option<&str>,
+) -> (Resolved, Vec<Diagnostic>) {
     let mut diags = Vec::new();
     if !dedalo_model::check::geometry_limits(d).is_empty() {
         // Numbers outside the supported range are reported by the check
@@ -245,6 +404,7 @@ pub fn resolve_with(
             grid_unit: None,
             seed: fnv1a(&d.id),
             bounds: Rect::default(),
+            levels: Vec::new(),
             spaces: Vec::new(),
             walls: Vec::new(),
             openings: Vec::new(),
@@ -328,7 +488,7 @@ pub fn resolve_with(
                 polygon: geo.poly.clone(),
                 circle: geo.circle,
                 bbox: geo.bbox,
-                level: "default".to_string(),
+                level: level.unwrap_or("default").to_string(),
                 visibility: sp.src.visibility.unwrap_or(Visibility::Public),
                 reveal_when: sp.src.reveal_when.clone(),
                 tags: sp.src.tags.clone(),
@@ -339,10 +499,13 @@ pub fn resolve_with(
         })
         .collect();
 
-    let elements = resolve_elements(d, cat, &sps, &mut diags);
-    let notes = resolve_notes(d, &sps, &elements, &openings);
-    let reach = reachability(d, &spaces, &openings, &mut diags);
+    let mut elements = resolve_elements(d, cat, &sps, &mut diags);
+    let mut notes = resolve_notes(d, &sps, &elements, &openings);
     let walls = derive_walls(&spaces, &openings);
+    let on_level = level.map(str::to_string);
+    openings.iter_mut().for_each(|o| o.level = on_level.clone());
+    elements.iter_mut().for_each(|e| e.level = on_level.clone());
+    notes.iter_mut().for_each(|n| n.level = on_level.clone());
 
     let mut bounds: Option<Rect> = None;
     let stubs = openings
@@ -363,12 +526,13 @@ pub fn resolve_with(
         grid_unit: d.grid.as_ref().and_then(|g| g.unit.clone()),
         seed,
         bounds: bounds.unwrap_or_default(),
+        levels: Vec::new(),
         spaces,
         walls,
         openings,
         elements,
         notes,
-        reach,
+        reach: Reach::default(),
     };
     (resolved, diags)
 }
@@ -760,6 +924,18 @@ struct Cand {
 /// Facing side pairs of `a` and `b` wide enough for `w`, nearest first.
 /// Also returns the widest overlap that was too narrow.
 fn candidates(a: &Geo, b: &Geo, w: C, pick: &dyn Fn(&Side) -> bool) -> (Vec<Cand>, Option<C>) {
+    candidates_on(a, b, w, pick, false)
+}
+
+/// As [`candidates`]. With `free`, an opening may sit anywhere along a
+/// curved side instead of only at its compass point.
+fn candidates_on(
+    a: &Geo,
+    b: &Geo,
+    w: C,
+    pick: &dyn Fn(&Side) -> bool,
+    free: bool,
+) -> (Vec<Cand>, Option<C>) {
     let mut out = Vec::new();
     let mut narrow: Option<C> = None;
     for (ia, sa) in a.sides.iter().enumerate().filter(|(_, s)| pick(s)) {
@@ -778,7 +954,7 @@ fn candidates(a: &Geo, b: &Geo, w: C, pick: &dyn Fn(&Side) -> bool) -> (Vec<Cand
                 continue;
             }
             let (mut lo, mut hi, mut fixed) = (0, sa.len(), false);
-            if let Some(r) = sa.along() {
+            if let Some(r) = sa.along().filter(|_| !free) {
                 (lo, hi, fixed) = (r - w / 2, r - w / 2 + w, true);
             }
             let (t0, t1) = (
@@ -786,7 +962,7 @@ fn candidates(a: &Geo, b: &Geo, w: C, pick: &dyn Fn(&Side) -> bool) -> (Vec<Cand
                 sb.end.minus(sa.start).dot(u),
             );
             let (mut blo, mut bhi) = (t0.min(t1), t0.max(t1));
-            if sb.curve.is_some() {
+            if sb.curve.is_some() && !free {
                 let centre = (blo + bhi) / 2;
                 (blo, bhi, fixed) = (centre - w / 2, centre - w / 2 + w, true);
             }
@@ -832,15 +1008,18 @@ struct Passage {
 fn passage(a: &Geo, b: &Geo, c: &Cand, offset: C, w: C) -> Passage {
     let (sa, sb) = (&a.sides[c.ia], &b.sides[c.ib]);
     let (u, n) = (sa.unit(), dvec(sa.gdir));
-    let (sag_a, sag_b) = (sa.sagitta(w), sb.sagitta(w));
-    let p0 = sa.start.along(u, offset).along(n, -sag_a);
-    let p1 = p0.along(u, w);
-    let depth = c.d + sag_a + sag_b;
-    let (q0, q1) = (p0.along(n, depth), p1.along(n, depth));
+    // Each end of the opening sits on its own wall: on a curve the two
+    // ends lie at different depths inside the tangent.
+    let near = |t: C| sa.start.along(u, t).along(n, -sa.depth(t));
+    let far = |t: C| {
+        let q = sa.start.along(u, t).along(n, c.d);
+        q.along(n, sb.depth(q.minus(sb.start).dot(sb.unit())))
+    };
+    let (p0, p1, q0, q1) = (near(offset), near(offset + w), far(offset), far(offset + w));
     Passage {
         near: [p0, p1],
         far: [q0, q1],
-        poly: (depth > 0).then(|| clockwise(vec![p0, p1, q1, q0])),
+        poly: (p0 != q0 || p1 != q1).then(|| clockwise(vec![p0, p1, q1, q0])),
     }
 }
 
@@ -1173,6 +1352,8 @@ fn corridor_ends(d: &Dungeon, sps: &[Sp]) -> Vec<Opening> {
                 stub: None,
                 cell: None,
                 name: None,
+                level: None,
+                arrival: false,
             });
         }
     }
@@ -1189,9 +1370,12 @@ fn resolve_connections(
 ) -> Vec<Opening> {
     let mut out = Vec::new();
     for c in &d.connections {
-        let Some(from) = find(sps, &c.from).and_then(|i| sps[i].geo.as_ref()) else {
+        let geo_of = |id: &str| find(sps, id).and_then(|i| sps[i].geo.as_ref());
+        let vertical = VERTICAL_TYPES.contains(&c.ty.as_str());
+        let from = geo_of(&c.from);
+        if from.is_none() && !vertical {
             continue;
-        };
+        }
         let secret = c.secret.unwrap_or(false);
         let mut opening = Opening {
             id: c.id.clone(),
@@ -1218,8 +1402,34 @@ fn resolve_connections(
             stub: None,
             cell: None,
             name: c.name.clone(),
+            level: None,
+            arrival: false,
         };
-        if VERTICAL_TYPES.contains(&c.ty.as_str()) {
+        if vertical {
+            // The far end, in the room the exit leads to. With levels that
+            // room is on another plane, and only this end is resolved here.
+            if let (Some(to_id), Some(p)) = (&c.to, c.to_position)
+                && let Some(to) = geo_of(to_id)
+            {
+                match exit_cell(to, p) {
+                    Some(cell) => out.push(Opening {
+                        from: to_id.clone(),
+                        to: Some(c.from.clone()),
+                        cell: Some(cell),
+                        arrival: true,
+                        ..opening.clone()
+                    }),
+                    None => diags.push(
+                        Diagnostic::new(
+                            Code::OutOfBounds,
+                            format!("Connection `{}` arrives at position [{}, {}], which lies outside `{to_id}`, which is {} by {} cells.", c.id, p[0], p[1], cells(to.xf.w), cells(to.xf.h)),
+                        )
+                        .element(c.id.clone())
+                        .at("to_position"),
+                    ),
+                }
+            }
+            let Some(from) = from else { continue };
             // Stairs, ladders and trapdoors are marked exits on a cell.
             let Some(p) = c.position else {
                 diags.push(
@@ -1232,14 +1442,7 @@ fn resolve_connections(
                 );
                 continue;
             };
-            let cell = Rect {
-                x0: p[0].0,
-                y0: p[1].0,
-                x1: p[0].0 + CELL,
-                y1: p[1].0 + CELL,
-            };
-            let corners: Vec<Pt> = cell.corners().iter().map(|q| from.xf.apply(*q)).collect();
-            if !corners.iter().all(|q| contains(from, *q)) {
+            let Some(cell) = exit_cell(from, p) else {
                 diags.push(
                     Diagnostic::new(
                         Code::OutOfBounds,
@@ -1249,11 +1452,12 @@ fn resolve_connections(
                     .at("position"),
                 );
                 continue;
-            }
-            opening.cell = Some(Rect::of(&corners));
+            };
+            opening.cell = Some(cell);
             out.push(opening);
             continue;
         }
+        let Some(from) = from else { continue };
         let Some(to_id) = &c.to else { continue };
         let Some(to) = find(sps, to_id).and_then(|i| sps[i].geo.as_ref()) else {
             continue;
@@ -1271,6 +1475,21 @@ fn resolve_connections(
         }
     }
     out
+}
+
+/// The cell of a marked exit on the map, when it lies inside its room.
+fn exit_cell(geo: &Geo, p: [Num; 2]) -> Option<Rect> {
+    let cell = Rect {
+        x0: p[0].0,
+        y0: p[1].0,
+        x1: p[0].0 + CELL,
+        y1: p[1].0 + CELL,
+    };
+    let corners: Vec<Pt> = cell.corners().iter().map(|q| geo.xf.apply(*q)).collect();
+    corners
+        .iter()
+        .all(|q| contains(geo, *q))
+        .then(|| Rect::of(&corners))
 }
 
 fn kind_word(c: &Connection) -> &'static str {
@@ -1301,13 +1520,8 @@ fn place_connection(
         .element(id.clone())
         .at("placement.width"));
     }
-    if placement.bearing.is_some() {
-        return Err(Diagnostic::new(
-            Code::InvalidValue,
-            format!("Connection `{id}` uses `bearing`, which this release does not support yet. Use `wall` with north, south, east or west."),
-        )
-        .element(id.clone())
-        .at("placement.bearing"));
+    if let Some(bearing) = placement.bearing {
+        return place_at_bearing(c, from, to, max_stub, bearing.0, w);
     }
     let usable = |k: &Cand| k.d <= max_stub;
     let pick = |s: &Side| match (placement.wall, placement.edge) {
@@ -1315,8 +1529,18 @@ fn place_connection(
         (None, Some(edge)) => s.index as i64 == edge,
         (None, None) => true,
     };
-    let (cands, narrow) = candidates(from, to, w, &pick);
+    let (cands, mut narrow) = candidates(from, to, w, &pick);
     let Some(best) = cands.iter().find(|k| usable(k)) else {
+        // No horizontal or vertical wall is shared: try the slanted edges.
+        let on = |s: &Slant| match (placement.wall, placement.edge) {
+            (Some(wall), _) => s.name == wall,
+            (None, Some(edge)) => s.index as i64 == edge,
+            (None, None) => true,
+        };
+        match shared_slant(from, to, w, &on) {
+            Ok(shared) => return place_on_slant(c, &shared, placement.offset, w),
+            Err(n) => narrow = narrow.max(n),
+        }
         let chosen = match (placement.wall, placement.edge) {
             (Some(wall), _) => Some((format!("the {} wall", wall.as_str()), "placement.wall")),
             (None, Some(edge)) => Some((format!("edge {edge}"), "placement.edge")),
@@ -1411,6 +1635,253 @@ fn place_connection(
         }
     };
     Ok(passage(from, to, best, offset, w))
+}
+
+/// A stretch of slanted wall two spaces share, measured from the start of
+/// the edge of the first.
+struct Shared<'a> {
+    edge: &'a Slant,
+    lo: C,
+    hi: C,
+}
+
+/// The first slanted edge of `a` that shares at least `w` of wall with `b`.
+/// Otherwise the widest stretch that was too narrow.
+fn shared_slant<'a>(
+    a: &'a Geo,
+    b: &Geo,
+    w: C,
+    pick: &dyn Fn(&Slant) -> bool,
+) -> Result<Shared<'a>, Option<C>> {
+    let mut narrow: Option<C> = None;
+    for sa in a.slants.iter().filter(|s| pick(s)) {
+        let (e, len) = (sa.end.minus(sa.start), sa.len());
+        let along =
+            |p: Pt| (p.x - sa.start.x) as f64 * e.x as f64 + (p.y - sa.start.y) as f64 * e.y as f64;
+        for sb in &b.slants {
+            if orient(sa.start, sa.end, sb.start) != 0 || orient(sa.start, sa.end, sb.end) != 0 {
+                continue;
+            }
+            let (t0, t1) = (along(sb.start) / len, along(sb.end) / len);
+            let lo = libm::ceil(t0.min(t1).max(0.0)) as C;
+            let hi = libm::floor(t0.max(t1).min(len)) as C;
+            if hi - lo >= w {
+                return Ok(Shared { edge: sa, lo, hi });
+            }
+            if hi > lo {
+                narrow = narrow.max(Some(hi - lo));
+            }
+        }
+    }
+    Err(narrow)
+}
+
+fn place_on_slant(
+    c: &Connection,
+    shared: &Shared,
+    offset: Option<Num>,
+    w: C,
+) -> Result<Passage, Diagnostic> {
+    let (id, to_id) = (&c.id, c.to.as_deref().unwrap_or_default());
+    let Shared { edge, lo, hi } = *shared;
+    let centred = floor_cell(lo + (hi - lo - w) / 2).max(lo);
+    let offset = match offset {
+        None => centred,
+        Some(o) if o.0 >= lo && o.0 + w <= hi => o.0,
+        Some(o) => {
+            let (first, last) = (ceil_cell(lo), floor_cell(hi - w));
+            let (first, last) = if first <= last {
+                (first, last)
+            } else {
+                (lo, hi - w)
+            };
+            return Err(Diagnostic::new(
+                Code::DoorNotPlaceable,
+                format!(
+                    "{} `{id}` at offset {o} on edge {} of `{}` lies outside the wall shared with `{to_id}`. Valid offsets are {} to {}, measured along the edge.",
+                    kind_word(c),
+                    edge.index,
+                    c.from,
+                    cells(first),
+                    cells(last)
+                ),
+            )
+            .element(id.clone())
+            .at("placement.offset")
+            .suggest(format!(
+                "Set placement.offset between {} and {}, or remove it to centre the {}.",
+                cells(first),
+                cells(last),
+                kind_word(c).to_lowercase()
+            ))
+            .fix(Op::set(id, "placement.offset", Value::Num(Num(centred)))));
+        }
+    };
+    let segment = [edge.point(offset), edge.point(offset + w)];
+    Ok(Passage {
+        near: segment,
+        far: segment,
+        poly: None,
+    })
+}
+
+/// The boundary point of a circle or an ellipse at a bearing, in degrees
+/// clockwise from north on the map.
+fn bearing_point(circle: &Circle, degrees: f64) -> Pt {
+    let a = degrees.to_radians();
+    let (sin, cos) = (libm::sin(a), libm::cos(a));
+    let (rx, ry) = (circle.rx() as f64, circle.ry() as f64);
+    let reach = 1.0 / libm::sqrt((sin / rx) * (sin / rx) + (cos / ry) * (cos / ry));
+    Pt::new(
+        circle.center.x + libm::round(reach * sin) as C,
+        circle.center.y - libm::round(reach * cos) as C,
+    )
+}
+
+/// An opening centred on the boundary point at `bearing` (spec 7.5). The
+/// passage runs straight out of the nearest compass side. On failure:
+/// how long the passage would have been, when a wall did face that point.
+fn passage_at_bearing(
+    from: &Geo,
+    to: &Geo,
+    max_stub: C,
+    bearing: C,
+    w: C,
+) -> Result<Passage, Option<C>> {
+    let Some(circle) = &from.circle else {
+        return Err(None);
+    };
+    // Bearings turn with the room, like wall names.
+    let on_map = (bearing + 90 * CELL * from.xf.rot as C).rem_euclid(360 * CELL);
+    let point = bearing_point(circle, on_map as f64 / CELL as f64);
+    let facing = |s: &Side| {
+        let centre = match s.gdir {
+            Direction::North => 0,
+            Direction::East => 90,
+            Direction::South => 180,
+            Direction::West => 270,
+        } * CELL;
+        let apart = (on_map - centre).rem_euclid(360 * CELL);
+        apart.min(360 * CELL - apart) <= 45 * CELL
+    };
+    let (cands, _) = candidates_on(from, to, w, &facing, true);
+    let mut nearest: Option<C> = None;
+    for k in &cands {
+        let side = &from.sides[k.ia];
+        let offset = point.minus(side.start).dot(side.unit()) - w / 2;
+        if offset < k.lo || offset + w > k.hi {
+            continue;
+        }
+        let p = passage(from, to, k, offset, w);
+        let run = |a: Pt, b: Pt| (b.x - a.x).abs() + (b.y - a.y).abs();
+        let longest = run(p.near[0], p.far[0]).max(run(p.near[1], p.far[1]));
+        if longest <= max_stub {
+            return Ok(p);
+        }
+        nearest = Some(nearest.map_or(longest, |n| n.min(longest)));
+    }
+    Err(nearest)
+}
+
+fn place_at_bearing(
+    c: &Connection,
+    from: &Geo,
+    to: &Geo,
+    max_stub: C,
+    bearing: C,
+    w: C,
+) -> Result<Passage, Diagnostic> {
+    let (id, to_id) = (&c.id, c.to.as_deref().unwrap_or_default());
+    let placement = c.placement.clone().unwrap_or_default();
+    let clash = [
+        (placement.wall.is_some(), "wall"),
+        (placement.edge.is_some(), "edge"),
+        (placement.offset.is_some(), "offset"),
+    ];
+    if let Some((_, other)) = clash.iter().find(|(set, _)| *set) {
+        return Err(Diagnostic::new(
+            Code::InvalidValue,
+            format!("Connection `{id}` sets both `bearing` and `{other}`. A bearing alone names the place on a round wall."),
+        )
+        .element(id.clone())
+        .at(format!("placement.{other}"))
+        .suggest(format!("Remove `{other}` from the placement, or remove `bearing`.")));
+    }
+    if from.circle.is_none() {
+        return Err(Diagnostic::new(
+            Code::InvalidValue,
+            format!("Connection `{id}` uses `bearing`, but `{}` is not a circle or an ellipse. A bearing names a point on a round wall.", c.from),
+        )
+        .element(id.clone())
+        .at("placement.bearing")
+        .suggest("Use `wall` with north, south, east or west, or `edge` with a polygon edge number."));
+    }
+    if !(0..360 * CELL).contains(&bearing) {
+        return Err(Diagnostic::new(
+            Code::InvalidValue,
+            format!(
+                "Connection `{id}` has bearing {}, but a bearing is at least 0 and below 360 degrees, clockwise from north.",
+                cells(bearing)
+            ),
+        )
+        .element(id.clone())
+        .at("placement.bearing")
+        .fix(Op::set(id, "placement.bearing", Value::Num(Num(bearing.rem_euclid(360 * CELL))))));
+    }
+    let too_far = match passage_at_bearing(from, to, max_stub, bearing, w) {
+        Ok(p) => return Ok(p),
+        Err(too_far) => too_far,
+    };
+    // Whole degrees that do work, as a range, to tell the author where to go.
+    let works: Vec<bool> = (0..360)
+        .map(|deg| passage_at_bearing(from, to, max_stub, deg * CELL, w).is_ok())
+        .collect();
+    let apart = |deg: C| {
+        let d = (deg * CELL - bearing).rem_euclid(360 * CELL);
+        d.min(360 * CELL - d)
+    };
+    let Some(best) = (0..360)
+        .filter(|d| works[*d as usize])
+        .min_by_key(|d| apart(*d))
+    else {
+        return Err(Diagnostic::new(
+            Code::UnresolvableConnection,
+            format!("Connection `{id}` cannot join `{}` and `{to_id}` at any bearing: no wall of `{to_id}` lies within {} cells of the round wall.", c.from, cells(max_stub)),
+        )
+        .element(id.clone())
+        .suggest(format!(
+            "Make the rooms adjacent with `layout {{ adjacent_to = \"{}\", direction = ... }}`, or join them with a corridor.",
+            c.from
+        )));
+    };
+    let (mut first, mut last) = (best, best);
+    while first != (last + 1) % 360 && works[((first + 359) % 360) as usize] {
+        first = (first + 359) % 360;
+    }
+    while (last + 1) % 360 != first && works[((last + 1) % 360) as usize] {
+        last = (last + 1) % 360;
+    }
+    let why = match too_far {
+        Some(run) => format!(
+            "the wall of `{to_id}` is {} cells from the round wall there, and a stub passage bridges at most {}",
+            cells(run),
+            cells(max_stub)
+        ),
+        None => format!("`{to_id}` does not face that part of the wall"),
+    };
+    Err(Diagnostic::new(
+        Code::DoorNotPlaceable,
+        format!(
+            "{} `{id}` at bearing {} on `{}` cannot reach `{to_id}`: {why}. Bearings from {first} to {last} degrees work.",
+            kind_word(c),
+            cells(bearing),
+            c.from
+        ),
+    )
+    .element(id.clone())
+    .at("placement.bearing")
+    .suggest(format!("Set placement.bearing between {first} and {last}, or remove `placement` to place the {} automatically.", kind_word(c).to_lowercase()))
+    .fix(Op::set(id, "placement.bearing", Value::Num(Num(best * CELL)))))
 }
 
 // ----- elements (spec 7.7) -------------------------------------------------------
@@ -1508,6 +1979,7 @@ fn resolve_elements(
             }),
             properties: el.properties.clone(),
             tags: el.tags.clone(),
+            level: None,
         };
         if el.contained_in.is_some() {
             // An item inside a container has no position of its own.
@@ -1752,6 +2224,7 @@ fn resolve_notes(
             text: note.text.clone(),
             visibility: note.visibility.unwrap_or(Visibility::Dm),
             reveal_when: note.reveal_when.clone(),
+            level: None,
         });
     }
     out
@@ -1779,7 +2252,9 @@ fn reachability<'a>(
     let mut graph: BTreeMap<&str, Vec<&str>> = BTreeMap::new();
     for o in openings {
         let Some(to) = &o.to else { continue };
-        if o.segment.is_none() || !spaces.iter().any(|s| s.id == *to) {
+        // A marked exit counts once, from the end it was declared on.
+        let passable = o.segment.is_some() || (o.cell.is_some() && !o.arrival);
+        if !passable || !spaces.iter().any(|s| s.id == *to) {
             continue;
         }
         links.push([o.from.clone(), to.clone(), o.id.clone()]);

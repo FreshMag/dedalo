@@ -1,0 +1,108 @@
+{
+  "status": "error",
+  "summary": {
+    "errors": 3,
+    "warnings": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "UNREACHABLE_ROOM",
+      "element": "attic",
+      "message": "Room `attic` cannot be reached from the entrance `hub`: no connection or corridor leads to it.",
+      "span": {
+        "start": [
+          14,
+          10
+        ],
+        "end": [
+          14,
+          17
+        ]
+      },
+      "suggestion": "Join it to the dungeon, for example `connection \"attic_door\" { from = \"...\", to = \"attic\", type = door }`."
+    },
+    {
+      "severity": "warning",
+      "code": "UNREACHABLE_ROOM",
+      "element": "loft",
+      "message": "Room `loft` cannot be reached from the entrance `hub`: no connection or corridor leads to it.",
+      "span": {
+        "start": [
+          19,
+          10
+        ],
+        "end": [
+          19,
+          16
+        ]
+      },
+      "suggestion": "Join it to the dungeon, for example `connection \"loft_door\" { from = \"...\", to = \"loft\", type = door }`."
+    },
+    {
+      "severity": "error",
+      "code": "DOOR_NOT_PLACEABLE",
+      "element": "wrong_side",
+      "message": "Door `wrong_side` at bearing 200 on `hub` cannot reach `east`: `east` does not face that part of the wall. Bearings from 68 to 112 degrees work.",
+      "span": {
+        "start": [
+          28,
+          31
+        ],
+        "end": [
+          28,
+          34
+        ]
+      },
+      "suggestion": "Set placement.bearing between 68 and 112, or remove `placement` to place the door automatically.",
+      "fix": {
+        "op": "update",
+        "id": "wrong_side",
+        "set": {
+          "placement.bearing": 112
+        }
+      }
+    },
+    {
+      "severity": "error",
+      "code": "INVALID_VALUE",
+      "element": "square_bearing",
+      "message": "Connection `square_bearing` uses `bearing`, but `east` is not a circle or an ellipse. A bearing names a point on a round wall.",
+      "span": {
+        "start": [
+          35,
+          31
+        ],
+        "end": [
+          35,
+          34
+        ]
+      },
+      "suggestion": "Use `wall` with north, south, east or west, or `edge` with a polygon edge number."
+    },
+    {
+      "severity": "error",
+      "code": "DOOR_NOT_PLACEABLE",
+      "element": "past_the_end",
+      "message": "Door `past_the_end` at offset 5 on edge 2 of `attic` lies outside the wall shared with `loft`. Valid offsets are 0 to 4, measured along the edge.",
+      "span": {
+        "start": [
+          42,
+          30
+        ],
+        "end": [
+          42,
+          31
+        ]
+      },
+      "suggestion": "Set placement.offset between 0 and 4, or remove it to centre the door.",
+      "fix": {
+        "op": "update",
+        "id": "past_the_end",
+        "set": {
+          "placement.offset": 2
+        }
+      }
+    }
+  ]
+}

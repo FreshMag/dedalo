@@ -3,8 +3,8 @@ name: Release
 # A tagged commit produces the binaries on GitHub Releases (spec 16):
 # archives for five targets, SHA-256 checksums, build-provenance
 # attestations, and the install scripts. The site is deployed by pages.yml
-# from the same tag. Binaries are not code-signed until the signing
-# decision of spec 19.2 is taken.
+# from the same tag. Binaries are not code-signed, by the decision recorded
+# under spec 19.2; checksums and attestations stand in.
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
           mkdir "$name"
           bin="target/${{ matrix.target }}/release/dedalo"
           [ -f "$bin.exe" ] && bin="$bin.exe"
-          cp "$bin" README.md "$name/"
+          cp "$bin" README.md LICENSE "$name/"
           cp crates/dedalo-scene/fonts/OFL.txt "$name/FONTS-OFL.txt"
           if [ "${{ matrix.archive }}" = zip ]; then
             7z a "$name.zip" "$name" > /dev/null

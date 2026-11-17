@@ -41,3 +41,7 @@ title  = 0.7
 "item.treasure"    = { glyph = "$", frame = "circle" }
 "item.key"         = { glyph = "k", frame = "circle" }
 "custom"           = { glyph = "?", frame = "circle" }
+# Drawn symbols: SVG files of this package. They pass a sanitiser that keeps
+# plain geometry only.
+"lighting.brazier" = "symbols/brazier.svg"
+"furniture.table"  = "symbols/table.svg"

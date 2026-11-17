@@ -1,13 +1,14 @@
 // Offline use (spec 14.1): the site is cached on the first visit and served
 // from the cache afterwards, refreshed in the background when online.
 
-const CACHE = "dedalo-v3";
+const CACHE = "dedalo-v4";
 const CORE = [
   "./",
   "index.html",
   "style.css",
   "main.js",
   "editor.js",
+  "i18n.js",
   "worker.js",
   "dedalo.js",
   "dedalo.wasm",

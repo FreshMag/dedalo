@@ -28,6 +28,11 @@ pub const EXAMPLES: &[(&str, &str, &str)] = &[
         "Room rotation, automatic placement, conditional visibility, a custom legend",
         include_str!("../../../tests/corpus/rotated/input.dedalo"),
     ),
+    (
+        "levels_tower",
+        "Three levels joined by stairs and a secret trapdoor; an export of one level",
+        include_str!("../../../tests/corpus/levels_tower/input.dedalo"),
+    ),
 ];
 
 /// The topics, with a one-line description each.
@@ -39,11 +44,12 @@ pub fn topics(cat: &Catalog) -> Vec<(String, String)> {
         ),
         (
             "syntax".to_string(),
-            "Values, blocks, IDs, connections, visibility, exports".to_string(),
+            "Values, blocks, IDs, connections, levels, visibility, exports, language".to_string(),
         ),
         (
             "layout".to_string(),
-            "Coordinates, shapes, room placement, doors, corridors, elements".to_string(),
+            "Coordinates, shapes, room placement, doors on any wall, corridors, elements"
+                .to_string(),
         ),
         (
             "catalog".to_string(),

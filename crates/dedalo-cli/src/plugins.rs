@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
 use dedalo_core::Registry;
-use dedalo_plugin::{LoadedPlugin, MANIFEST, wasmi_factory};
+use dedalo_plugin::{LoadedPlugin, MANIFEST, package, wasmi_factory};
 use serde::{Deserialize, Serialize};
 
 /// The lockfile beside a document.
@@ -88,10 +88,15 @@ pub fn search_dirs(explicit: &[PathBuf], document_dir: Option<&Path>) -> Vec<Pat
     dirs
 }
 
-/// Package directories under a search path: the path itself when it holds
-/// a manifest, else its subdirectories that do.
+fn is_archive(path: &Path) -> bool {
+    path.is_file() && path.extension().is_some_and(|e| e == package::EXTENSION)
+}
+
+/// Packages under a search path: the path itself when it is a package (a
+/// folder with a manifest, or a `.dedalopkg` file), else the packages
+/// directly inside it.
 fn packages(path: &Path) -> Vec<PathBuf> {
-    if path.join(MANIFEST).exists() {
+    if path.join(MANIFEST).exists() || is_archive(path) {
         return vec![path.to_path_buf()];
     }
     let mut found: Vec<PathBuf> = std::fs::read_dir(path)
@@ -99,16 +104,89 @@ fn packages(path: &Path) -> Vec<PathBuf> {
         .flatten()
         .flatten()
         .map(|e| e.path())
-        .filter(|p| p.join(MANIFEST).exists())
+        .filter(|p| p.join(MANIFEST).exists() || is_archive(p))
         .collect();
     found.sort();
     found
 }
 
-pub fn load(dir: &Path) -> Result<LoadedPlugin, String> {
-    let files = dedalo_plugin::read_dir(dir)?;
-    dedalo_plugin::load_files(files, Some(&wasmi_factory))
-        .map_err(|e| format!("the plugin at `{}` cannot be loaded: {e}", dir.display()))
+/// The files of a package: a folder, or a zipped `.dedalopkg` file.
+fn read_package(path: &Path) -> Result<BTreeMap<String, Vec<u8>>, String> {
+    if path.is_dir() {
+        return dedalo_plugin::read_dir(path);
+    }
+    let bytes =
+        std::fs::read(path).map_err(|e| format!("cannot read `{}`: {e}", path.display()))?;
+    package::unpack(&bytes)
+}
+
+pub fn load(path: &Path) -> Result<LoadedPlugin, String> {
+    let loaded =
+        read_package(path).and_then(|files| dedalo_plugin::load_files(files, Some(&wasmi_factory)));
+    loaded.map_err(|e| format!("the plugin at `{}` cannot be loaded: {e}", path.display()))
+}
+
+/// Downloads a package. This is the only place the binary touches the
+/// network (spec 11.6); it uses the system's `curl`.
+fn download(url: &str) -> Result<Vec<u8>, String> {
+    let limit = (dedalo_plugin::MAX_PACKAGE).to_string();
+    let output = std::process::Command::new("curl")
+        .args([
+            "--fail",
+            "--silent",
+            "--show-error",
+            "--location",
+            "--proto",
+            "=https,http",
+            "--proto-redir",
+            "=https,http",
+            "--max-redirs",
+            "5",
+            "--max-time",
+            "120",
+            "--max-filesize",
+            &limit,
+            "--",
+            url,
+        ])
+        .output()
+        .map_err(|e| {
+            format!("cannot run `curl` to download the package ({e}). Download `{url}` yourself and pass the file to `dedalo plugin add`.")
+        })?;
+    if !output.status.success() {
+        return Err(format!(
+            "cannot download `{url}`: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    if output.stdout.len() > dedalo_plugin::MAX_PACKAGE {
+        return Err(format!(
+            "`{url}` is larger than {} MB",
+            dedalo_plugin::MAX_PACKAGE / 1024 / 1024
+        ));
+    }
+    Ok(output.stdout)
+}
+
+/// Zips a package folder into a `.dedalopkg` file, after loading it to
+/// make sure it is a valid package.
+pub fn pack(dir: &Path, output: Option<&Path>) -> Result<(PathBuf, LoadedPlugin), String> {
+    if !dir.is_dir() {
+        return Err(format!("`{}` is not a package folder", dir.display()));
+    }
+    let plugin = load(dir)?;
+    let bytes = package::pack(&plugin.files)?;
+    let target = output.map(Path::to_path_buf).unwrap_or_else(|| {
+        PathBuf::from(format!(
+            "{}-{}.{}",
+            plugin.id(),
+            plugin.manifest.plugin.version,
+            package::EXTENSION
+        ))
+    });
+    std::fs::write(&target, bytes)
+        .map_err(|e| format!("cannot write `{}`: {e}", target.display()))?;
+    Ok((target, plugin))
 }
 
 /// A registry with the built-ins and every plugin found. The first package
@@ -185,17 +263,29 @@ pub fn check_lock(
     Ok(problems)
 }
 
-/// Copies a package into `./.dedalo/plugins/<id>` and records it in the
-/// lockfile of the working directory.
-pub fn add(source: &Path) -> Result<LoadedPlugin, String> {
-    let text = source.display().to_string();
-    if text.starts_with("http://") || text.starts_with("https://") {
-        return Err(
-            "installing from a URL is not supported yet; download the package and pass its folder"
-                .to_string(),
-        );
+/// Installs a package into `./.dedalo/plugins/<id>` and records it in the
+/// lockfile of the working directory. The source is a package folder, a
+/// `.dedalopkg` file, or the URL of one. With `expected`, the package must
+/// have that hash.
+pub fn add(source: &str, expected: Option<&str>) -> Result<LoadedPlugin, String> {
+    let plugin = if source.starts_with("http://") || source.starts_with("https://") {
+        let loaded = download(source)
+            .and_then(|bytes| package::unpack(&bytes))
+            .and_then(|files| dedalo_plugin::load_files(files, Some(&wasmi_factory)));
+        loaded.map_err(|e| format!("the plugin at `{source}` cannot be loaded: {e}"))?
+    } else {
+        load(Path::new(source))?
+    };
+    if let Some(expected) = expected {
+        let wanted = expected.strip_prefix("sha256:").unwrap_or(expected);
+        if plugin.sha256.strip_prefix("sha256:") != Some(wanted) {
+            return Err(format!(
+                "the package `{}` has the hash {}, not the expected sha256:{wanted}; nothing was installed",
+                plugin.id(),
+                plugin.sha256
+            ));
+        }
     }
-    let plugin = load(source)?;
     let target = PathBuf::from(".dedalo").join("plugins").join(plugin.id());
     if target.exists() {
         std::fs::remove_dir_all(&target)
@@ -243,7 +333,7 @@ pub fn scaffold(id: &str, kind: &str, dir: &Path) -> Result<Vec<String>, String>
     }
     let mut files: Vec<(String, String)> = Vec::new();
     let meta = format!(
-        "[plugin]\nid = \"{id}\"\nversion = \"0.1.0\"\napi = 1\ndedalo = \">=0.2\"\nlicense = \"MIT\"\n"
+        "[plugin]\nid = \"{id}\"\nversion = \"0.1.0\"\napi = 1\ndedalo = \">=0.2\"\nlicense = \"Apache-2.0\"\n"
     );
     match kind {
         "theme" => {

@@ -1,0 +1,45 @@
+# Doors on the slanted edges of an octagon: centred, by wall name with an
+# offset, and a secret one.
+dungeon "layout_slanted_door" {
+    room "hub" {
+        shape = polygon([[2, 0], [6, 0], [8, 2], [8, 6], [6, 8], [2, 8], [0, 6], [0, 2]])
+        layout { position = [0, 0] }
+    }
+
+    room "ne" {
+        shape = polygon([[4, 4], [0, 4], [0, 0], [2, 2]])
+        rotation = 180
+        layout { position = [6, 0] }
+    }
+
+    room "sw" {
+        shape = polygon([[2, 0], [4, 2], [4, 4], [0, 4], [0, 0]])
+        layout { position = [-2, 6] }
+    }
+
+    room "se" {
+        shape = polygon([[2, 0], [4, 0], [4, 4], [0, 4], [0, 2]])
+        layout { position = [6, 6] }
+    }
+
+    connection "to_ne" {
+        from = "hub"
+        to = "ne"
+        type = door
+    }
+
+    connection "to_sw" {
+        from = "sw"
+        to = "hub"
+        type = archway
+        placement { wall = north, offset = 0.5 }
+    }
+
+    connection "to_se" {
+        from = "hub"
+        to = "se"
+        type = door
+        secret = true
+        placement { edge = 3, width = 2 }
+    }
+}

@@ -214,3 +214,37 @@ fn dedalo_ops_apply(source: &str, op: Op, reg: &Registry) -> Result<String, Stri
         .map(|a| a.source)
         .map_err(|d| d.message)
 }
+
+#[test]
+fn rooms_are_added_to_a_level_of_a_dungeon_with_levels() {
+    let reg = Registry::builtin();
+    let (_, source) = corpus()
+        .into_iter()
+        .find(|(n, _)| n == "levels_tower")
+        .unwrap();
+    let room = |parent: Option<&str>| Op::Add {
+        parent: parent.map(str::to_string),
+        source: Some(
+            "room \"attic\" {\n    shape = square(3)\n    layout { east_of = \"study\" }\n}"
+                .to_string(),
+        ),
+        kind: None,
+        id: None,
+        set: BTreeMap::new(),
+    };
+    let refused = dedalo_ops_apply(&source, room(None), &reg).unwrap_err();
+    assert!(refused.contains("ground, upper, cellar"), "{refused}");
+    let batch = Batch {
+        base_hash: None,
+        ops: vec![
+            room(Some("upper")),
+            Op::set("upper", "name", Value::Str("First floor".to_string())),
+        ],
+    };
+    let result = dedalo_core::edit(&source, &batch, &reg, false, "x");
+    assert!(result.applied, "{:#?}", result.diagnostics);
+    let compiled = dedalo_core::compile(Input::Dsl(&result.source), &reg);
+    let doc = compiled.document.unwrap();
+    assert_eq!(doc.dungeon.level_of("attic"), Some("upper"));
+    assert_eq!(doc.dungeon.levels[1].name.as_deref(), Some("First floor"));
+}

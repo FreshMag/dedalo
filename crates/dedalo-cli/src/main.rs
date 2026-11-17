@@ -57,7 +57,7 @@ enum Command {
         /// dm, player or clean.
         #[arg(long)]
         preset: Option<String>,
-        /// svg or txt (png and pdf arrive with milestone M3).
+        /// svg, png, pdf, txt, or a dotted plugin format.
         #[arg(long)]
         format: Option<String>,
         /// Pixels per cell, 16 to 512.
@@ -66,6 +66,12 @@ enum Command {
         /// 0, 90, 180 or 270 degrees clockwise.
         #[arg(long)]
         rotation: Option<i64>,
+        /// Draw one level of a multi-level dungeon instead of all of them.
+        #[arg(long)]
+        level: Option<String>,
+        /// The language of default legend labels: en or it.
+        #[arg(long)]
+        lang: Option<String>,
         #[arg(long)]
         theme: Option<String>,
         /// Print a stage output instead of the map: document, resolved, view or scene.
@@ -181,7 +187,20 @@ enum Command {
 #[derive(Subcommand, Clone)]
 enum PluginAction {
     /// Install a plugin package into `.dedalo/plugins/` and record it in `dedalo.lock`.
-    Add { path: PathBuf },
+    Add {
+        /// A package folder, a `.dedalopkg` file, or the URL of one.
+        source: String,
+        /// Refuse the package unless it has this hash, as `dedalo plugin list` prints it.
+        #[arg(long)]
+        sha256: Option<String>,
+    },
+    /// Zip a package folder into a `.dedalopkg` file.
+    Pack {
+        path: PathBuf,
+        /// The file to write; default `<id>-<version>.dedalopkg`.
+        #[arg(short, long)]
+        output: Option<PathBuf>,
+    },
     /// List the plugins found and what they contribute.
     List,
     /// Remove an installed plugin and its lockfile entry.
@@ -508,6 +527,8 @@ fn run(cli: &Cli) -> Outcome {
             format,
             cell_px,
             rotation,
+            level,
+            lang,
             theme,
             emit,
             force,
@@ -562,6 +583,29 @@ fn run(cli: &Cli) -> Outcome {
                         )));
                     }
                     spec.rotation = *r;
+                }
+                if let Some(level) = level {
+                    let known: Vec<&str> = compiled
+                        .document
+                        .iter()
+                        .flat_map(|d| d.dungeon.levels.iter().map(|l| l.id.as_str()))
+                        .collect();
+                    if !known.contains(&level.as_str()) {
+                        return Err(Failure::Usage(if known.is_empty() {
+                            format!("`--level` is `{level}`, but the dungeon declares no levels")
+                        } else {
+                            format!(
+                                "`--level` is `{level}`, but the levels are {}",
+                                known.join(", ")
+                            )
+                        }));
+                    }
+                    spec.level = Some(level.clone());
+                }
+                if let Some(lang) = lang {
+                    spec.language = dedalo_core::model::Language::parse(lang).ok_or_else(|| {
+                        Failure::Usage(format!("`--lang` is `{lang}`, but must be en or it"))
+                    })?;
                 }
                 if theme.is_some() {
                     spec.theme = theme.clone();
@@ -1062,8 +1106,26 @@ fn plugin_command(
     origins: &std::collections::BTreeMap<String, PathBuf>,
 ) -> Outcome {
     match action {
-        PluginAction::Add { path } => {
-            let plugin = plugins::add(path).map_err(Failure::Usage)?;
+        PluginAction::Pack { path, output } => {
+            let (target, plugin) =
+                plugins::pack(path, output.as_deref()).map_err(Failure::Usage)?;
+            if cli.json {
+                print_json(
+                    &json!({ "id": plugin.id(), "version": plugin.manifest.plugin.version, "sha256": plugin.sha256, "path": target.display().to_string() }),
+                );
+            } else {
+                eprintln!(
+                    "wrote {} ({} {}, {})",
+                    target.display(),
+                    plugin.id(),
+                    plugin.manifest.plugin.version,
+                    plugin.sha256
+                );
+            }
+            Ok(())
+        }
+        PluginAction::Add { source, sha256 } => {
+            let plugin = plugins::add(source, sha256.as_deref()).map_err(Failure::Usage)?;
             if cli.json {
                 print_json(
                     &json!({ "id": plugin.id(), "version": plugin.manifest.plugin.version, "sha256": plugin.sha256 }),
@@ -1097,7 +1159,7 @@ fn plugin_command(
                     provides.extend(m.exporter.iter().map(|e| format!("format {}.{}", p.id(), e.format)));
                     provides.extend(m.validator.iter().map(|v| format!("validator {}", v.name)));
                     provides.extend(m.shape.iter().map(|s| format!("shape {}.{}", p.id(), s.name)));
-                    json!({ "id": p.id(), "version": m.plugin.version, "sha256": p.sha256, "path": origins.get(p.id()).map(|o| o.display().to_string()), "provides": provides })
+                    json!({ "id": p.id(), "version": m.plugin.version, "sha256": p.sha256, "path": origins.get(p.id()).map(|o| o.display().to_string()), "provides": provides, "files": p.files.keys().collect::<Vec<_>>() })
                 })
                 .collect();
             if cli.json {

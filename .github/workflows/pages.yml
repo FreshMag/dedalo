@@ -4,8 +4,8 @@ name: Pages
 # branch deploys to /next/, tagged releases deploy to the site root. Schemas
 # are served under /schema/ at versioned URLs.
 #
-# Not yet exercised: the repository has no remote. In the repository
-# settings, Pages must be set to serve the `gh-pages` branch.
+# In the repository settings, Pages must be set to serve the `gh-pages`
+# branch. The site is then at https://freshmag.github.io/dedalo/next/.
 
 on:
   push:
@@ -37,10 +37,10 @@ jobs:
           cargo build -p dedalo-cli --release --locked
           mkdir -p site/schema
           cp web/index.html web/reference.html web/style.css web/*.js web/manifest.webmanifest web/icon.svg site/
-          rm -f site/golden*.js site/golden.mjs site/selftest.js site/run-browser-check.sh site/serve.py
+          rm -f site/golden*.js site/golden.mjs site/selftest.js site/selftest-setup.js site/selftest.html site/run-browser-check.sh site/serve.py
           mkdir -p site/docs site/examples
           cp docs/tutorial.md docs/cookbook.md docs/plugins.md docs/compatibility.md site/docs/
-          for name in forgotten_crypt four_shapes rotated; do cp tests/corpus/$name/input.dedalo site/examples/$name.dedalo; done
+          for name in forgotten_crypt four_shapes rotated levels_tower; do cp tests/corpus/$name/input.dedalo site/examples/$name.dedalo; done
           cp target/wasm32-unknown-unknown/wasm/dedalo_wasm.wasm site/dedalo.wasm
           cp target/wasm32-unknown-unknown/wasm/dedalo_wasm_export.wasm site/dedalo-export.wasm
           cp spec/schema/*.json site/schema/
