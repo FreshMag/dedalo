@@ -260,7 +260,7 @@ checksum = "be1e0bca6c3637f992fc1cc7cbc52a78c1ef6db076dbf1059c4323d6a2048376"
 
 [[package]]
 name = "dedalo-catalog"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
  "toml",
@@ -268,7 +268,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-cli"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "clap",
  "dedalo-core",
@@ -280,7 +280,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-catalog",
  "dedalo-export",
@@ -298,7 +298,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-export"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-geom",
  "dedalo-model",
@@ -311,7 +311,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-geom"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-catalog",
  "dedalo-model",
@@ -321,7 +321,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-model"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-catalog",
  "dedalo-syntax",
@@ -333,7 +333,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-ops"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-catalog",
  "dedalo-geom",
@@ -344,7 +344,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-pdk"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-scene",
  "serde",
@@ -353,7 +353,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-plugin"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "crc32fast",
  "dedalo-catalog",
@@ -386,7 +386,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-render"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-catalog",
  "dedalo-geom",
@@ -400,7 +400,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-scene"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
  "ttf-parser",
@@ -408,14 +408,14 @@ dependencies = [
 
 [[package]]
 name = "dedalo-syntax"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "rowan",
 ]
 
 [[package]]
 name = "dedalo-wasm"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-core",
  "dedalo-plugin",
@@ -425,7 +425,7 @@ dependencies = [
 
 [[package]]
 name = "dedalo-wasm-export"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dedalo-export",
  "dedalo-model",

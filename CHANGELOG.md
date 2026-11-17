@@ -5,6 +5,8 @@ Each release lists language changes, output changes and plugin API changes
 
 ## Unreleased
 
+## 0.2.0 (2026-11-17)
+
 ### Agents and tools
 
 - Dungeons in Markdown notes: every command that reads a file also takes a
