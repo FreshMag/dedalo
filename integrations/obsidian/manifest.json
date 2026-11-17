@@ -1,0 +1,11 @@
+{
+  "id": "dedalo",
+  "name": "Dedalo",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Draw tabletop-RPG dungeon maps from dedalo code blocks, offline.",
+  "author": "Francesco Magnani",
+  "authorUrl": "https://github.com/FreshMag",
+  "helpUrl": "https://freshmag.github.io/dedalo/",
+  "isDesktopOnly": false
+}

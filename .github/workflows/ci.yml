@@ -67,7 +67,10 @@ jobs:
           node-version: 22
       - name: Compare with the golden corpus
         run: node web/golden.mjs
-      - name: Browser checks (golden corpus and editor self-test)
+      - name: Build the Obsidian plugin
+        run: python3 integrations/obsidian/build.py --wasm web/dedalo.wasm
+      - name: Browser checks (golden corpus, editor and Obsidian plugin self-tests)
         run: |
           bash web/run-browser-check.sh golden.html
           bash web/run-browser-check.sh selftest.html
+          bash web/run-browser-check.sh ../integrations/obsidian/selftest.html

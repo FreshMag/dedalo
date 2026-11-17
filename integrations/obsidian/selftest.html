@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Dedalo Obsidian plugin self-test</title>
+    <link rel="stylesheet" href="dist/styles.css">
+  </head>
+  <body>
+    <!-- Build the plugin (build.py), serve the repository root and open
+         /integrations/obsidian/selftest.html, or run
+         `bash web/run-browser-check.sh ../integrations/obsidian/selftest.html`.
+         The built main.js runs against a small stand-in for Obsidian's API,
+         and the verdict is posted to `web/serve.py --result`. -->
+    <pre id="result">running</pre>
+    <div id="note"></div>
+    <script src="selftest.js"></script>
+  </body>
+</html>

@@ -2,8 +2,8 @@
 
 Dedalo compiles a text description of a tabletop-RPG dungeon into a map:
 SVG, PNG, PDF, a text map, or a plugin's format. One Rust core does all the
-work; a command-line binary, a static web editor and an MCP server are thin
-hosts around it, so they cannot disagree.
+work; a command-line binary, a static web editor, an MCP server and an
+Obsidian plugin are thin hosts around it, so they cannot disagree.
 
 ```hcl
 dungeon "crypt" {
@@ -31,9 +31,12 @@ dedalo inspect crypt.dedalo --text-map                  # the map as text
 dedalo render tower.dedalo --level upper --lang it      # one level, Italian labels
 dedalo validate crypt.dedalo --fix                      # apply the fixes diagnostics carry
 dedalo mcp                                              # serve agents over MCP
+dedalo validate Notes/Crypt.md                          # dungeons in ```dedalo blocks of a note
 ```
 
 Start with [the tutorial](docs/tutorial.md), then [the cookbook](docs/cookbook.md).
+In Obsidian, [the plugin](integrations/obsidian/README.md) draws ```` ```dedalo ````
+code blocks as maps inside notes.
 `dedalo guide` prints the language in one page. The full design is
 [the specification](docs/specification.md).
 
@@ -52,6 +55,7 @@ Work follows the milestones of specification section 17.
 | M6 Plugin platform | Done: packs, templates, the WebAssembly host in the binary (wasmi) and the browser, `dedalo-pdk`, six extension points, lockfile, plugin commands, the web plugins panel, three reference plugins, zipped `.dedalopkg` packages and installs from an address |
 | M7 Hardening | Partly done: `ellipse`, `l_shape`, tabletop PDF printing, fuzz targets, performance budgets, release workflow, install scripts, documentation, the accessibility audit. Not done: publishing to crates.io, npm and Homebrew, which need the owner's accounts; a screen-reader test of the editor by a person |
 | After 1.0, brought forward | Multi-level dungeons: `level` blocks, stairs between levels, one map per level or all side by side |
+| Beyond the specification | Dungeons in Markdown notes: the Obsidian plugin, and ```` ```dedalo ```` blocks read and written by the CLI and the MCP server |
 
 ## Repository
 
@@ -73,6 +77,7 @@ crates/
   dedalo-pdk/          the plugin development kit
 plugins/               blueprint, hand_drawn and uvtt
 web/                   the web editor, reference pages and browser checks
+integrations/obsidian/ the Obsidian plugin and its self-test
 tests/corpus/          golden inputs and expected outputs, byte for byte
 tests/perf/            50- and 100-room performance samples
 eval/                  the agent evaluation suite
