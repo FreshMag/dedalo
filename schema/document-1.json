@@ -1,0 +1,1328 @@
+{
+  "$defs": {
+    "Align": {
+      "enum": [
+        "start",
+        "center",
+        "end"
+      ],
+      "type": "string"
+    },
+    "Anchor": {
+      "enum": [
+        "center",
+        "north",
+        "north_east",
+        "east",
+        "south_east",
+        "south",
+        "south_west",
+        "west",
+        "north_west"
+      ],
+      "type": "string"
+    },
+    "Bounds": {
+      "enum": [
+        "visible",
+        "full"
+      ],
+      "type": "string"
+    },
+    "Class": {
+      "description": "The block keyword of an element.",
+      "enum": [
+        "feature",
+        "entity"
+      ],
+      "type": "string"
+    },
+    "Comments": {
+      "additionalProperties": false,
+      "description": "Comments attached to a node, so that conversion to JSON and back loses\nnothing but whitespace (spec 6.2).",
+      "properties": {
+        "attrs": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Comments"
+          },
+          "description": "Comments on the node's attributes, keyed by dotted path such as\n`layout.offset`.",
+          "type": "object"
+        },
+        "end": {
+          "description": "Comments after the last item inside the node.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "leading": {
+          "description": "Comment lines above the node.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "trailing": {
+          "description": "Comment on the node's own line.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Connection": {
+      "additionalProperties": false,
+      "description": "A passage between two spaces.",
+      "properties": {
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "from": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "placement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConnectionPlacement"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "position": {
+          "description": "Stairs, ladders and trapdoors: the cell inside `from`.",
+          "items": {
+            "description": "A number with at most three decimals.",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "properties": {
+          "additionalProperties": {
+            "description": "Any JSON value. Numbers carry at most three decimals."
+          },
+          "type": "object"
+        },
+        "reveal_when": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "secret": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "to_position": {
+          "description": "Stairs, ladders and trapdoors: the cell inside `to` where they\narrive, drawn as a second marker.",
+          "items": {
+            "description": "A number with at most three decimals.",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "type": {
+          "type": "string"
+        },
+        "visibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Visibility"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "from",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ConnectionPlacement": {
+      "additionalProperties": false,
+      "properties": {
+        "bearing": {
+          "description": "Circle boundary point in degrees clockwise from north.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "edge": {
+          "description": "Polygon edge by index, as an alternative to `wall`.",
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "offset": {
+          "description": "Distance in cells from the start of the wall to the start of the opening.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "wall": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Direction"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Side of the `from` space."
+        },
+        "width": {
+          "description": "Opening width in cells, default 1.",
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Direction": {
+      "enum": [
+        "north",
+        "south",
+        "east",
+        "west"
+      ],
+      "type": "string"
+    },
+    "Dungeon": {
+      "additionalProperties": false,
+      "properties": {
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "connections": {
+          "items": {
+            "$ref": "#/$defs/Connection"
+          },
+          "type": "array"
+        },
+        "elements": {
+          "description": "Elements that name no space; they are assigned by position.",
+          "items": {
+            "$ref": "#/$defs/Element"
+          },
+          "type": "array"
+        },
+        "exports": {
+          "items": {
+            "$ref": "#/$defs/Export"
+          },
+          "type": "array"
+        },
+        "grid": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Grid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "legend": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Legend"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "levels": {
+          "description": "The floors of a multi-level dungeon, in declaration order. Empty for\na dungeon on one level.",
+          "items": {
+            "$ref": "#/$defs/Level"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "items": {
+            "$ref": "#/$defs/Note"
+          },
+          "type": "array"
+        },
+        "properties": {
+          "additionalProperties": {
+            "description": "Any JSON value. Numbers carry at most three decimals."
+          },
+          "type": "object"
+        },
+        "render": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RenderOptions"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "settings": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Settings"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "spaces": {
+          "description": "Rooms and corridors, in declaration order.",
+          "items": {
+            "$ref": "#/$defs/Space"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
+    "Element": {
+      "additionalProperties": false,
+      "description": "A feature or an entity.",
+      "properties": {
+        "class": {
+          "$ref": "#/$defs/Class"
+        },
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "contained_in": {
+          "description": "Items only: the container that holds it.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "facing": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Facing"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "placement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ElementPlacement"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "position": {
+          "description": "Top-left cell of the footprint, in the owning space.",
+          "items": {
+            "description": "A number with at most three decimals.",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "properties": {
+          "additionalProperties": {
+            "description": "Any JSON value. Numbers carry at most three decimals."
+          },
+          "type": "object"
+        },
+        "reference": {
+          "description": "Opaque pointer to an external bestiary. Never interpreted.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reveal_when": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rotation": {
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "shape": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShapeCall"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "size": {
+          "description": "Footprint in cells; defaults to the catalog entry.",
+          "items": {
+            "description": "A number with at most three decimals.",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "subtype": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "type": {
+          "type": "string"
+        },
+        "visibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Visibility"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "class",
+        "id",
+        "type"
+      ],
+      "type": "object"
+    },
+    "ElementPlacement": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Anchor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offset": {
+          "description": "A number with at most three decimals.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "wall": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Direction"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Against a wall of the owning space."
+        }
+      },
+      "type": "object"
+    },
+    "Export": {
+      "additionalProperties": false,
+      "description": "One output configuration (spec 9.1).",
+      "properties": {
+        "bounds": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Bounds"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cell_px": {
+          "description": "Pixels per cell, 16 to 512; overrides `resolution`.",
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "exclude": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "format": {
+          "description": "`svg`, `png`, `pdf`, `txt`, or a dotted plugin format.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "include": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "legend": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Legend"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "level": {
+          "description": "The one level to draw. Absent: every level, side by side.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "`default` when the block has no label.",
+          "type": "string"
+        },
+        "orientation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Orientation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "page": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Page"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Preset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "render": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RenderOptions"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Resolution"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revealed": {
+          "description": "Condition tags that reveal `conditional` elements.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "rotation": {
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "scale": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PrintScale"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "PDF only: `fit` (default) or `tabletop`, one cell per inch."
+        },
+        "visibility": {
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "description": "Category toggles that override the preset.",
+          "type": "object"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "Facing": {
+      "enum": [
+        "north",
+        "north_east",
+        "east",
+        "south_east",
+        "south",
+        "south_west",
+        "west",
+        "north_west"
+      ],
+      "type": "string"
+    },
+    "Grid": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "description": "Only `square` before 1.0.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unit": {
+          "description": "Label of the scale, for example `5ft`. It does not affect geometry.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Header": {
+      "additionalProperties": false,
+      "description": "The `dedalo` header block: language version and plugin requirements.",
+      "properties": {
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "plugins": {
+          "items": {
+            "$ref": "#/$defs/PluginRequirement"
+          },
+          "type": "array"
+        },
+        "version": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Language": {
+      "description": "The language of the words a map prints by itself: legend labels of\nthe built-in types, panel headings and the scale line.",
+      "enum": [
+        "en",
+        "it"
+      ],
+      "type": "string"
+    },
+    "Layout": {
+      "additionalProperties": false,
+      "properties": {
+        "adjacent_to": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "align": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Align"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "direction": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Direction"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Which side of `adjacent_to` this room lies on."
+        },
+        "gap": {
+          "description": "A number with at most three decimals.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LayoutMode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offset": {
+          "description": "A number with at most three decimals.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "position": {
+          "description": "Absolute placement: the lattice point of the room's top-left corner.",
+          "items": {
+            "description": "A number with at most three decimals.",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": [
+            "array",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "LayoutMode": {
+      "enum": [
+        "absolute",
+        "relative",
+        "automatic"
+      ],
+      "type": "string"
+    },
+    "Legend": {
+      "additionalProperties": false,
+      "properties": {
+        "entries": {
+          "description": "Custom entries, or label overrides in automatic mode.",
+          "items": {
+            "$ref": "#/$defs/LegendEntry"
+          },
+          "type": "array"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LegendMode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LegendPosition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "LegendEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "What the entry describes: a type (`trap`), a type and subtype\n(`lighting.torch`) or a connection type (`door`).",
+          "type": "string"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "type": "object"
+    },
+    "LegendMode": {
+      "enum": [
+        "automatic",
+        "custom",
+        "none"
+      ],
+      "type": "string"
+    },
+    "LegendPosition": {
+      "enum": [
+        "right",
+        "bottom",
+        "left",
+        "top"
+      ],
+      "type": "string"
+    },
+    "Level": {
+      "additionalProperties": false,
+      "description": "One floor of a multi-level dungeon. Each level is laid out on its own\nplane; stairs, ladders and trapdoors join them.",
+      "properties": {
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
+    "Note": {
+      "additionalProperties": false,
+      "description": "An annotation, optionally attached to an element or positioned.",
+      "properties": {
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "id": {
+          "type": "string"
+        },
+        "position": {
+          "items": {
+            "description": "A number with at most three decimals.",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "reveal_when": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "visibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Visibility"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Notes default to `dm`."
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
+    "Orientation": {
+      "enum": [
+        "portrait",
+        "landscape"
+      ],
+      "type": "string"
+    },
+    "Page": {
+      "enum": [
+        "fit",
+        "a4",
+        "a3",
+        "letter"
+      ],
+      "type": "string"
+    },
+    "PluginRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
+    "Preset": {
+      "enum": [
+        "dm",
+        "player",
+        "clean"
+      ],
+      "type": "string"
+    },
+    "PrintScale": {
+      "description": "PDF only: fit the page, or print one cell per inch across pages.",
+      "enum": [
+        "fit",
+        "tabletop"
+      ],
+      "type": "string"
+    },
+    "RenderOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "language": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Language"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The language of default labels: `en` (default) or `it`."
+        },
+        "plugins": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "description": "Any JSON value. Numbers carry at most three decimals."
+            },
+            "type": "object"
+          },
+          "description": "Options passed to plugins, by plugin ID.",
+          "type": "object"
+        },
+        "room_ids": {
+          "description": "Print room IDs instead of names.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "text": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextMode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "theme": {
+          "description": "Theme name, dotted when it comes from a plugin.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "description": "Whether the dungeon name is drawn as a title.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Resolution": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "type": "string"
+    },
+    "Settings": {
+      "additionalProperties": false,
+      "properties": {
+        "default_floor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "default_wall": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "max_stub": {
+          "description": "Longest gap a connection bridges with a stub passage, in cells.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "seed": {
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "ShapeCall": {
+      "additionalProperties": false,
+      "description": "A shape written as a function call, for example `rectangle(8, 6)`.",
+      "properties": {
+        "args": {
+          "default": [],
+          "items": {
+            "description": "Any JSON value. Numbers carry at most three decimals."
+          },
+          "type": "array"
+        },
+        "fn": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fn"
+      ],
+      "type": "object"
+    },
+    "Space": {
+      "additionalProperties": false,
+      "description": "A room or a corridor.",
+      "properties": {
+        "comments": {
+          "$ref": "#/$defs/Comments"
+        },
+        "connects": {
+          "description": "Corridors only: the two spaces it joins.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "elements": {
+          "items": {
+            "$ref": "#/$defs/Element"
+          },
+          "type": "array"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/SpaceKind"
+        },
+        "layout": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Layout"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Rooms only."
+        },
+        "length": {
+          "description": "Corridors only: the gap it asks for between the rooms it joins.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "level": {
+          "description": "The level the space is on, in a dungeon with levels.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "offset": {
+          "description": "Corridors only: distance from the start of the first space's wall.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "path": {
+          "description": "Corridors only: global lattice points along the centre line.",
+          "items": {
+            "items": {
+              "description": "A number with at most three decimals.",
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          "type": "array"
+        },
+        "properties": {
+          "additionalProperties": {
+            "description": "Any JSON value. Numbers carry at most three decimals."
+          },
+          "type": "object"
+        },
+        "reveal_when": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rotation": {
+          "description": "Rooms only: 0, 90, 180 or 270 degrees clockwise.",
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "shape": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShapeCall"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Rooms only."
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "visibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Visibility"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "width": {
+          "description": "Corridors only: width in cells, default 1.",
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "type": "object"
+    },
+    "SpaceKind": {
+      "enum": [
+        "room",
+        "corridor"
+      ],
+      "type": "string"
+    },
+    "TextMode": {
+      "enum": [
+        "outline",
+        "live"
+      ],
+      "type": "string"
+    },
+    "Visibility": {
+      "description": "Who may see an element (spec 9.2).",
+      "enum": [
+        "public",
+        "dm",
+        "conditional",
+        "hidden"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://freshmag.github.io/dedalo/next/schema/document-1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A whole `.dedalo` file.",
+  "properties": {
+    "$schema": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "comments": {
+      "$ref": "#/$defs/Comments"
+    },
+    "dedalo": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Header"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "dungeon": {
+      "$ref": "#/$defs/Dungeon"
+    }
+  },
+  "required": [
+    "dungeon"
+  ],
+  "title": "Document",
+  "type": "object"
+}

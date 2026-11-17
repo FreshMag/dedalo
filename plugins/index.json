@@ -1,0 +1,43 @@
+[
+  {
+    "files": [
+      "dedalo-plugin.toml",
+      "symbols/brazier.svg",
+      "symbols/table.svg",
+      "themes/blueprint.toml"
+    ],
+    "id": "blueprint",
+    "provides": [
+      "theme blueprint.default"
+    ],
+    "sha256": "sha256:eeb47624ba1d110021d0eb5887d8c8f52631dcddf9fc1a15580aac93908b303e",
+    "version": "1.0.0"
+  },
+  {
+    "files": [
+      "dedalo-plugin.toml",
+      "hand_drawn.wasm",
+      "themes/sepia.toml"
+    ],
+    "id": "hand_drawn",
+    "provides": [
+      "theme hand_drawn.sepia",
+      "painter for opening door",
+      "scene pass wobble"
+    ],
+    "sha256": "sha256:2f1dff2ef5eddd3a0089f05c50db348a8a244bd513e249c17dd7dee7e65cb4fe",
+    "version": "1.2.0"
+  },
+  {
+    "files": [
+      "dedalo-plugin.toml",
+      "uvtt.wasm"
+    ],
+    "id": "uvtt",
+    "provides": [
+      "format uvtt.dd2vtt"
+    ],
+    "sha256": "sha256:c16a1b097f69d3d4329a841fd7f03ab90f1e41ba4dd8cc0f4680ba6c0df97ae4",
+    "version": "0.3.0"
+  }
+]

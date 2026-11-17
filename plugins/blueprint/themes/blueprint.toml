@@ -1,0 +1,47 @@
+# White ink on blueprint paper. Documents select it with
+# `render { theme = blueprint.default }`.
+
+[theme]
+id = "default"
+
+[palette]
+background = "#1d4e89"
+floor      = "#2a5fa0"
+wall       = "#f2f6fb"
+grid       = "#4f7fbf"
+ink        = "#f2f6fb"
+muted      = "#bcd0ea"
+water      = "#6fa8dc"
+lava       = "#e69a6b"
+rubble     = "#a9bfdc"
+rocks      = "#91abd0"
+light      = "#ffe08a"
+npc        = "#3b70b5"
+note       = "#ffe08a"
+
+[stroke]
+wall   = 0.1
+door   = 0.05
+grid   = 0.015
+symbol = 0.045
+
+[text]
+room   = 0.42
+marker = 0.5
+legend = 0.4
+note   = 0.34
+title  = 0.7
+
+[symbols]
+"trap"             = { glyph = "T", frame = "diamond" }
+"mechanism"        = { glyph = "M", frame = "square" }
+"mechanism.lever"  = { glyph = "L", frame = "square" }
+"mechanism.button" = { glyph = "B", frame = "square" }
+"item"             = { glyph = "i", frame = "circle" }
+"item.treasure"    = { glyph = "$", frame = "circle" }
+"item.key"         = { glyph = "k", frame = "circle" }
+"custom"           = { glyph = "?", frame = "circle" }
+# Drawn symbols: SVG files of this package. They pass a sanitiser that keeps
+# plain geometry only.
+"lighting.brazier" = "symbols/brazier.svg"
+"furniture.table"  = "symbols/table.svg"

@@ -1,0 +1,359 @@
+{
+  "$defs": {
+    "Code": {
+      "description": "The diagnostic codes. Codes are permanent: one is never renamed or reused.",
+      "enum": [
+        "SYNTAX_ERROR",
+        "UNKNOWN_BLOCK",
+        "UNKNOWN_ATTRIBUTE",
+        "TYPE_MISMATCH",
+        "INVALID_VALUE",
+        "UNKNOWN_PROPERTY",
+        "DUPLICATE_ID",
+        "UNKNOWN_REFERENCE",
+        "UNKNOWN_TYPE",
+        "INVALID_SHAPE",
+        "LAYOUT_CYCLE",
+        "LAYOUT_UNDERCONSTRAINED",
+        "OVERLAP",
+        "OUT_OF_BOUNDS",
+        "DOOR_NOT_PLACEABLE",
+        "UNRESOLVABLE_CONNECTION",
+        "CORRIDOR_DISCONNECTED",
+        "ELEMENT_OVERLAP",
+        "UNREACHABLE_ROOM",
+        "REFERENCED_ELEMENT",
+        "STALE_SOURCE",
+        "PLUGIN_NOT_FOUND",
+        "PLUGIN_CONFLICT",
+        "PLUGIN_FAILED",
+        "PLUGIN_TIMEOUT",
+        "PLUGIN_RULE",
+        "EXPORT_TOO_LARGE"
+      ],
+      "type": "string"
+    },
+    "Diagnostic": {
+      "description": "One problem (spec 10.1). The message names the element, the value found\nand the values allowed, so a reader without the file can act on it.",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/Code"
+        },
+        "element": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fix": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Op"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An edit that is certain to remove this diagnostic."
+        },
+        "message": {
+          "type": "string"
+        },
+        "related": {
+          "items": {
+            "$ref": "#/$defs/Related"
+          },
+          "type": "array"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity"
+        },
+        "span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Span"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "suggestion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "severity",
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "Op": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "description": "Inserts an element given as a DSL fragment (`source`) or as `kind`,\n`id` and `set`. `parent` nests it in a space.",
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "kind": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "op": {
+              "const": "add",
+              "type": "string"
+            },
+            "parent": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "set": {
+              "additionalProperties": {
+                "description": "Any JSON value. Numbers carry at most three decimals."
+              },
+              "type": "object"
+            },
+            "source": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "op"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Sets or unsets attributes by dotted path, with values in document\nJSON form.",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "update",
+              "type": "string"
+            },
+            "set": {
+              "additionalProperties": {
+                "description": "Any JSON value. Numbers carry at most three decimals."
+              },
+              "type": "object"
+            },
+            "unset": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "op",
+            "id"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Deletes an element. Fails with `REFERENCED_ELEMENT` unless `cascade`.",
+          "properties": {
+            "cascade": {
+              "type": "boolean"
+            },
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "remove",
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "id"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Rewrites a room's layout, or an element's space and position.",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "move",
+              "type": "string"
+            },
+            "to": {
+              "additionalProperties": {
+                "description": "Any JSON value. Numbers carry at most three decimals."
+              },
+              "type": "object"
+            }
+          },
+          "required": [
+            "op",
+            "id",
+            "to"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Shorthand for adding a connection.",
+          "properties": {
+            "from": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "connect",
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "id",
+            "from",
+            "to",
+            "type"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Related": {
+      "properties": {
+        "element": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "element",
+        "message"
+      ],
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "error",
+        "warning"
+      ],
+      "type": "string"
+    },
+    "Span": {
+      "description": "A source location. Lines and columns start at 1; columns count characters.",
+      "properties": {
+        "end": {
+          "items": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "start": {
+          "items": {
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "type": "object"
+    },
+    "Status": {
+      "enum": [
+        "ok",
+        "warning",
+        "error"
+      ],
+      "type": "string"
+    },
+    "Summary": {
+      "properties": {
+        "errors": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "warnings": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "errors",
+        "warnings"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://freshmag.github.io/dedalo/next/schema/diagnostics-1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The machine form of a validation result (spec 10.1).",
+  "properties": {
+    "diagnostics": {
+      "items": {
+        "$ref": "#/$defs/Diagnostic"
+      },
+      "type": "array"
+    },
+    "status": {
+      "$ref": "#/$defs/Status"
+    },
+    "summary": {
+      "$ref": "#/$defs/Summary"
+    }
+  },
+  "required": [
+    "status",
+    "summary",
+    "diagnostics"
+  ],
+  "title": "Report",
+  "type": "object"
+}

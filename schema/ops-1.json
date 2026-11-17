@@ -1,0 +1,182 @@
+{
+  "$defs": {
+    "Op": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "description": "Inserts an element given as a DSL fragment (`source`) or as `kind`,\n`id` and `set`. `parent` nests it in a space.",
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "kind": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "op": {
+              "const": "add",
+              "type": "string"
+            },
+            "parent": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "set": {
+              "additionalProperties": {
+                "description": "Any JSON value. Numbers carry at most three decimals."
+              },
+              "type": "object"
+            },
+            "source": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "op"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Sets or unsets attributes by dotted path, with values in document\nJSON form.",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "update",
+              "type": "string"
+            },
+            "set": {
+              "additionalProperties": {
+                "description": "Any JSON value. Numbers carry at most three decimals."
+              },
+              "type": "object"
+            },
+            "unset": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "op",
+            "id"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Deletes an element. Fails with `REFERENCED_ELEMENT` unless `cascade`.",
+          "properties": {
+            "cascade": {
+              "type": "boolean"
+            },
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "remove",
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "id"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Rewrites a room's layout, or an element's space and position.",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "move",
+              "type": "string"
+            },
+            "to": {
+              "additionalProperties": {
+                "description": "Any JSON value. Numbers carry at most three decimals."
+              },
+              "type": "object"
+            }
+          },
+          "required": [
+            "op",
+            "id",
+            "to"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Shorthand for adding a connection.",
+          "properties": {
+            "from": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "op": {
+              "const": "connect",
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "id",
+            "from",
+            "to",
+            "type"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$id": "https://freshmag.github.io/dedalo/next/schema/ops-1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A batch of operations, applied in order and atomically.",
+  "properties": {
+    "base_hash": {
+      "description": "Content hash of the source the batch was computed against.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ops": {
+      "items": {
+        "$ref": "#/$defs/Op"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "ops"
+  ],
+  "title": "Batch",
+  "type": "object"
+}
